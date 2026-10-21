@@ -1,12 +1,19 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
 })
 export class App {
-  protected readonly title = signal('rhumi-website');
+  protected readonly message = signal('');
+
+  protected submitLogin(event: SubmitEvent): void {
+    event.preventDefault();
+    this.message.set('Autenticação por e-mail ainda não está configurada.');
+  }
+
+  protected showCodeLoginMessage(): void {
+    this.message.set('Acesso por código ainda não está configurado.');
+  }
 }
