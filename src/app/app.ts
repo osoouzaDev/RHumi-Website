@@ -1,18 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  imports: [RouterOutlet],
   templateUrl: './app.html',
 })
-export class App {
-  protected readonly message = signal('');
-
-  protected submitLogin(event: SubmitEvent): void {
-    event.preventDefault();
-    this.message.set('Autenticação por e-mail ainda não está configurada.');
-  }
-
-  protected showCodeLoginMessage(): void {
-    this.message.set('Acesso por código ainda não está configurado.');
-  }
-}
+export class App {}
