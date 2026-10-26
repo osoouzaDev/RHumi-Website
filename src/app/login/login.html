@@ -1,20 +1,43 @@
 <main
-  class="relative flex min-h-svh min-w-[320px] items-center justify-center overflow-y-auto bg-[#03030d] bg-[radial-gradient(ellipse_at_83%_48%,rgba(18,18,78,0.38),transparent_39%),radial-gradient(ellipse_at_18%_50%,rgba(13,13,67,0.58),transparent_45%)] px-5 py-12 font-[family-name:Inter] text-white"
+  class="relative flex min-h-svh min-w-[320px] items-center justify-center overflow-y-auto bg-[#03030d] bg-[radial-gradient(ellipse_at_83%_48%,rgba(18,18,78,0.24),transparent_39%),radial-gradient(ellipse_at_18%_50%,rgba(13,13,67,0.34),transparent_45%)] px-5 py-8 font-[family-name:Inter] text-white"
   data-node-id="1:3"
 >
-  <div
-    class="absolute left-1/2 top-[51px] size-[100px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,#aaa4ff,#5446c8_55%,#171144)] shadow-[0_0_16px_rgba(96,77,255,0.42)]"
+  <svg
+    class="absolute left-1/2 top-[38px] size-[100px] -translate-x-1/2 overflow-visible"
+    viewBox="0 0 100 100"
+    fill="none"
     aria-hidden="true"
     data-node-id="36:81"
-  ></div>
+  >
+    <g class="[transform-box:view-box] [transform-origin:50px_50px] animate-orbit motion-reduce:animate-none">
+      <circle cx="50" cy="50" r="31" stroke="#5147c8" stroke-opacity=".55" stroke-width="1" />
+      <path d="M50 19a31 31 0 0 1 31 31" stroke="#9a91ff" stroke-width="2" stroke-linecap="round" />
+      <circle cx="50" cy="19" r="2.5" fill="#b6b0ff" />
+    </g>
+    <g class="[transform-box:view-box] [transform-origin:50px_50px] animate-branch-one motion-reduce:animate-none">
+      <path d="M50 34V24C50 18 44 14 37 14H27" stroke="#8c82f0" stroke-opacity=".72" stroke-width="1.5" stroke-linecap="round" />
+      <circle cx="25" cy="14" r="3" fill="#786ce8" />
+    </g>
+    <g class="[transform-box:view-box] [transform-origin:50px_50px] animate-branch-two motion-reduce:animate-none">
+      <path d="M64 50h9c6 0 9-5 9-11V29" stroke="#8c82f0" stroke-opacity=".72" stroke-width="1.5" stroke-linecap="round" />
+      <circle cx="82" cy="26" r="3" fill="#786ce8" />
+    </g>
+    <g class="[transform-box:view-box] [transform-origin:50px_50px] animate-branch-three motion-reduce:animate-none">
+      <path d="M39 59 30 68c-4 4-4 10 0 14l5 5" stroke="#8c82f0" stroke-opacity=".72" stroke-width="1.5" stroke-linecap="round" />
+      <circle cx="37" cy="89" r="3" fill="#786ce8" />
+    </g>
+    <circle cx="50" cy="50" r="17" fill="#171344" stroke="#7770dc" stroke-width="1.5" />
+    <circle cx="50" cy="50" r="10" fill="#5446c8" />
+    <circle cx="50" cy="50" r="3" fill="#b6b0ff" />
+  </svg>
 
   <section
-    class="relative z-10 flex w-full max-w-[600px] flex-col items-center"
+    class="relative z-10 -mt-24 flex w-full max-w-[480px] flex-col items-center max-[700px]:mt-20"
     aria-labelledby="login-title"
   >
     <h1
       id="login-title"
-      class="mb-[21px] w-full text-center font-[family-name:Jaldi] text-[clamp(36px,2.71vw,52px)] font-normal leading-[59px] tracking-[-0.07em] max-[560px]:text-[clamp(32px,8vw,44px)] max-[560px]:leading-[1.15]"
+      class="mb-3 w-full text-center font-[family-name:Jaldi] text-[clamp(34px,3.5vw,44px)] font-normal leading-[1.12] tracking-[-0.06em] max-[560px]:text-[clamp(30px,8vw,38px)]"
       data-node-id="258:11"
     >
       Bem vindo ao RHumi
@@ -23,9 +46,9 @@
 
     <form class="flex w-full flex-col items-center" (submit)="submitLogin($event)" data-node-id="259:29">
       <label class="sr-only" for="email">Seu e-mail</label>
-      <div class="flex h-[100px] w-full items-center rounded-[77px] bg-[#d9d9d9] px-[49px] max-[560px]:h-[76px] max-[560px]:px-8" data-node-id="259:30">
+      <div class="flex h-[76px] w-full items-center rounded-full bg-[#d9d9d9] px-8 max-[560px]:h-[64px] max-[560px]:px-6" data-node-id="259:30">
         <input
-          class="w-full bg-transparent font-[family-name:Jaldi] text-[36px] leading-[61px] text-black outline-none placeholder:text-black focus-visible:ring-2 focus-visible:ring-[#5446c8] max-[560px]:text-[25px]"
+          class="w-full bg-transparent font-[family-name:Jaldi] text-[28px] leading-[1.4] text-black outline-none placeholder:text-black focus-visible:ring-2 focus-visible:ring-[#5446c8] max-[560px]:text-[22px]"
           id="email"
           name="email"
           type="email"
@@ -36,7 +59,7 @@
         />
       </div>
       <button
-        class="mt-10 flex h-[100px] w-full cursor-pointer items-center justify-center rounded-full border border-white bg-black text-[32px] font-bold text-white transition-colors duration-150 hover:bg-[#181818] active:scale-[0.99] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#a99bff] max-[560px]:h-[76px] max-[560px]:text-[24px]"
+        class="mt-5 flex h-[70px] w-full cursor-pointer items-center justify-center rounded-full border border-white/80 bg-black text-[24px] font-bold text-white transition-colors duration-150 hover:bg-[#181818] active:scale-[0.99] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#a99bff] max-[560px]:h-[62px] max-[560px]:text-[21px]"
         type="submit"
         data-node-id="259:24"
       >
@@ -48,7 +71,7 @@
     </form>
 
     <div
-      class="mt-[34px] text-center text-[36px] font-bold leading-[44px] max-[560px]:mt-6 max-[560px]:text-[30px]"
+      class="mt-5 text-center text-[28px] font-bold leading-[34px] max-[560px]:mt-4 max-[560px]:text-[24px]"
       aria-hidden="true"
       data-node-id="259:19"
     >
@@ -56,7 +79,7 @@
     </div>
 
     <button
-      class="mt-10 flex h-[69px] w-[min(323px,100%)] cursor-pointer items-center justify-center rounded-[92px] border-[5px] border-[#8f8f8f] bg-[#d9d9d9] font-[family-name:Jaldi] text-[28px] leading-[47px] text-black transition-colors duration-150 hover:bg-[#ececec] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#a99bff] max-[560px]:mt-6 max-[560px]:h-[58px] max-[560px]:text-[22px]"
+      class="mt-5 flex h-[56px] w-[min(270px,100%)] cursor-pointer items-center justify-center rounded-full border-2 border-[#8f8f8f] bg-[#d9d9d9] font-[family-name:Jaldi] text-[22px] leading-[1.2] text-black transition-colors duration-150 hover:bg-[#ececec] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#a99bff] max-[560px]:mt-4 max-[560px]:h-[52px] max-[560px]:text-[20px]"
       type="button"
       (click)="showCodeLoginMessage()"
       data-node-id="259:28"

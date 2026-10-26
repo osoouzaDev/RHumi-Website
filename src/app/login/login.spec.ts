@@ -17,6 +17,14 @@ describe('Login', () => {
     expect(compiled.querySelector('input[type="email"]')).toBeTruthy();
   });
 
+  it('should render the flat animated connection motif with reduced-motion support', async () => {
+    const fixture = TestBed.createComponent(Login);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('svg[data-node-id="36:81"]')).toBeTruthy();
+    expect(compiled.querySelectorAll('[class*="motion-reduce:animate-none"]').length).toBe(4);
+  });
+
   it('should explain when code login is not configured', async () => {
     const fixture = TestBed.createComponent(Login);
     await fixture.whenStable();
