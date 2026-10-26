@@ -20,7 +20,7 @@ describe('Login', () => {
   it('should explain when code login is not configured', async () => {
     const fixture = TestBed.createComponent(Login);
     await fixture.whenStable();
-    fixture.nativeElement.querySelector('[data-node-id="7:49"]').click();
+    fixture.nativeElement.querySelector('[data-node-id="259:28"]').click();
     await fixture.whenStable();
     expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain('Acesso por código ainda não está configurado.');
   });
