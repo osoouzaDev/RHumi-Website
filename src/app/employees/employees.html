@@ -1,181 +1,739 @@
 <main
-  class="relative min-h-svh min-w-[320px] overflow-hidden bg-[#03030d] bg-[radial-gradient(ellipse_at_83%_48%,rgba(18,18,78,0.38),transparent_39%),radial-gradient(ellipse_at_18%_50%,rgba(13,13,67,0.58),transparent_45%)] px-[53px] pb-[53px] pt-[219px] font-[family-name:Inter] text-white max-[900px]:px-6 max-[900px]:pt-[180px]"
-  data-node-id="36:74"
+  class="relative min-h-svh overflow-x-clip bg-[#070711] px-5 pb-12 pt-36 font-[family-name:Inter] text-white sm:px-8 lg:px-12"
 >
   <div
-    class="absolute left-1/2 top-[51px] size-[100px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,#aaa4ff,#5446c8_55%,#171144)] shadow-[0_0_16px_rgba(96,77,255,0.42)]"
+    class="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[420px] bg-[radial-gradient(ellipse_at_50%_-10%,rgba(76,65,210,0.25),transparent_68%)]"
     aria-hidden="true"
-    data-node-id="36:83"
   ></div>
 
-  <section class="grid grid-cols-3 gap-[52px] max-[700px]:grid-cols-1" aria-label="Resumo">
-    <article
-      class="flex h-[150px] flex-col justify-between rounded-[24px] bg-[linear-gradient(90deg,#0f1733,#3349d6)] px-[26px] pb-[21px] pt-[16px]"
-      data-node-id="66:30"
-    >
-      <svg class="size-[30px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-node-id="70:110">
-        <circle cx="9" cy="8" r="4" />
-        <path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1" />
-        <path d="M16 3.1a4 4 0 0 1 0 7.8M22 21v-1a6 6 0 0 0-4-5.6" />
-      </svg>
+  <div class="relative mx-auto max-w-[1440px]">
+    <section class="flex flex-wrap items-end justify-between gap-5" aria-labelledby="page-title">
       <div>
-        <p class="text-[36px] font-light leading-[36px]">{{ employees.length }}</p>
-        <p class="mt-[8px] text-[18px] font-bold leading-[22px]">Pessoas no seu alcance</p>
+        <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[#a99bff]">Gestão de pessoas</p>
+        <h1 id="page-title" class="text-3xl font-semibold tracking-[-0.045em] sm:text-[38px]">
+          Funcionários
+        </h1>
+        <p class="mt-2 text-sm text-white/50 sm:text-base">
+          Acompanhe os usuários e seus acessos em um só lugar.
+        </p>
       </div>
-    </article>
-
-    <article
-      class="flex h-[150px] flex-col justify-between rounded-[24px] bg-[linear-gradient(90deg,#0b1a2e,#1f5a6e)] px-[26px] pb-[21px] pt-[16px]"
-      data-node-id="66:32"
-    >
-      <svg class="size-[30px] text-[#3fd17a]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-node-id="70:116">
-        <circle cx="9" cy="8" r="4" />
-        <path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1" />
-        <path d="m16 11 2 2 4-4" />
-      </svg>
-      <div>
-        <p class="text-[36px] font-light leading-[36px]">{{ collaboratorsCount }}</p>
-        <p class="mt-[8px] text-[18px] font-bold leading-[22px]">Colaboradores ativos</p>
-      </div>
-    </article>
-
-    <article
-      class="flex h-[150px] flex-col justify-between rounded-[24px] bg-[linear-gradient(90deg,#16133a,#4a2da8)] px-[26px] pb-[21px] pt-[16px]"
-      data-node-id="66:34"
-    >
-      <svg class="size-[30px] text-[#a77bff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-node-id="70:121">
-        <rect x="4" y="3" width="16" height="18" rx="1" />
-        <path d="M9 7h1M14 7h1M9 11h1M14 11h1M10 21v-4h4v4" />
-      </svg>
-      <div>
-        <p class="text-[36px] font-light leading-[36px]">{{ sectorsCount }}</p>
-        <p class="mt-[8px] text-[18px] font-bold leading-[22px]">Setores representados</p>
-      </div>
-    </article>
-  </section>
-
-  <div
-    class="mt-[19px] flex flex-wrap items-center gap-5 rounded-[24px] bg-[#0f172ae5] px-[26px] py-[20px]"
-    data-node-id="66:37"
-  >
-    <label class="flex h-[38px] w-[380px] max-w-full items-center gap-2 rounded-[10px] border border-white bg-[#0f172ae5] px-3 text-[15px] font-bold" data-node-id="66:39">
-      <svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" data-node-id="66:41">
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
-      </svg>
-      <input
-        class="min-w-0 flex-1 bg-transparent text-[15px] font-bold text-white outline-none placeholder:text-white"
-        type="search"
-        placeholder="Buscar por nome, email ou cargo..."
-        data-node-id="66:73"
-      />
-    </label>
-
-    <div class="flex flex-wrap items-center gap-5 max-[700px]:w-full">
-      @for (filter of ['Todos os Setores', 'Todas Classificações', 'Todos']; track filter) {
-        <div class="relative h-[38px] w-[196px] max-[700px]:w-full" data-node-id="66:49">
-          <select
-            class="h-full w-full appearance-none rounded-[10px] border border-white bg-[#0f172ae5] pl-4 pr-10 text-[15px] font-bold text-white focus-visible:outline-2 focus-visible:outline-[#a99bff]"
-            [attr.aria-label]="filter"
-          >
-            <option>{{ filter }}</option>
-          </select>
-          <svg class="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-        </div>
+      @if (canManageEmployees()) {
+        <button
+          class="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#6558df] px-4 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(89,72,214,0.2)] transition-colors hover:bg-[#7669ef] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a99bff]"
+          type="button"
+          (click)="openCreateDialog()"
+        >
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          Novo funcionário
+        </button>
       }
-    </div>
+    </section>
 
-    <div class="flex flex-wrap items-center gap-5 max-[700px]:w-full sm:ml-auto">
-      <div class="flex h-[38px] w-[81px] items-center gap-1 rounded-[10px] border border-white bg-[#020b20e5] p-[3px]" data-node-id="66:66">
-        <span class="flex size-8 items-center justify-center rounded-[10px] bg-[#003cffe5]" data-node-id="66:71">
-          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" data-node-id="66:67">
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
-          </svg>
-        </span>
-        <span class="flex size-8 items-center justify-center" aria-hidden="true">
-          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" data-node-id="66:69">
-            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-          </svg>
-        </span>
+    @if (createdCollaboratorCode()) {
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#65d8a7]/20 bg-[#65d8a7]/[0.08] px-4 py-3" role="status">
+        <p class="text-sm text-white/80">Funcionário criado. Código de acesso do colaborador:</p>
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="rounded-lg bg-[#65d8a7]/10 px-3 py-1.5 font-mono text-lg font-bold tracking-[0.2em] text-[#83edbd]">{{ createdCollaboratorCode() }}</span>
+          <button class="cursor-pointer text-sm font-semibold text-[#a99bff] hover:text-white" type="button" (click)="openCreatedEmployee()">Ver informações e configurar acesso</button>
+        </div>
+      </div>
+    }
+
+    <section class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3" aria-label="Resumo">
+      <article class="rounded-2xl border border-white/[0.08] bg-[linear-gradient(135deg,rgba(53,62,137,0.24),rgba(18,20,38,0.72))] p-5">
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-white/55">Usuários ativos</p>
+          <span class="flex size-9 items-center justify-center rounded-xl bg-[#7568ef]/15 text-[#a99bff]">
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="9" cy="8" r="4" />
+              <path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M16 4a4 4 0 0 1 0 8M22 21v-1a6 6 0 0 0-4-5.6" />
+            </svg>
+          </span>
+        </div>
+        <p class="mt-5 text-3xl font-semibold tracking-tight">{{ collaboratorsCount() }}</p>
+        <p class="mt-1 text-xs text-white/40">No diretório da empresa</p>
+      </article>
+
+      <article class="rounded-2xl border border-white/[0.08] bg-[linear-gradient(135deg,rgba(34,112,91,0.2),rgba(18,20,38,0.72))] p-5">
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-white/55">Administradores</p>
+          <span class="flex size-9 items-center justify-center rounded-xl bg-[#40c995]/10 text-[#5ee0ac]">
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m12 3 8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4Z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </span>
+        </div>
+        <p class="mt-5 text-3xl font-semibold tracking-tight">{{ administratorsCount() }}</p>
+        <p class="mt-1 text-xs text-white/40">Com acesso administrativo</p>
+      </article>
+
+      <article class="rounded-2xl border border-white/[0.08] bg-[linear-gradient(135deg,rgba(112,66,158,0.2),rgba(18,20,38,0.72))] p-5">
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-white/55">Colaboradores</p>
+          <span class="flex size-9 items-center justify-center rounded-xl bg-[#bb82f4]/10 text-[#c99af7]">
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21v-1a8 8 0 0 1 16 0v1" />
+            </svg>
+          </span>
+        </div>
+        <p class="mt-5 text-3xl font-semibold tracking-tight">{{ employeeCount() }}</p>
+        <p class="mt-1 text-xs text-white/40">Com perfil de colaborador</p>
+      </article>
+    </section>
+
+    <section class="mt-10" aria-labelledby="directory-title">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 id="directory-title" class="text-xl font-semibold tracking-tight">Diretório</h2>
+          <p class="mt-1 text-sm text-white/45">Encontre pessoas e consulte seus dados de acesso.</p>
+        </div>
+        <p class="text-sm text-white/45" aria-live="polite">
+          Mostrando <span class="font-semibold text-white">{{ filteredEmployees().length }}</span>
+          de {{ employees().length }} usuários
+        </p>
       </div>
 
-      <button
-        class="flex h-[38px] w-[211px] cursor-pointer items-center justify-center gap-2 rounded-[10px] bg-[#003cffe5] text-[15px] font-bold text-white transition-colors duration-150 hover:bg-[#0a4bff] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#a99bff]"
-        type="button"
-        data-node-id="66:60"
-      >
-        <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-node-id="66:63">
-          <circle cx="9" cy="8" r="4" />
-          <path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1" />
-          <path d="M19 8v6M16 11h6" />
-        </svg>
-        Novo Funcionário
-      </button>
-    </div>
+      <div class="mt-5 flex flex-col gap-3 rounded-2xl border border-white/[0.08] bg-[#10101b]/80 p-3 sm:flex-row">
+        <label class="flex h-11 min-w-0 flex-1 items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.035] px-3.5 transition-colors focus-within:border-[#8277ff]/50">
+          <svg class="size-[18px] shrink-0 text-white/35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            class="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/35"
+            type="search"
+            aria-label="Buscar funcionários"
+            placeholder="Buscar por nome ou e-mail"
+            [value]="searchTerm()"
+            (input)="searchTerm.set($any($event.target).value)"
+          />
+        </label>
+
+        <label class="flex h-11 items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.035] px-3.5 text-sm text-white/50 focus-within:border-[#8277ff]/50">
+          <span class="shrink-0">Perfil</span>
+          <select
+            class="min-w-0 flex-1 cursor-pointer bg-transparent text-sm font-medium text-white outline-none"
+            aria-label="Filtrar por perfil"
+            [value]="accessFilter()"
+            (change)="accessFilter.set($any($event.target).value)"
+          >
+            @for (option of accessOptions(); track option) {
+              <option class="bg-[#141421] text-white">{{ option }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <section class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3" aria-label="Lista de funcionários">
+        @if (loading()) {
+          <p class="col-span-full rounded-2xl border border-white/[0.08] bg-[#10101b] p-8 text-center text-sm text-white/50" role="status">
+            Carregando usuários...
+          </p>
+        } @else if (error()) {
+          <div class="col-span-full rounded-2xl border border-[#ff8a8a]/15 bg-[#21151b] p-6 text-center" role="alert">
+            <p class="text-sm text-[#ffaaaa]">{{ error() }}</p>
+            <button
+              class="mt-4 cursor-pointer rounded-xl bg-[#6558df] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#7669ef]"
+              type="button"
+              (click)="loadEmployees()"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        } @else if (filteredEmployees().length === 0) {
+          <p class="col-span-full rounded-2xl border border-white/[0.08] bg-[#10101b] p-8 text-center text-sm text-white/50">
+            {{ employees().length === 0 ? 'Nenhum usuário ativo encontrado.' : 'Nenhum usuário corresponde a essa busca.' }}
+          </p>
+        } @else {
+          @for (employee of filteredEmployees(); track employee.id) {
+            <article class="group rounded-2xl border border-white/[0.08] bg-[linear-gradient(145deg,rgba(25,25,40,0.96),rgba(15,15,25,0.96))] p-5 transition duration-200 hover:-translate-y-0.5 hover:border-[#8277ff]/30 hover:shadow-[0_16px_36px_rgba(0,0,0,0.22)]">
+              <div class="flex items-start gap-3.5">
+                <span class="flex size-12 shrink-0 items-center justify-center rounded-[15px] bg-[linear-gradient(145deg,#6658dc,#40378d)] text-sm font-bold tracking-wide text-white shadow-[0_6px_18px_rgba(83,69,190,0.2)]">
+                  {{ employee.initials }}
+                </span>
+                <div class="min-w-0 flex-1">
+                  <h3 class="truncate text-[15px] font-semibold text-white" [title]="employee.name">
+                    {{ employee.name }}
+                  </h3>
+                  <span class="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-[#8277ff]/15 bg-[#8277ff]/[0.09] px-2.5 py-1 text-[11px] font-medium text-[#c0b8ff]">
+                    <span class="size-1.5 rounded-full bg-[#a99bff]" aria-hidden="true"></span>
+                    {{ employee.access }}
+                  </span>
+                </div>
+                <span class="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-[#65d8a7]">
+                  <span class="size-1.5 rounded-full bg-[#65d8a7]" aria-hidden="true"></span>
+                  Ativo
+                </span>
+              </div>
+
+              <div class="my-4 h-px bg-white/[0.07]"></div>
+
+              <div class="flex min-w-0 items-center gap-2.5 text-sm text-white/55">
+                <svg class="size-4 shrink-0 text-white/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>
+                <span class="truncate" [title]="employee.email">{{ employee.email }}</span>
+              </div>
+              <div class="mt-3 flex items-center gap-2.5 text-xs text-white/40">
+                <svg class="size-4 shrink-0 text-white/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+                Cadastrado em {{ employee.since }}
+              </div>
+              <button
+                class="mt-5 w-full cursor-pointer rounded-xl border border-white/[0.1] bg-white/[0.035] px-4 py-2.5 text-sm font-semibold text-white/80 transition-colors hover:border-[#8277ff]/40 hover:bg-[#8277ff]/[0.09] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a99bff]"
+                type="button"
+                (click)="openEmployee(employee)"
+                [attr.aria-label]="'Abrir informações de ' + employee.name"
+              >
+                Ver informações
+              </button>
+            </article>
+          }
+        }
+      </section>
+    </section>
   </div>
 
-  <p class="mt-4 text-[18px]" data-node-id="66:91">Mostrando {{ employees.length }} de {{ employees.length }} funcionários</p>
+  @if (selectedEmployee(); as employee) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 backdrop-blur-sm sm:p-6">
+      <section
+        class="relative flex max-h-[min(900px,94svh)] w-full max-w-[1120px] flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-[#0a0f1b] shadow-[0_28px_100px_rgba(0,0,0,0.6)] lg:flex-row"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="'Informações de ' + employee.name"
+      >
+        <button
+          class="absolute right-3 top-3 z-10 flex size-9 cursor-pointer items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.08] hover:text-white focus-visible:outline-2 focus-visible:outline-[#a99bff]"
+          type="button"
+          aria-label="Fechar informações do funcionário"
+          (click)="closeEmployee()"
+        >
+          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="m18 6-12 12M6 6l12 12" />
+          </svg>
+        </button>
 
-  <section class="mt-4 grid grid-cols-3 gap-[52px] max-[1100px]:grid-cols-2 max-[700px]:grid-cols-1" aria-label="Lista de funcionários">
-    @for (employee of employees; track $index) {
-      <article class="relative flex flex-col rounded-[24px] bg-[#0f172ae5] px-[18px] pb-[18px] pt-[19px]">
-        <span class="absolute right-[25px] top-[19px] rounded-full bg-[#20192a] px-[9px] py-[5px] text-[15px] leading-[18px] text-[#b02b2c]">0%</span>
-
-        <div class="flex gap-[13px]">
-          <span class="flex size-[65px] shrink-0 items-center justify-center rounded-[20px] bg-[#003cffe5] text-[30px] font-bold leading-9">
-            {{ employee.initials }}
-          </span>
-          <div class="pt-[5px]">
-            <h2 class="text-[18px] font-bold leading-[22px]">{{ employee.name }}</h2>
-            <p class="mt-1 text-[15px] font-bold leading-[18px] text-[#b1b1b1]">{{ employee.position }}</p>
-            <div class="mt-[10px] flex gap-2">
-              <span class="h-[23px] rounded-full bg-[#003cffe5] px-[10px] text-[15px] leading-[23px]">{{ employee.access }}</span>
-              <span class="h-[23px] rounded-full border border-white bg-[#0f172ae5] px-[10px] text-[15px] leading-[21px]">{{ employee.sector }}</span>
+        <aside class="w-full shrink-0 overflow-y-auto border-b border-white/[0.08] bg-[#111927] p-5 sm:p-7 lg:w-[310px] lg:border-b-0 lg:border-r">
+          <div class="flex items-center gap-4 lg:flex-col lg:items-center lg:text-center">
+            <span class="flex size-[68px] shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(145deg,#2878f0,#4787ee)] text-xl font-bold text-white sm:size-[82px] sm:text-2xl">
+              {{ employee.initials }}
+            </span>
+            <div class="min-w-0 lg:mt-4">
+              <h2 class="text-lg font-semibold leading-snug text-white sm:text-xl">{{ employee.name }}</h2>
+              <p class="mt-1 text-sm text-white/50">{{ employee.cargo || 'Cargo não informado' }}</p>
+              <div class="mt-3 flex flex-wrap gap-2 lg:justify-center">
+                <span class="rounded-full bg-white/[0.08] px-2.5 py-1 text-[11px] font-semibold text-white/70">{{ employee.access }}</span>
+                @if (employee.setor) {
+                  <span class="rounded-full bg-white/[0.08] px-2.5 py-1 text-[11px] font-semibold text-white/70">{{ employee.setor }}</span>
+                }
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="mt-[10px] flex flex-col gap-[10px] text-[15px] font-bold text-[#b1b1b1]">
-          <p class="flex h-6 items-center gap-2">
-            <svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
-              <rect x="3" y="5" width="18" height="14" rx="2" />
-              <path d="m3 7 9 6 9-6" />
-            </svg>
-            {{ employee.email }}
-          </p>
-          <p class="flex h-6 items-center gap-2">
-            <svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <path d="M16 2v4M8 2v4M3 10h18" />
-            </svg>
-            Desde {{ employee.since }}
-          </p>
-        </div>
+          <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:block lg:space-y-5">
+            <div>
+              <h3 class="text-[10px] font-bold uppercase tracking-[0.17em] text-white/40">Contato</h3>
+              <p class="mt-2 break-all text-sm text-white/70">{{ employee.email }}</p>
+              <p class="mt-1 text-sm text-white/55">{{ employee.telefone || 'Telefone não informado' }}</p>
+            </div>
+            <div>
+              <h3 class="text-[10px] font-bold uppercase tracking-[0.17em] text-white/40">Dados profissionais</h3>
+              <p class="mt-2 text-sm text-white/70">Admissão: {{ formatDate(employee.data_admissao) }}</p>
+              <p class="mt-1 text-sm text-white/55">Contrato: {{ contractLabel(employee.tipo_contrato) }}</p>
+            </div>
+          </div>
 
-        <div class="mt-[13px] h-px bg-[#b1b1b1]"></div>
-
-        <div class="mt-[10px] flex h-6 items-center justify-between text-[15px] font-bold">
-          <p class="flex items-center gap-2 text-[#b1b1b1]">
-            <svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="m3 17 6-6 4 4 8-8" />
-              <path d="M14 7h7v7" />
-            </svg>
-            Última avaliação: {{ employee.lastEvaluation }}
-          </p>
-          <button class="flex cursor-pointer items-center gap-2 text-white" type="button">
-            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-            Detalhes
+          <button
+            class="mt-6 w-full cursor-pointer rounded-xl border border-white/[0.12] bg-white/[0.035] px-4 py-2.5 text-sm font-semibold text-white/80 transition-colors hover:border-[#8277ff]/50 hover:bg-[#8277ff]/[0.1] hover:text-white focus-visible:outline-2 focus-visible:outline-[#a99bff]"
+            type="button"
+            (click)="startEditing()"
+          >
+            Editar informações
           </button>
+        </aside>
+
+        <div class="min-h-0 min-w-0 flex-1 overflow-y-auto">
+          <nav class="sticky top-0 z-[1] flex gap-1 overflow-x-auto border-b border-white/[0.08] bg-[#0a0f1b] px-3 pt-3 sm:px-6" role="tablist" aria-label="Informações do colaborador">
+            <button
+              class="shrink-0 cursor-pointer border-b-2 px-3 py-3 text-xs font-semibold transition-colors sm:px-4 sm:text-sm"
+              [class.border-[#4385f5]]="activeEmployeeTab() === 'treinamentos'"
+              [class.text-[#8ab5ff]]="activeEmployeeTab() === 'treinamentos'"
+              [class.border-transparent]="activeEmployeeTab() !== 'treinamentos'"
+              [class.text-white/45]="activeEmployeeTab() !== 'treinamentos'"
+              type="button" role="tab" [attr.aria-selected]="activeEmployeeTab() === 'treinamentos'"
+              (click)="setEmployeeTab('treinamentos')"
+            >Treinamentos</button>
+            <button
+              class="shrink-0 cursor-pointer border-b-2 px-3 py-3 text-xs font-semibold transition-colors sm:px-4 sm:text-sm"
+              [class.border-[#4385f5]]="activeEmployeeTab() === 'tarefas'"
+              [class.text-[#8ab5ff]]="activeEmployeeTab() === 'tarefas'"
+              [class.border-transparent]="activeEmployeeTab() !== 'tarefas'"
+              [class.text-white/45]="activeEmployeeTab() !== 'tarefas'"
+              type="button" role="tab" [attr.aria-selected]="activeEmployeeTab() === 'tarefas'"
+              (click)="setEmployeeTab('tarefas')"
+            >Tarefas</button>
+            <button
+              class="shrink-0 cursor-pointer border-b-2 px-3 py-3 text-xs font-semibold transition-colors sm:px-4 sm:text-sm"
+              [class.border-[#4385f5]]="activeEmployeeTab() === 'avaliacao'"
+              [class.text-[#8ab5ff]]="activeEmployeeTab() === 'avaliacao'"
+              [class.border-transparent]="activeEmployeeTab() !== 'avaliacao'"
+              [class.text-white/45]="activeEmployeeTab() !== 'avaliacao'"
+              type="button" role="tab" [attr.aria-selected]="activeEmployeeTab() === 'avaliacao'"
+              (click)="setEmployeeTab('avaliacao')"
+            >Avaliação</button>
+            <button
+              class="shrink-0 cursor-pointer border-b-2 px-3 py-3 text-xs font-semibold transition-colors sm:px-4 sm:text-sm"
+              [class.border-[#4385f5]]="activeEmployeeTab() === 'acesso'"
+              [class.text-[#8ab5ff]]="activeEmployeeTab() === 'acesso'"
+              [class.border-transparent]="activeEmployeeTab() !== 'acesso'"
+              [class.text-white/45]="activeEmployeeTab() !== 'acesso'"
+              type="button" role="tab" [attr.aria-selected]="activeEmployeeTab() === 'acesso'"
+              (click)="setEmployeeTab('acesso')"
+            >Acesso</button>
+          </nav>
+
+          <div class="p-5 sm:p-7">
+            @if (activeEmployeeTab() === 'treinamentos') {
+              <section role="tabpanel" aria-label="Treinamentos">
+                <h3 class="text-lg font-semibold text-white">Treinamentos</h3>
+                <p class="mt-1 text-sm text-white/45">Acompanhe os treinamentos realizados pelo colaborador.</p>
+                <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  @for (metric of ['Concluídos', 'Em andamento', 'Pendentes', 'Média de progresso']; track metric) {
+                    <div class="rounded-xl border border-white/[0.08] bg-[#111927] p-4 text-center">
+                      <p class="text-xs text-white/45">{{ metric }}</p>
+                      <p class="mt-2 text-sm font-semibold text-white/65">—</p>
+                    </div>
+                  }
+                </div>
+                <div class="mt-8 rounded-xl border border-dashed border-white/[0.12] px-5 py-12 text-center">
+                  <p class="text-sm font-medium text-white/65">Nenhum treinamento registrado</p>
+                  <p class="mt-2 text-xs leading-5 text-white/40">Os treinamentos associados a este colaborador aparecerão aqui.</p>
+                </div>
+              </section>
+            } @else if (activeEmployeeTab() === 'tarefas') {
+              <section role="tabpanel" aria-label="Tarefas">
+                <h3 class="text-lg font-semibold text-white">Tarefas</h3>
+                <p class="mt-1 text-sm text-white/45">Acompanhe as tarefas atribuídas ao colaborador.</p>
+                <div class="mt-8 rounded-xl border border-dashed border-white/[0.12] px-5 py-12 text-center">
+                  <p class="text-sm font-medium text-white/65">Nenhuma tarefa registrada</p>
+                  <p class="mt-2 text-xs leading-5 text-white/40">As tarefas atribuídas a este colaborador aparecerão aqui.</p>
+                </div>
+              </section>
+            } @else if (activeEmployeeTab() === 'avaliacao') {
+              <section role="tabpanel" aria-label="Avaliação entre colaboradores">
+                <h3 class="text-lg font-semibold text-white">Avaliação entre colaboradores</h3>
+                <p class="mt-1 text-sm text-white/45">Avaliações recebidas por este colaborador.</p>
+                <div class="mt-8 rounded-xl border border-dashed border-white/[0.12] px-5 py-12 text-center">
+                  <p class="text-sm font-medium text-white/65">Nenhuma avaliação registrada</p>
+                  <p class="mt-2 text-xs leading-5 text-white/40">As avaliações entre colaboradores aparecerão aqui.</p>
+                </div>
+              </section>
+            } @else {
+              <section role="tabpanel" aria-label="Acesso à plataforma">
+                <h3 class="text-lg font-semibold text-white">Acesso à plataforma</h3>
+                <p class="mt-1 text-sm text-white/45">Configure as credenciais usadas pelo colaborador para entrar no RHumi.</p>
+                <div class="mt-6 space-y-3">
+                  <div class="flex items-center justify-between gap-4 rounded-xl border border-white/[0.08] bg-[#111927] p-4">
+                    <div>
+                      <p class="text-sm font-medium text-white">Conta da plataforma</p>
+                      <p class="mt-1 text-xs text-white/45">{{ employee.email }}</p>
+                    </div>
+                    <span
+                      class="rounded-full px-3 py-1 text-xs font-semibold"
+                      [class.bg-[#65d8a7]/[0.1]]="employee.ativo"
+                      [class.text-[#65d8a7]]="employee.ativo"
+                      [class.bg-[#ff8a8a]/[0.1]]="!employee.ativo"
+                      [class.text-[#ffaaaa]]="!employee.ativo"
+                    >{{ employee.ativo ? 'Ativo' : 'Inativo' }}</span>
+                  </div>
+                  <div class="rounded-xl border border-white/[0.08] bg-[#111927] p-4">
+                    <p class="text-xs text-white/45">Perfil de acesso</p>
+                    <p class="mt-1 text-sm font-medium text-white">{{ employee.access }}</p>
+                  </div>
+                </div>
+                @if (canManageEmployees()) {
+                  <div class="mt-5 space-y-4 rounded-xl border border-white/[0.08] bg-[#111927]/70 p-4 sm:p-5">
+                    <form class="space-y-3" (submit)="saveAccessEmail($event)">
+                      <label class="block">
+                        <span class="mb-1.5 block text-sm font-medium text-white/80">E-mail de login</span>
+                        <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="email" required maxlength="200" autocomplete="email" [value]="accessEmail()" (input)="accessEmail.set($any($event.target).value)" />
+                      </label>
+                      <button class="cursor-pointer rounded-lg border border-white/[0.12] px-3.5 py-2 text-sm font-semibold text-white/80 transition-colors hover:bg-white/[0.06] disabled:cursor-wait disabled:opacity-50" type="submit" [disabled]="savingAccessEmail()">
+                        {{ savingAccessEmail() ? 'Salvando...' : 'Atualizar e-mail' }}
+                      </button>
+                    </form>
+
+                    <div class="h-px bg-white/[0.08]"></div>
+
+                    <form class="space-y-3" (submit)="saveAccessPassword($event)">
+                      <label class="block">
+                        <span class="mb-1.5 block text-sm font-medium text-white/80">Nova senha de acesso</span>
+                        <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="password" required minlength="8" maxlength="255" autocomplete="new-password" placeholder="Mínimo de 8 caracteres" [value]="newAccessPassword()" (input)="newAccessPassword.set($any($event.target).value)" />
+                      </label>
+                      <button class="cursor-pointer rounded-lg border border-white/[0.12] px-3.5 py-2 text-sm font-semibold text-white/80 transition-colors hover:bg-white/[0.06] disabled:cursor-wait disabled:opacity-50" type="submit" [disabled]="savingAccessPassword()">
+                        {{ savingAccessPassword() ? 'Salvando...' : 'Redefinir senha' }}
+                      </button>
+                    </form>
+                    <p class="text-xs leading-5 text-white/40">A senha atual não é solicitada ao administrador. Informe a nova senha ao colaborador por um canal seguro.</p>
+                    @if (accessError()) {
+                      <p class="text-sm text-[#ffaaaa]" role="alert">{{ accessError() }}</p>
+                    }
+                    @if (accessSuccess()) {
+                      <p class="text-sm text-[#83edbd]" role="status">{{ accessSuccess() }}</p>
+                    }
+                  </div>
+                } @else {
+                  <p class="mt-5 rounded-xl border border-white/[0.08] bg-[#111927] p-4 text-sm text-white/50">Somente administradores podem alterar as credenciais de acesso.</p>
+                }
+              </section>
+            }
+          </div>
         </div>
-      </article>
+      </section>
+    </div>
+  }
+
+  @if (editingEmployee()) {
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-6">
+      <section
+        class="max-h-[94svh] w-full max-w-[620px] overflow-y-auto rounded-2xl border border-white/[0.1] bg-[#0b111e] p-5 shadow-[0_28px_100px_rgba(0,0,0,0.7)] sm:p-7"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-employee-title"
+      >
+        <header class="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <h2 id="edit-employee-title" class="text-xl font-semibold text-white">Editar funcionário</h2>
+            <p class="mt-1 text-sm text-white/45">Atualize as informações do colaborador.</p>
+          </div>
+          <button
+            class="flex size-8 cursor-pointer items-center justify-center rounded-lg text-white/45 hover:bg-white/[0.08] hover:text-white"
+            type="button" aria-label="Fechar edição" (click)="cancelEditing()"
+          >
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12" /></svg>
+          </button>
+        </header>
+
+        <form class="space-y-4" (submit)="saveEmployee($event)">
+          <label class="flex items-center justify-between gap-4 rounded-xl bg-[#1b2638] p-4">
+            <span>
+              <span class="block text-sm font-semibold text-white">Status do funcionário</span>
+              <span class="mt-1 block text-xs text-white/45">{{ editForm().ativo ? 'Funcionário ativo na empresa' : 'Acesso desativado' }}</span>
+            </span>
+            <input
+              class="size-5 cursor-pointer accent-[#4385f5]"
+              type="checkbox"
+              aria-label="Funcionário ativo"
+              [disabled]="isEditingSelf()"
+              [checked]="editForm().ativo"
+              (change)="setEditField('ativo', $any($event.target).checked)"
+            />
+          </label>
+
+          <label class="block">
+            <span class="mb-1.5 block text-sm font-medium text-white/80">Nome completo *</span>
+            <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="text" required maxlength="200" [value]="editForm().nome" (input)="setEditField('nome', $any($event.target).value)" />
+          </label>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">E-mail *</span>
+              <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="email" autocomplete="email" required maxlength="200" [value]="editForm().email" (input)="setEditField('email', $any($event.target).value)" />
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Telefone</span>
+              <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="tel" maxlength="30" [value]="editForm().telefone" (input)="setEditField('telefone', $any($event.target).value)" />
+            </label>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Setor</span>
+              <div class="relative">
+                <select
+                  class="w-full appearance-none rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 pr-10 text-sm text-white outline-none focus:border-[#4385f5] disabled:cursor-wait disabled:opacity-60"
+                  aria-label="Setor"
+                  [disabled]="loadingSectors() || !!sectorError()"
+                  (change)="setEditField('setor', $any($event.target).value)"
+                >
+                  <option class="bg-[#111927]" value="" [selected]="!editForm().setor">Sem setor</option>
+                  @for (sector of sectors(); track sector) {
+                    <option class="bg-[#111927]" [value]="sector" [selected]="sector === editForm().setor">{{ sector }}</option>
+                  }
+                </select>
+                <svg class="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-white/55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
+              </div>
+              @if (loadingSectors()) {
+                <span class="mt-1.5 block text-xs text-white/40" role="status">Carregando setores...</span>
+              } @else if (sectorError()) {
+                <span class="mt-1.5 block text-xs text-[#ffaaaa]" role="alert">{{ sectorError() }}</span>
+                <button class="mt-1 cursor-pointer text-xs font-medium text-[#a99bff] hover:text-white" type="button" (click)="loadSectors()">Tentar carregar setores novamente</button>
+              }
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Classificação de acesso *</span>
+              <div class="relative">
+                <select class="w-full appearance-none rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 pr-10 text-sm text-white outline-none focus:border-[#4385f5] disabled:cursor-not-allowed disabled:opacity-60" required [disabled]="isEditingSelf()" (change)="setEditField('classificacao', $any($event.target).value)">
+                  @for (classification of classifications; track classification.value) {
+                    <option
+                      class="bg-[#111927]"
+                      [value]="classification.value"
+                      [selected]="classification.value === editForm().classificacao"
+                      [disabled]="classification.value === 'sakai' && authService.currentUser()?.classificacao !== 'sakai'"
+                    >{{ classification.label }}</option>
+                  }
+                </select>
+                <svg class="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-white/55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
+              </div>
+            </label>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Cargo</span>
+              <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="text" maxlength="150" [value]="editForm().cargo" (input)="setEditField('cargo', $any($event.target).value)" />
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Tipo de contrato</span>
+              <div class="relative">
+                <select class="w-full appearance-none rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 pr-10 text-sm text-white outline-none focus:border-[#4385f5]" (change)="setEditField('tipo_contrato', $any($event.target).value)">
+                  <option class="bg-[#111927]" value="" [selected]="!editForm().tipo_contrato">Não informado</option>
+                  @for (contract of contractTypes; track contract.value) {
+                    <option class="bg-[#111927]" [value]="contract.value" [selected]="contract.value === editForm().tipo_contrato">{{ contract.label }}</option>
+                  }
+                </select>
+                <svg class="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-white/55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
+              </div>
+            </label>
+          </div>
+
+          <label class="block">
+            <span class="mb-1.5 block text-sm font-medium text-white/80">Data de admissão</span>
+            <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="date" [value]="editForm().data_admissao" (input)="setEditField('data_admissao', $any($event.target).value)" />
+          </label>
+
+          <label class="block">
+            <span class="mb-1.5 block text-sm font-medium text-white/80">Descrição do cargo</span>
+            <textarea class="min-h-24 w-full resize-y rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#4385f5]" maxlength="5000" placeholder="Descreva as principais responsabilidades..." [value]="editForm().descricao_cargo" (input)="setEditField('descricao_cargo', $any($event.target).value)"></textarea>
+          </label>
+
+          @if (editError()) {
+            <p class="text-sm text-[#ffaaaa]" role="alert">{{ editError() }}</p>
+          }
+
+          <footer class="flex flex-col-reverse gap-3 border-t border-white/[0.08] pt-4 sm:flex-row sm:justify-end">
+            <button class="cursor-pointer rounded-lg border border-white/[0.13] px-4 py-2.5 text-sm font-semibold text-white/75 hover:bg-white/[0.05]" type="button" (click)="cancelEditing()">Cancelar</button>
+            <button class="cursor-pointer rounded-lg bg-[#356df1] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#477df7] disabled:cursor-wait disabled:opacity-60" type="submit" [disabled]="savingEmployee()">
+              {{ savingEmployee() ? 'Salvando...' : 'Salvar alterações' }}
+            </button>
+          </footer>
+        </form>
+      </section>
+    </div>
+  }
+
+  @if (creatingEmployee()) {
+    <div class="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-6">
+      <section
+        class="max-h-[94svh] w-full max-w-[720px] overflow-y-auto rounded-2xl border border-white/[0.1] bg-[#0b111e] p-5 shadow-[0_28px_100px_rgba(0,0,0,0.7)] sm:p-7"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-employee-title"
+      >
+        <header class="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <h2 id="create-employee-title" class="text-xl font-semibold text-white">Novo funcionário</h2>
+            <p class="mt-1 text-sm text-white/45">Crie o acesso e cadastre os dados do colaborador.</p>
+          </div>
+          <button
+            class="flex size-8 cursor-pointer items-center justify-center rounded-lg text-white/45 hover:bg-white/[0.08] hover:text-white"
+            type="button" aria-label="Fechar cadastro" (click)="closeCreateDialog()"
+          >
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12" /></svg>
+          </button>
+        </header>
+
+        <form class="space-y-4" (submit)="createEmployee($event)">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block sm:col-span-2">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Nome completo *</span>
+              <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="text" required minlength="2" maxlength="200" autocomplete="name" [value]="createForm().nome" (input)="setCreateField('nome', $any($event.target).value)" />
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">E-mail de acesso *</span>
+              <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="email" required maxlength="200" autocomplete="email" [value]="createForm().email" (input)="setCreateField('email', $any($event.target).value)" />
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Senha inicial *</span>
+              <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="password" required minlength="8" maxlength="255" autocomplete="new-password" [value]="createForm().senha" (input)="setCreateField('senha', $any($event.target).value)" />
+            </label>
+          </div>
+          <p class="-mt-2 text-xs text-white/40">O e-mail será usado como login. Um código de colaborador de 4 dígitos será gerado pela API.</p>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Setor</span>
+              <div class="relative">
+                <select class="w-full appearance-none rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 pr-10 text-sm text-white outline-none focus:border-[#4385f5] disabled:opacity-60" aria-label="Setor do novo funcionário" [disabled]="loadingSectors() || !!sectorError()" (change)="setCreateField('setor', $any($event.target).value)">
+                  <option class="bg-[#111927]" value="">Sem setor</option>
+                  @for (sector of sectors(); track sector) {
+                    <option class="bg-[#111927]" [value]="sector">{{ sector }}</option>
+                  }
+                </select>
+                <svg class="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-white/55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
+              </div>
+              @if (loadingSectors()) {
+                <span class="mt-1.5 block text-xs text-white/40" role="status">Carregando setores...</span>
+              } @else if (sectorError()) {
+                <span class="mt-1.5 block text-xs text-[#ffaaaa]" role="alert">{{ sectorError() }}</span>
+                <button class="mt-1 cursor-pointer text-xs font-medium text-[#a99bff] hover:text-white" type="button" (click)="loadSectors()">Tentar carregar setores novamente</button>
+              }
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Classificação de acesso *</span>
+              <div class="relative">
+                <select class="w-full appearance-none rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 pr-10 text-sm text-white outline-none focus:border-[#4385f5]" required (change)="setCreateField('classificacao', $any($event.target).value)">
+                  @for (classification of classifications; track classification.value) {
+                    <option class="bg-[#111927]" [value]="classification.value" [selected]="classification.value === createForm().classificacao" [disabled]="classification.value === 'sakai' && authService.currentUser()?.classificacao !== 'sakai'">{{ classification.label }}</option>
+                  }
+                </select>
+                <svg class="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-white/55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
+              </div>
+            </label>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Telefone</span>
+              <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="tel" maxlength="30" autocomplete="tel" [value]="createForm().telefone" (input)="setCreateField('telefone', $any($event.target).value)" />
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Cargo</span>
+              <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="text" maxlength="150" [value]="createForm().cargo" (input)="setCreateField('cargo', $any($event.target).value)" />
+            </label>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Tipo de contrato</span>
+              <div class="relative">
+                <select class="w-full appearance-none rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 pr-10 text-sm text-white outline-none focus:border-[#4385f5]" (change)="setCreateField('tipo_contrato', $any($event.target).value)">
+                  <option class="bg-[#111927]" value="">Não informado</option>
+                  @for (contract of contractTypes; track contract.value) {
+                    <option class="bg-[#111927]" [value]="contract.value">{{ contract.label }}</option>
+                  }
+                </select>
+                <svg class="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-white/55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
+              </div>
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-medium text-white/80">Data de admissão</span>
+              <input class="w-full rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none focus:border-[#4385f5]" type="date" [value]="createForm().data_admissao" (input)="setCreateField('data_admissao', $any($event.target).value)" />
+            </label>
+          </div>
+
+          <label class="block">
+            <span class="mb-1.5 block text-sm font-medium text-white/80">Descrição do cargo</span>
+            <textarea class="min-h-20 w-full resize-y rounded-lg border border-white/[0.12] bg-[#111927] px-3 py-2.5 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#4385f5]" maxlength="5000" placeholder="Descreva as principais responsabilidades..." [value]="createForm().descricao_cargo" (input)="setCreateField('descricao_cargo', $any($event.target).value)"></textarea>
+          </label>
+
+          <label class="flex items-center justify-between gap-4 rounded-xl bg-[#1b2638] p-4">
+            <span>
+              <span class="block text-sm font-semibold text-white">Acesso ativo</span>
+              <span class="mt-1 block text-xs text-white/45">Permite que o colaborador entre na plataforma.</span>
+            </span>
+            <input class="size-5 cursor-pointer accent-[#4385f5]" type="checkbox" aria-label="Novo funcionário ativo" [checked]="createForm().ativo" (change)="setCreateField('ativo', $any($event.target).checked)" />
+          </label>
+
+          @if (createError()) {
+            <p class="text-sm text-[#ffaaaa]" role="alert">{{ createError() }}</p>
+          }
+
+          <footer class="flex flex-col-reverse gap-3 border-t border-white/[0.08] pt-4 sm:flex-row sm:justify-end">
+            <button class="cursor-pointer rounded-lg border border-white/[0.13] px-4 py-2.5 text-sm font-semibold text-white/75 hover:bg-white/[0.05]" type="button" (click)="closeCreateDialog()">Cancelar</button>
+            <button class="cursor-pointer rounded-lg bg-[#356df1] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#477df7] disabled:cursor-wait disabled:opacity-60" type="submit" [disabled]="savingNewEmployee()">
+              {{ savingNewEmployee() ? 'Criando...' : 'Criar funcionário' }}
+            </button>
+          </footer>
+        </form>
+      </section>
+    </div>
+  }
+
+  @if (!selectedEmployee() && !creatingEmployee()) {
+  <div class="fixed left-1/2 top-8 z-[70] -translate-x-1/2">
+    @if (navigationOpen()) {
+      <nav
+        id="system-navigation"
+        class="fixed left-1/2 top-[144px] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 rounded-2xl border border-white/[0.1] bg-[#0c101c]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[152px] sm:p-4"
+        aria-label="Navegação principal"
+      >
+        <ul class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          @for (item of navigationItems; track item.label) {
+            <li>
+              <div
+                class="flex min-h-[78px] items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-left transition-colors hover:border-white/[0.08] hover:bg-white/[0.045] sm:flex-col sm:justify-center sm:gap-2 sm:text-center"
+                [attr.aria-label]="item.label + ', disponível em breve'"
+              >
+                <span class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.035] text-[#b5aaff]">
+                  @switch (item.icon) {
+                    @case ('dashboard') {
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" /><rect x="13" y="3" width="8" height="5" rx="2" /><rect x="13" y="10" width="8" height="11" rx="2" /><rect x="3" y="13" width="8" height="8" rx="2" /></svg>
+                    }
+                    @case ('employees') {
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4" /><path d="M2 21v-1a7 7 0 0 1 14 0v1M16 4a4 4 0 0 1 0 8M18 15a6 6 0 0 1 4 5v1" /></svg>
+                    }
+                    @case ('company') {
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" /><path d="M8 9v.01M8 12v.01M8 15v.01M8 18v.01M16 13v.01M16 16v.01M16 19v.01" /></svg>
+                    }
+                    @case ('journey') {
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2M5 4l-2 2M19 4l2 2" /></svg>
+                    }
+                    @case ('calendar') {
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01" /></svg>
+                    }
+                    @case ('recruitment') {
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2" /></svg>
+                    }
+                    @case ('employee-area') {
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21v-1a8 8 0 0 1 16 0v1M19 8h3M20.5 6.5v3" /></svg>
+                    }
+                    @case ('settings') {
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1A1.7 1.7 0 0 0 4.2 12H4a1.7 1.7 0 0 1 0-3.4h.2A1.7 1.7 0 0 0 5.4 5.7l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1A1.7 1.7 0 0 0 10.7 2h.2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9Z" /></svg>
+                    }
+                  }
+                </span>
+                <span class="text-sm font-medium leading-tight text-white/75">{{ item.label }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+        <p class="mt-2 text-center text-[11px] text-white/35">Outras áreas estarão disponíveis em breve.</p>
+        <div class="mt-3 flex justify-center border-t border-white/[0.08] pt-3">
+          <button class="cursor-pointer rounded-lg px-3 py-2 text-xs font-medium text-white/45 transition-colors hover:bg-white/[0.05] hover:text-white/80" type="button" (click)="logout()">Sair da conta</button>
+        </div>
+      </nav>
     }
-  </section>
+
+    <button
+      class="flex size-[100px] cursor-pointer items-center justify-center rounded-full border border-white/10 bg-[linear-gradient(180deg,#1d108f_0%,#4841a0_25%,#8b87c3_50%,#4841a0_75%,#1d108f_100%)] [background-size:100%_200%] text-white shadow-[0_12px_36px_rgba(57,43,170,0.38)] transition-transform hover:scale-[1.04] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a99bff] animate-circle-gradient"
+      type="button"
+      aria-label="Navegação do sistema"
+      [attr.aria-expanded]="navigationOpen()"
+      aria-controls="system-navigation"
+      (click)="toggleNavigation()"
+    >
+      @if (navigationOpen()) {
+        <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12" /></svg>
+      } @else {
+        <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+      }
+    </button>
+  </div>
+  }
 </main>
