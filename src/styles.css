@@ -2,6 +2,7 @@
 
 @theme {
   --animate-blob-breathe: breathe 4s ease-in-out infinite;
+  --animate-circle-gradient: circle-gradient 8s ease-in-out infinite alternate;
   --animate-particle-one: move-one 4.2s ease-in-out infinite;
   --animate-particle-two: move-two 5.6s ease-in-out infinite -0.8s;
   --animate-particle-three: move-three 4.8s ease-in-out infinite -1.8s;
@@ -41,5 +42,10 @@
   @keyframes breathe {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.035); }
+  }
+
+  @keyframes circle-gradient {
+    from { background-position: 50% 0%; }
+    to { background-position: 50% 100%; }
   }
 }
