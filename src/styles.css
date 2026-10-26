@@ -1,44 +1,45 @@
 @import 'tailwindcss';
 
 @theme {
-  --animate-orbit: orbit 24s linear infinite;
-  --animate-branch-one: branch-one 7s ease-in-out infinite alternate;
-  --animate-branch-two: branch-two 8s ease-in-out infinite alternate;
-  --animate-branch-three: branch-three 6.5s ease-in-out infinite alternate;
+  --animate-blob-breathe: breathe 4s ease-in-out infinite;
+  --animate-particle-one: move-one 4.2s ease-in-out infinite;
+  --animate-particle-two: move-two 5.6s ease-in-out infinite -0.8s;
+  --animate-particle-three: move-three 4.8s ease-in-out infinite -1.8s;
+  --animate-particle-four: move-four 5.2s ease-in-out infinite -2.4s;
+  --animate-particle-five: move-five 6.3s ease-in-out infinite -3s;
 
-  @keyframes orbit {
-    to {
-      transform: rotate(360deg);
-    }
+  @keyframes move-one {
+    0%, 100% { transform: translate(0, 0) scale(.6); }
+    45% { transform: translate(29px, -30px) scale(1.15); }
+    65% { transform: translate(35px, -36px) scale(.9); }
   }
 
-  @keyframes branch-one {
-    from {
-      transform: rotate(-2deg);
-    }
-
-    to {
-      transform: rotate(2deg);
-    }
+  @keyframes move-two {
+    0%, 100% { transform: translate(0, 0) scale(.5); }
+    45% { transform: translate(-37px, -21px) scale(1); }
+    65% { transform: translate(-27px, -30px) scale(.85); }
   }
 
-  @keyframes branch-two {
-    from {
-      transform: rotate(2deg);
-    }
-
-    to {
-      transform: rotate(-2deg);
-    }
+  @keyframes move-three {
+    0%, 100% { transform: translate(0, 0) scale(.6); }
+    40% { transform: translate(3px, 41px) scale(1.1); }
+    70% { transform: translate(22px, 37px) scale(.8); }
   }
 
-  @keyframes branch-three {
-    from {
-      transform: rotate(-1.5deg);
-    }
+  @keyframes move-four {
+    0%, 100% { transform: translate(0, 0) scale(.5); }
+    40% { transform: translate(-38px, 16px) scale(1.05); }
+    65% { transform: translate(-41px, 24px) scale(.7); }
+  }
 
-    to {
-      transform: rotate(2.5deg);
-    }
+  @keyframes move-five {
+    0%, 100% { transform: translate(0, 0) scale(.6); }
+    45% { transform: translate(10px, -39px) scale(1.15); }
+    65% { transform: translate(-10px, -40px) scale(.75); }
+  }
+
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.035); }
   }
 }
