@@ -1,0 +1,181 @@
+<main
+  class="relative min-h-svh min-w-[320px] overflow-hidden bg-[#03030d] bg-[radial-gradient(ellipse_at_83%_48%,rgba(18,18,78,0.38),transparent_39%),radial-gradient(ellipse_at_18%_50%,rgba(13,13,67,0.58),transparent_45%)] px-[53px] pb-[53px] pt-[219px] font-[family-name:Inter] text-white max-[900px]:px-6 max-[900px]:pt-[180px]"
+  data-node-id="36:74"
+>
+  <div
+    class="absolute left-1/2 top-[51px] size-[100px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,#aaa4ff,#5446c8_55%,#171144)] shadow-[0_0_16px_rgba(96,77,255,0.42)]"
+    aria-hidden="true"
+    data-node-id="36:83"
+  ></div>
+
+  <section class="grid grid-cols-3 gap-[52px] max-[700px]:grid-cols-1" aria-label="Resumo">
+    <article
+      class="flex h-[150px] flex-col justify-between rounded-[24px] bg-[linear-gradient(90deg,#0f1733,#3349d6)] px-[26px] pb-[21px] pt-[16px]"
+      data-node-id="66:30"
+    >
+      <svg class="size-[30px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-node-id="70:110">
+        <circle cx="9" cy="8" r="4" />
+        <path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1" />
+        <path d="M16 3.1a4 4 0 0 1 0 7.8M22 21v-1a6 6 0 0 0-4-5.6" />
+      </svg>
+      <div>
+        <p class="text-[36px] font-light leading-[36px]">{{ employees.length }}</p>
+        <p class="mt-[8px] text-[18px] font-bold leading-[22px]">Pessoas no seu alcance</p>
+      </div>
+    </article>
+
+    <article
+      class="flex h-[150px] flex-col justify-between rounded-[24px] bg-[linear-gradient(90deg,#0b1a2e,#1f5a6e)] px-[26px] pb-[21px] pt-[16px]"
+      data-node-id="66:32"
+    >
+      <svg class="size-[30px] text-[#3fd17a]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-node-id="70:116">
+        <circle cx="9" cy="8" r="4" />
+        <path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1" />
+        <path d="m16 11 2 2 4-4" />
+      </svg>
+      <div>
+        <p class="text-[36px] font-light leading-[36px]">{{ collaboratorsCount }}</p>
+        <p class="mt-[8px] text-[18px] font-bold leading-[22px]">Colaboradores ativos</p>
+      </div>
+    </article>
+
+    <article
+      class="flex h-[150px] flex-col justify-between rounded-[24px] bg-[linear-gradient(90deg,#16133a,#4a2da8)] px-[26px] pb-[21px] pt-[16px]"
+      data-node-id="66:34"
+    >
+      <svg class="size-[30px] text-[#a77bff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-node-id="70:121">
+        <rect x="4" y="3" width="16" height="18" rx="1" />
+        <path d="M9 7h1M14 7h1M9 11h1M14 11h1M10 21v-4h4v4" />
+      </svg>
+      <div>
+        <p class="text-[36px] font-light leading-[36px]">{{ sectorsCount }}</p>
+        <p class="mt-[8px] text-[18px] font-bold leading-[22px]">Setores representados</p>
+      </div>
+    </article>
+  </section>
+
+  <div
+    class="mt-[19px] flex flex-wrap items-center gap-5 rounded-[24px] bg-[#0f172ae5] px-[26px] py-[20px]"
+    data-node-id="66:37"
+  >
+    <label class="flex h-[38px] w-[380px] max-w-full items-center gap-2 rounded-[10px] border border-white bg-[#0f172ae5] px-3 text-[15px] font-bold" data-node-id="66:39">
+      <svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" data-node-id="66:41">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
+      <input
+        class="min-w-0 flex-1 bg-transparent text-[15px] font-bold text-white outline-none placeholder:text-white"
+        type="search"
+        placeholder="Buscar por nome, email ou cargo..."
+        data-node-id="66:73"
+      />
+    </label>
+
+    <div class="flex flex-wrap items-center gap-5 max-[700px]:w-full">
+      @for (filter of ['Todos os Setores', 'Todas Classificações', 'Todos']; track filter) {
+        <div class="relative h-[38px] w-[196px] max-[700px]:w-full" data-node-id="66:49">
+          <select
+            class="h-full w-full appearance-none rounded-[10px] border border-white bg-[#0f172ae5] pl-4 pr-10 text-[15px] font-bold text-white focus-visible:outline-2 focus-visible:outline-[#a99bff]"
+            [attr.aria-label]="filter"
+          >
+            <option>{{ filter }}</option>
+          </select>
+          <svg class="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </div>
+      }
+    </div>
+
+    <div class="flex flex-wrap items-center gap-5 max-[700px]:w-full sm:ml-auto">
+      <div class="flex h-[38px] w-[81px] items-center gap-1 rounded-[10px] border border-white bg-[#020b20e5] p-[3px]" data-node-id="66:66">
+        <span class="flex size-8 items-center justify-center rounded-[10px] bg-[#003cffe5]" data-node-id="66:71">
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" data-node-id="66:67">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+        </span>
+        <span class="flex size-8 items-center justify-center" aria-hidden="true">
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" data-node-id="66:69">
+            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+          </svg>
+        </span>
+      </div>
+
+      <button
+        class="flex h-[38px] w-[211px] cursor-pointer items-center justify-center gap-2 rounded-[10px] bg-[#003cffe5] text-[15px] font-bold text-white transition-colors duration-150 hover:bg-[#0a4bff] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#a99bff]"
+        type="button"
+        data-node-id="66:60"
+      >
+        <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-node-id="66:63">
+          <circle cx="9" cy="8" r="4" />
+          <path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1" />
+          <path d="M19 8v6M16 11h6" />
+        </svg>
+        Novo Funcionário
+      </button>
+    </div>
+  </div>
+
+  <p class="mt-4 text-[18px]" data-node-id="66:91">Mostrando {{ employees.length }} de {{ employees.length }} funcionários</p>
+
+  <section class="mt-4 grid grid-cols-3 gap-[52px] max-[1100px]:grid-cols-2 max-[700px]:grid-cols-1" aria-label="Lista de funcionários">
+    @for (employee of employees; track $index) {
+      <article class="relative flex flex-col rounded-[24px] bg-[#0f172ae5] px-[18px] pb-[18px] pt-[19px]">
+        <span class="absolute right-[25px] top-[19px] rounded-full bg-[#20192a] px-[9px] py-[5px] text-[15px] leading-[18px] text-[#b02b2c]">0%</span>
+
+        <div class="flex gap-[13px]">
+          <span class="flex size-[65px] shrink-0 items-center justify-center rounded-[20px] bg-[#003cffe5] text-[30px] font-bold leading-9">
+            {{ employee.initials }}
+          </span>
+          <div class="pt-[5px]">
+            <h2 class="text-[18px] font-bold leading-[22px]">{{ employee.name }}</h2>
+            <p class="mt-1 text-[15px] font-bold leading-[18px] text-[#b1b1b1]">{{ employee.position }}</p>
+            <div class="mt-[10px] flex gap-2">
+              <span class="h-[23px] rounded-full bg-[#003cffe5] px-[10px] text-[15px] leading-[23px]">{{ employee.access }}</span>
+              <span class="h-[23px] rounded-full border border-white bg-[#0f172ae5] px-[10px] text-[15px] leading-[21px]">{{ employee.sector }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-[10px] flex flex-col gap-[10px] text-[15px] font-bold text-[#b1b1b1]">
+          <p class="flex h-6 items-center gap-2">
+            <svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3 7 9 6 9-6" />
+            </svg>
+            {{ employee.email }}
+          </p>
+          <p class="flex h-6 items-center gap-2">
+            <svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4M8 2v4M3 10h18" />
+            </svg>
+            Desde {{ employee.since }}
+          </p>
+        </div>
+
+        <div class="mt-[13px] h-px bg-[#b1b1b1]"></div>
+
+        <div class="mt-[10px] flex h-6 items-center justify-between text-[15px] font-bold">
+          <p class="flex items-center gap-2 text-[#b1b1b1]">
+            <svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m3 17 6-6 4 4 8-8" />
+              <path d="M14 7h7v7" />
+            </svg>
+            Última avaliação: {{ employee.lastEvaluation }}
+          </p>
+          <button class="flex cursor-pointer items-center gap-2 text-white" type="button">
+            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            Detalhes
+          </button>
+        </div>
+      </article>
+    }
+  </section>
+</main>
