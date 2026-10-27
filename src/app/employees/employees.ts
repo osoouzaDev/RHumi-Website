@@ -68,14 +68,14 @@ export class Employees implements OnInit {
   protected readonly accessSuccess = signal('');
   protected readonly navigationOpen = signal(false);
   protected readonly navigationItems = [
-    { label: 'Dashboard', icon: 'dashboard' },
-    { label: 'Funcionários', icon: 'employees' },
-    { label: 'Empresa', icon: 'company' },
-    { label: 'Jornada', icon: 'journey' },
-    { label: 'Calendário', icon: 'calendar' },
-    { label: 'Recrutamento', icon: 'recruitment' },
-    { label: 'Área do colaborador', icon: 'employee-area' },
-    { label: 'Configurações', icon: 'settings' },
+    { label: 'Dashboard', icon: 'dashboard', route: null },
+    { label: 'Funcionários', icon: 'employees', route: '/funcionarios' },
+    { label: 'Empresa', icon: 'company', route: '/empresa' },
+    { label: 'Jornada', icon: 'journey', route: null },
+    { label: 'Calendário', icon: 'calendar', route: null },
+    { label: 'Recrutamento', icon: 'recruitment', route: null },
+    { label: 'Área do colaborador', icon: 'employee-area', route: null },
+    { label: 'Configurações', icon: 'settings', route: null },
   ];
   protected readonly sectors = signal<string[]>([]);
   protected readonly loadingSectors = signal(false);
@@ -165,6 +165,13 @@ export class Employees implements OnInit {
 
   protected toggleNavigation(): void {
     this.navigationOpen.update((open) => !open);
+  }
+
+  protected navigateTo(route: string | null): void {
+    if (!route) return;
+
+    this.navigationOpen.set(false);
+    void this.router.navigateByUrl(route);
   }
 
   protected openCreateDialog(): void {
