@@ -3,6 +3,8 @@
 @theme {
   --animate-blob-breathe: breathe 4s ease-in-out infinite;
   --animate-circle-gradient: circle-gradient 8s ease-in-out infinite alternate;
+  --animate-navigation-reveal: navigation-reveal 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-navigation-item: navigation-item 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-particle-one: move-one 4.2s ease-in-out infinite;
   --animate-particle-two: move-two 5.6s ease-in-out infinite -0.8s;
   --animate-particle-three: move-three 4.8s ease-in-out infinite -1.8s;
@@ -47,5 +49,16 @@
   @keyframes circle-gradient {
     from { background-position: 50% 0%; }
     to { background-position: 50% 100%; }
+  }
+
+  @keyframes navigation-reveal {
+    from { clip-path: inset(0 0 100% 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+
+  @keyframes navigation-item {
+    from { opacity: 0; transform: translateY(-34px) scale(.45); }
+    70% { opacity: 1; transform: translateY(3px) scale(1.04); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
 }
