@@ -18,7 +18,7 @@ export class Company {
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
     { label: 'Funcionários', icon: 'employees', route: '/funcionarios' },
     { label: 'Empresa', icon: 'company', route: '/empresa' },
-    { label: 'Jornada', icon: 'journey', route: null },
+    { label: 'Jornada', icon: 'journey', route: '/jornada' },
     { label: 'Calendário', icon: 'calendar', route: null },
     { label: 'Recrutamento', icon: 'recruitment', route: null },
     { label: 'Área do colaborador', icon: 'employee-area', route: null },

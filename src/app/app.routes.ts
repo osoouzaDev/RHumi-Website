@@ -3,6 +3,7 @@ import { Dashboard } from './dashboard/dashboard';
 import { Company } from './company/company';
 import { Employees } from './employees/employees';
 import { Login } from './login/login';
+import { Journey } from './journey/journey';
 import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
@@ -10,4 +11,5 @@ export const routes: Routes = [
   { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
   { path: 'empresa', component: Company, canActivate: [authGuard] },
   { path: 'funcionarios', component: Employees, canActivate: [authGuard] },
+  { path: 'jornada', component: Journey, canActivate: [authGuard] },
 ];
