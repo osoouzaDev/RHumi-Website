@@ -152,7 +152,7 @@ describe('Login', () => {
       'souzaluis.dev@gmail.com',
       'senhaSegura123'
     );
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/funcionarios']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should show error message when email authentication fails', async () => {
@@ -193,7 +193,7 @@ describe('Login', () => {
     await fixture.whenStable();
 
     expect(mockAuthService.loginComCodigo).toHaveBeenCalledWith('0042');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/funcionarios']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should show error message when collaborator code authentication fails', async () => {
