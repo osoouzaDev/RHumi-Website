@@ -1,6 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiUser, AuthService, CreateApiUser, UpdateApiUser } from '../services/auth.service';
+import { NavigationOrb } from '../shared/navigation-orb';
 
 type EmployeeTab = 'treinamentos' | 'tarefas' | 'avaliacao' | 'acesso';
 type ContractType = NonNullable<ApiUser['tipo_contrato']>;
@@ -31,6 +32,7 @@ interface CreateEmployeeForm extends EmployeeForm {
 
 @Component({
   selector: 'app-employees',
+  imports: [NavigationOrb],
   templateUrl: './employees.html',
 })
 export class Employees implements OnInit {

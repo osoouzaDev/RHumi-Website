@@ -1,6 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiUser, AuthService } from '../services/auth.service';
+import { NavigationOrb } from '../shared/navigation-orb';
 
 interface JourneyStage {
   title: string;
@@ -9,6 +10,7 @@ interface JourneyStage {
 
 @Component({
   selector: 'app-journey',
+  imports: [NavigationOrb],
   templateUrl: './journey.html',
 })
 export class Journey implements OnInit {

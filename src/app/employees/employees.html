@@ -666,11 +666,11 @@
   }
 
   @if (!selectedEmployee() && !creatingEmployee()) {
-  <div class="fixed left-1/2 top-8 z-[70] -translate-x-1/2">
+  <div class="fixed left-1/2 top-5 z-[70] -translate-x-1/2">
     @if (navigationOpen()) {
       <nav
         id="system-navigation"
-        class="fixed left-1/2 top-[144px] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 rounded-2xl border border-white/[0.1] bg-[#0c101c]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[152px] sm:p-4"
+        class="fixed left-1/2 top-[80px] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 rounded-2xl border border-white/[0.1] bg-[#0c101c]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:p-4"
         aria-label="Navegação principal"
       >
         <ul class="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -724,20 +724,7 @@
       </nav>
     }
 
-    <button
-      class="flex size-[100px] cursor-pointer items-center justify-center rounded-full border border-white/10 bg-[linear-gradient(180deg,#1d108f_0%,#4841a0_25%,#8b87c3_50%,#4841a0_75%,#1d108f_100%)] [background-size:100%_200%] text-white shadow-[0_12px_36px_rgba(57,43,170,0.38)] transition-transform hover:scale-[1.04] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a99bff] animate-circle-gradient"
-      type="button"
-      aria-label="Navegação do sistema"
-      [attr.aria-expanded]="navigationOpen()"
-      aria-controls="system-navigation"
-      (click)="toggleNavigation()"
-    >
-      @if (navigationOpen()) {
-        <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12" /></svg>
-      } @else {
-        <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
-      }
-    </button>
+    <app-navigation-orb page="employees" [expanded]="navigationOpen()" (toggle)="toggleNavigation()" />
   </div>
   }
 </main>

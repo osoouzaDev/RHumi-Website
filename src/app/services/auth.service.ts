@@ -66,6 +66,46 @@ export interface CreatedApiUser extends ApiUser {
   codigo_colaborador: string;
 }
 
+export interface CompanyData {
+  id: string;
+  nome_empresa: string;
+  cnpj: string;
+  rua: string | null;
+  numero_end: string | null;
+  bairro: string | null;
+  cep: string | null;
+  cidade: string | null;
+  estado: string | null;
+  telefone: string | null;
+  email: string | null;
+  fundacao: string | null;
+  sobre_empresa: string | null;
+  nome_pagina_carreiras: string | null;
+  homepage_carreiras: string | null;
+  chamada_carreiras: string | null;
+  descricao_carreiras: string | null;
+  missao: string | null;
+  visao: string | null;
+  valores: string | null;
+  created_at: string;
+  updated_at: string;
+  total_colaboradores: number;
+  setores: CompanySector[];
+  classificacoes: string[];
+}
+
+export interface CompanySector {
+  id: string;
+  nome_setor: string;
+  icone: string | null;
+  quantidade: number;
+}
+
+export type UpdateCompanyData = Omit<
+  CompanyData,
+  'id' | 'created_at' | 'updated_at' | 'total_colaboradores' | 'setores' | 'classificacoes'
+>;
+
 interface PaginatedUsers {
   dados: ApiUser[];
   meta: {
@@ -222,6 +262,61 @@ export class AuthService {
     }
 
     return users;
+  }
+
+  async buscarEmpresa(): Promise<CompanyData> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    return this.request<CompanyData>('/api/empresa', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  async atualizarEmpresa(data: UpdateCompanyData): Promise<CompanyData> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    return this.request<CompanyData>('/api/empresa', {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+  }
+
+  async criarSetorEmpresa(nomeSetor: string): Promise<CompanySector> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    return this.request<CompanySector>('/api/empresa/setores', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ nome_setor: nomeSetor }),
+    });
+  }
+
+  async removerSetorEmpresa(id: string): Promise<void> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    await this.request<void>(`/api/empresa/setores/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
   }
 
   async listarSetores(): Promise<string[]> {

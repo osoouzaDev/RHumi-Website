@@ -180,7 +180,8 @@ describe('Employees', () => {
 
     expect(circle.getAttribute('aria-expanded')).toBe('false');
     expect(circle.className).toContain('animate-circle-gradient');
-    expect(circle.className).toContain('size-[100px]');
+    expect(circle.className).toContain('size-[60px]');
+    expect(circle.querySelector('[data-page="employees"]')).toBeTruthy();
     circle.click();
     await fixture.whenStable();
 
