@@ -3,12 +3,12 @@
 
   <div class="fixed left-1/2 top-5 z-[70] -translate-x-1/2">
     @if (navigationOpen()) {
-      <nav id="system-navigation" class="fixed left-1/2 top-[80px] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 origin-top animate-navigation-reveal motion-reduce:animate-none rounded-2xl border border-white/[0.1] bg-[#0c1222]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:p-4" aria-label="Navegação principal">
+      <nav id="system-navigation" class="navigation-menu-opening fixed left-1/2 top-[80px] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 origin-top rounded-2xl border border-white/[0.1] bg-[#0c1222]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:p-4" aria-label="Navegação principal">
         <ul class="grid grid-cols-2 gap-2 sm:grid-cols-4">
           @for (item of navigationItems; track item.label; let index = $index) {
-            <li class="animate-navigation-item motion-reduce:animate-none" [style.animation-delay]="index * 38 + 'ms'">
-              <button class="flex min-h-[58px] w-full items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-left transition-colors hover:border-white/[0.08] hover:bg-white/[0.045] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8ab5ff] disabled:cursor-not-allowed disabled:opacity-40 sm:justify-center" type="button" [disabled]="!item.route" [attr.aria-label]="item.route ? item.label : item.label + ', disponível em breve'" [attr.aria-current]="item.route === '/dashboard' ? 'page' : null" (click)="navigateTo(item.route)">
-                <span class="flex size-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.035] text-[#8ab5ff]">
+            <li>
+              <button class="flex min-h-[78px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-transparent px-2 py-3 text-center transition-colors hover:border-white/[0.08] hover:bg-white/[0.045] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8ab5ff] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-transparent disabled:hover:bg-transparent" type="button" [disabled]="!item.route" [attr.aria-label]="item.route ? item.label : item.label + ', disponível em breve'" [attr.aria-current]="item.route === '/dashboard' ? 'page' : null" (click)="navigateTo(item.route)">
+                <span class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.035] text-[#8ab5ff]">
                   @switch (item.icon) {
                     @case ('dashboard') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" /><rect x="13" y="3" width="8" height="5" rx="2" /><rect x="13" y="10" width="8" height="11" rx="2" /><rect x="3" y="13" width="8" height="8" rx="2" /></svg> }
                     @case ('employees') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4" /><path d="M2 21v-1a7 7 0 0 1 14 0v1M16 4a4 4 0 0 1 0 8M18 15a6 6 0 0 1 4 5v1" /></svg> }
