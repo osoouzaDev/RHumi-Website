@@ -60,7 +60,7 @@ export class Login {
       await this.authService.loginComEmail(emailVal, senhaVal);
       this.isSuccess.set(true);
       this.message.set('Autenticação realizada com sucesso! Redirecionando...');
-      await this.router.navigate(['/funcionarios']);
+      await this.router.navigate(['/dashboard']);
     } catch (error: unknown) {
       this.isSuccess.set(false);
       const msg = error instanceof Error ? error.message : 'Falha na autenticação por e-mail.';
@@ -91,7 +91,7 @@ export class Login {
       await this.authService.loginComCodigo(codigoVal);
       this.isSuccess.set(true);
       this.message.set('Autenticação realizada com sucesso! Redirecionando...');
-      await this.router.navigate(['/funcionarios']);
+      await this.router.navigate(['/dashboard']);
     } catch (error: unknown) {
       this.isSuccess.set(false);
       const msg = error instanceof Error ? error.message : 'Falha na autenticação por código.';

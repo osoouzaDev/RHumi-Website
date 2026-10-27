@@ -15,7 +15,7 @@ export class Company {
   protected readonly router = inject(Router);
   protected readonly navigationOpen = signal(false);
   protected readonly navigationItems = [
-    { label: 'Dashboard', icon: 'dashboard', route: null },
+    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
     { label: 'Funcionários', icon: 'employees', route: '/funcionarios' },
     { label: 'Empresa', icon: 'company', route: '/empresa' },
     { label: 'Jornada', icon: 'journey', route: null },
