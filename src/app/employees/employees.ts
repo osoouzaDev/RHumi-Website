@@ -74,10 +74,10 @@ export class Employees implements OnInit {
     { label: 'Funcionários', icon: 'employees', route: '/funcionarios' },
     { label: 'Empresa', icon: 'company', route: '/empresa' },
     { label: 'Jornada', icon: 'journey', route: '/jornada' },
-    { label: 'Calendário', icon: 'calendar', route: null },
-    { label: 'Recrutamento', icon: 'recruitment', route: null },
-    { label: 'Área do colaborador', icon: 'employee-area', route: null },
-    { label: 'Configurações', icon: 'settings', route: null },
+    { label: 'Calendário', icon: 'calendar', route: '/calendario' },
+    { label: 'Recrutamento', icon: 'recruitment', route: '/recrutamento' },
+    { label: 'Área do colaborador', icon: 'employee-area', route: '/area-colaborador' },
+    { label: 'Configurações', icon: 'settings', route: '/configuracoes' },
   ];
   protected readonly sectors = signal<string[]>([]);
   protected readonly loadingSectors = signal(false);
