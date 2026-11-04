@@ -36,7 +36,7 @@ describe('Employees', () => {
     logout: vi.fn(),
   };
   const mockRouter = {
-    navigate: vi.fn(),
+    navigateByUrl: vi.fn(),
   };
   beforeEach(async () => {
     mockAuthService.listarUsuariosAtivos.mockResolvedValue(users);
@@ -68,7 +68,7 @@ describe('Employees', () => {
     });
     mockAuthService.logout.mockResolvedValue(undefined);
     mockAuthService.redefinirSenhaUsuario.mockResolvedValue(undefined);
-    mockRouter.navigate.mockResolvedValue(true);
+    mockRouter.navigateByUrl.mockResolvedValue(true);
 
     await TestBed.configureTestingModule({
       imports: [Employees],
@@ -205,8 +205,11 @@ describe('Employees', () => {
   it('should sign out from the navigation panel', async () => {
     const fixture = TestBed.createComponent(Employees);
     await fixture.whenStable();
-    fixture.componentInstance['toggleNavigation']();
-    fixture.detectChanges();
+    const circle = fixture.nativeElement.querySelector(
+      'button[aria-label="Navegação do sistema"]'
+    ) as HTMLButtonElement;
+    circle.click();
+    await fixture.whenStable();
     const signOutButton = [...fixture.nativeElement.querySelectorAll('button')]
       .find((button) => button.textContent?.includes('Sair da conta')) as HTMLButtonElement;
 
@@ -214,7 +217,7 @@ describe('Employees', () => {
     await fixture.whenStable();
 
     expect(mockAuthService.logout).toHaveBeenCalledOnce();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
   it('should filter users by name and access profile', async () => {

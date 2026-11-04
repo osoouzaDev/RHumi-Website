@@ -1,18 +1,15 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ApiUser, AuthService, CompanyData, CompanySector, UpdateCompanyData } from '../services/auth.service';
-import { NavigationOrb } from '../shared/navigation-orb';
+import { SystemNavigation } from '../shared/system-navigation';
 
 @Component({
   selector: 'app-company',
-  imports: [FormsModule, NavigationOrb],
+  imports: [FormsModule, SystemNavigation],
   templateUrl: './company.html',
 })
 export class Company implements OnInit {
   protected readonly authService = inject(AuthService);
-  protected readonly router = inject(Router);
-  protected readonly navigationOpen = signal(false);
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
   protected readonly sectorBusy = signal(false);
@@ -46,17 +43,6 @@ export class Company implements OnInit {
     const profile = this.authService.currentUser()?.classificacao.trim().toLowerCase();
     return ['sakai', 'admin', 'hr_admin', 'supervisor'].includes(profile ?? '');
   });
-  protected readonly navigationItems = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Funcionários', icon: 'employees', route: '/funcionarios' },
-    { label: 'Empresa', icon: 'company', route: '/empresa' },
-    { label: 'Jornada', icon: 'journey', route: '/jornada' },
-    { label: 'Calendário', icon: 'calendar', route: '/calendario' },
-    { label: 'Recrutamento', icon: 'recruitment', route: '/recrutamento' },
-    { label: 'Área do colaborador', icon: 'employee-area', route: '/area-colaborador' },
-    { label: 'Configurações', icon: 'settings', route: '/configuracoes' },
-  ];
-
   ngOnInit(): void {
     void this.loadCompany();
   }
@@ -176,25 +162,6 @@ export class Company implements OnInit {
     } finally {
       this.sectorBusy.set(false);
     }
-  }
-
-  protected toggleNavigation(): void {
-    this.navigationOpen.update((open) => !open);
-  }
-
-  protected navigateTo(route: string | null): void {
-    if (!route) return;
-    this.navigationOpen.set(false);
-    void this.router.navigateByUrl(route);
-  }
-
-  protected async logout(): Promise<void> {
-    try {
-      await this.authService.logout();
-    } catch {
-      this.navigationOpen.set(false);
-    }
-    await this.router.navigate(['/']);
   }
 
   protected formatCnpj(value: string | null): string {

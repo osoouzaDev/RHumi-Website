@@ -1,7 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApiUser, AuthService, CreateApiUser, UpdateApiUser } from '../services/auth.service';
-import { NavigationOrb } from '../shared/navigation-orb';
+import { SystemNavigation } from '../shared/system-navigation';
 
 type EmployeeTab = 'treinamentos' | 'tarefas' | 'avaliacao' | 'acesso';
 type ContractType = NonNullable<ApiUser['tipo_contrato']>;
@@ -32,12 +31,11 @@ interface CreateEmployeeForm extends EmployeeForm {
 
 @Component({
   selector: 'app-employees',
-  imports: [NavigationOrb],
+  imports: [SystemNavigation],
   templateUrl: './employees.html',
 })
 export class Employees implements OnInit {
   protected readonly authService = inject(AuthService);
-  protected readonly router = inject(Router);
   protected readonly employees = signal<Employee[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal('');
@@ -68,17 +66,6 @@ export class Employees implements OnInit {
   protected readonly savingAccessPassword = signal(false);
   protected readonly accessError = signal('');
   protected readonly accessSuccess = signal('');
-  protected readonly navigationOpen = signal(false);
-  protected readonly navigationItems = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Funcionários', icon: 'employees', route: '/funcionarios' },
-    { label: 'Empresa', icon: 'company', route: '/empresa' },
-    { label: 'Jornada', icon: 'journey', route: '/jornada' },
-    { label: 'Calendário', icon: 'calendar', route: '/calendario' },
-    { label: 'Recrutamento', icon: 'recruitment', route: '/recrutamento' },
-    { label: 'Área do colaborador', icon: 'employee-area', route: '/area-colaborador' },
-    { label: 'Configurações', icon: 'settings', route: '/configuracoes' },
-  ];
   protected readonly sectors = signal<string[]>([]);
   protected readonly loadingSectors = signal(false);
   protected readonly sectorError = signal('');
@@ -144,7 +131,6 @@ export class Employees implements OnInit {
   }
 
   protected openEmployee(employee: Employee): void {
-    this.navigationOpen.set(false);
     this.selectedEmployee.set(employee);
     this.activeEmployeeTab.set('treinamentos');
     this.editingEmployee.set(false);
@@ -165,19 +151,7 @@ export class Employees implements OnInit {
     }
   }
 
-  protected toggleNavigation(): void {
-    this.navigationOpen.update((open) => !open);
-  }
-
-  protected navigateTo(route: string | null): void {
-    if (!route) return;
-
-    this.navigationOpen.set(false);
-    void this.router.navigateByUrl(route);
-  }
-
   protected openCreateDialog(): void {
-    this.navigationOpen.set(false);
     this.createForm.set(this.emptyCreateEmployeeForm());
     this.createError.set('');
     this.createdCollaboratorCode.set('');
@@ -370,15 +344,6 @@ export class Employees implements OnInit {
       this.accessError.set(error instanceof Error ? error.message : 'Não foi possível redefinir a senha de acesso.');
     } finally {
       this.savingAccessPassword.set(false);
-    }
-  }
-
-  protected async logout(): Promise<void> {
-    try {
-      await this.authService.logout();
-      await this.router.navigate(['/']);
-    } catch (error: unknown) {
-      this.error.set(error instanceof Error ? error.message : 'Não foi possível encerrar a sessão na API.');
     }
   }
 

@@ -1,8 +1,6 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { NavigationOrb } from '../shared/navigation-orb';
+import { SystemNavigation } from '../shared/system-navigation';
 
 interface Vacancy {
   id: string;
@@ -18,13 +16,10 @@ type VacancyFilter = 'Todas' | 'Abertas' | 'Pausadas';
 
 @Component({
   selector: 'app-recruitment',
-  imports: [FormsModule, NavigationOrb],
+  imports: [FormsModule, SystemNavigation],
   templateUrl: './recruitment.html',
 })
 export class Recruitment {
-  protected readonly router = inject(Router);
-  protected readonly authService = inject(AuthService);
-  protected readonly navigationOpen = signal(false);
   protected readonly vacancies = signal<Vacancy[]>(this.readVacancies());
   protected readonly filter = signal<VacancyFilter>('Todas');
   protected readonly searchTerm = signal('');
@@ -33,16 +28,6 @@ export class Recruitment {
   protected readonly department = signal('');
   protected readonly location = signal('');
   protected readonly type = signal('CLT');
-  protected readonly navigationItems = [
-    { label: 'Dashboard', route: '/dashboard' },
-    { label: 'Funcionários', route: '/funcionarios' },
-    { label: 'Empresa', route: '/empresa' },
-    { label: 'Jornada', route: '/jornada' },
-    { label: 'Calendário', route: '/calendario' },
-    { label: 'Recrutamento', route: '/recrutamento' },
-    { label: 'Área do colaborador', route: '/area-colaborador' },
-    { label: 'Configurações', route: '/configuracoes' },
-  ];
   protected readonly openCount = computed(() => this.vacancies().filter((vacancy) => vacancy.status === 'Aberta').length);
   protected readonly pausedCount = computed(() => this.vacancies().filter((vacancy) => vacancy.status === 'Pausada').length);
   protected readonly filteredVacancies = computed(() => {
@@ -52,24 +37,6 @@ export class Recruitment {
       .filter((vacancy) => !query || [vacancy.title, vacancy.department, vacancy.location].some((value) => value.toLocaleLowerCase('pt-BR').includes(query)))
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   });
-
-  protected async logout(): Promise<void> {
-    try {
-      await this.authService.logout();
-    } catch {
-      this.navigationOpen.set(false);
-    }
-    await this.router.navigateByUrl('/');
-  }
-
-  protected toggleNavigation(): void {
-    this.navigationOpen.update((open) => !open);
-  }
-
-  protected navigateTo(route: string): void {
-    this.navigationOpen.set(false);
-    void this.router.navigateByUrl(route);
-  }
 
   protected openForm(): void {
     this.title.set('');

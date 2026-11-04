@@ -1,38 +1,7 @@
 <main class="relative min-h-svh overflow-x-clip bg-[#070b18] px-4 pb-10 pt-28 font-[family-name:Inter] text-white sm:px-7 sm:pt-32 lg:px-10">
   <div class="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[360px] bg-[radial-gradient(ellipse_at_50%_-10%,rgba(54,91,226,0.2),transparent_68%)]" aria-hidden="true"></div>
 
-  <div class="fixed left-1/2 top-5 z-[70] -translate-x-1/2">
-    @if (navigationOpen()) {
-      <nav id="system-navigation" class="navigation-menu-opening fixed left-1/2 top-[80px] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 origin-top rounded-2xl border border-white/[0.1] bg-[#0c1222]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:p-4" aria-label="Navegação principal">
-        <ul class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          @for (item of navigationItems; track item.label; let index = $index) {
-            <li>
-              <button class="flex min-h-[78px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-transparent px-2 py-3 text-center transition-colors hover:border-white/[0.08] hover:bg-white/[0.045] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8ab5ff] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-transparent disabled:hover:bg-transparent" type="button" [disabled]="!item.route" [attr.aria-label]="item.route ? item.label : item.label + ', disponível em breve'" [attr.aria-current]="item.route === '/dashboard' ? 'page' : null" (click)="navigateTo(item.route)">
-                <span class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.035] text-[#8ab5ff]">
-                  @switch (item.icon) {
-                    @case ('dashboard') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" /><rect x="13" y="3" width="8" height="5" rx="2" /><rect x="13" y="10" width="8" height="11" rx="2" /><rect x="3" y="13" width="8" height="8" rx="2" /></svg> }
-                    @case ('employees') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4" /><path d="M2 21v-1a7 7 0 0 1 14 0v1M16 4a4 4 0 0 1 0 8M18 15a6 6 0 0 1 4 5v1" /></svg> }
-                    @case ('company') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" /><path d="M8 9v.01M8 12v.01M8 15v.01M8 18v.01M16 13v.01M16 16v.01M16 19v.01" /></svg> }
-                    @case ('journey') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2M5 4l-2 2M19 4l2 2" /></svg> }
-                    @case ('calendar') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" /></svg> }
-                    @case ('recruitment') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18" /></svg> }
-                    @case ('employee-area') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21v-1a8 8 0 0 1 16 0v1" /></svg> }
-                    @case ('settings') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1A1.7 1.7 0 0 0 4.2 12H4a1.7 1.7 0 0 1 0-3.4h.2A1.7 1.7 0 0 0 5.4 5.7l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1A1.7 1.7 0 0 0 10.7 2h.2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9Z" /></svg> }
-                  }
-                </span>
-                <span class="text-sm font-medium leading-tight text-white/75">{{ item.label }}</span>
-              </button>
-            </li>
-          }
-        </ul>
-        <p class="mt-2 text-center text-[11px] text-white/35">Selecione uma área para continuar.</p>
-        <div class="mt-3 flex justify-center border-t border-white/[0.08] pt-3">
-          <button class="cursor-pointer rounded-lg px-3 py-2 text-xs font-medium text-white/45 transition-colors hover:bg-white/[0.05] hover:text-white/80" type="button" (click)="logout()">Sair da conta</button>
-        </div>
-      </nav>
-    }
-    <app-navigation-orb page="dashboard" [expanded]="navigationOpen()" (toggle)="toggleNavigation()" />
-  </div>
+  <app-system-navigation page="dashboard" />
 
   <div class="relative mx-auto flex w-full max-w-[1440px] flex-col gap-5">
     <header class="flex flex-wrap items-center justify-between gap-4" aria-labelledby="dashboard-title">
