@@ -54,10 +54,18 @@ export class Journey implements OnInit {
     const admission = this.selectedEmployee()?.data_admissao;
     if (!admission) return null;
 
-    const admissionTime = new Date(admission).getTime();
-    if (Number.isNaN(admissionTime)) return null;
+    const admissionDate = this.parseDate(admission);
+    if (!admissionDate) return null;
 
-    return Math.max(0, Math.floor((Date.now() - admissionTime) / 86_400_000));
+    const today = new Date();
+    const admissionTime = Date.UTC(
+      admissionDate.getFullYear(),
+      admissionDate.getMonth(),
+      admissionDate.getDate(),
+    );
+    const todayTime = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+
+    return Math.max(0, Math.floor((todayTime - admissionTime) / 86_400_000));
   });
 
   ngOnInit(): void {
@@ -109,8 +117,22 @@ export class Journey implements OnInit {
   }
 
   protected formatDate(value: string): string {
+    const date = this.parseDate(value);
+    return date ? date.toLocaleDateString('pt-BR') : 'Não informada';
+  }
+
+  private parseDate(value: string): Date | null {
+    const isoDate = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (isoDate) {
+      const [, year, month, day] = isoDate.map(Number);
+      const date = new Date(year, month - 1, day);
+      return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
+        ? date
+        : null;
+    }
+
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? 'Não informada' : date.toLocaleDateString('pt-BR');
+    return Number.isNaN(date.getTime()) ? null : date;
   }
 
   protected initials(name: string): string {
