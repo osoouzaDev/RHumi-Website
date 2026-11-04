@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ApiUser, AuthService } from '../services/auth.service';
-import { NavigationOrb } from '../shared/navigation-orb';
+import { SystemNavigation } from '../shared/system-navigation';
 
 interface UserPreferences {
   emailNotifications: boolean;
@@ -11,13 +11,11 @@ interface UserPreferences {
 
 @Component({
   selector: 'app-settings',
-  imports: [FormsModule, NavigationOrb, RouterLink],
+  imports: [FormsModule, SystemNavigation, RouterLink],
   templateUrl: './settings.html',
 })
 export class Settings implements OnInit {
   protected readonly authService = inject(AuthService);
-  protected readonly router = inject(Router);
-  protected readonly navigationOpen = signal(false);
   protected readonly loading = signal(true);
   protected readonly savingProfile = signal(false);
   protected readonly error = signal('');
@@ -29,16 +27,6 @@ export class Settings implements OnInit {
   protected readonly email = signal('');
   protected readonly phone = signal('');
   protected readonly preferences = signal<UserPreferences>(this.readPreferences());
-  protected readonly navigationItems = [
-    { label: 'Dashboard', route: '/dashboard' },
-    { label: 'Funcionários', route: '/funcionarios' },
-    { label: 'Empresa', route: '/empresa' },
-    { label: 'Jornada', route: '/jornada' },
-    { label: 'Calendário', route: '/calendario' },
-    { label: 'Recrutamento', route: '/recrutamento' },
-    { label: 'Área do colaborador', route: '/area-colaborador' },
-    { label: 'Configurações', route: '/configuracoes' },
-  ];
 
   ngOnInit(): void {
     void this.loadProfile();
@@ -59,24 +47,6 @@ export class Settings implements OnInit {
     } finally {
       this.loading.set(false);
     }
-  }
-
-  protected async logout(): Promise<void> {
-    try {
-      await this.authService.logout();
-    } catch {
-      this.navigationOpen.set(false);
-    }
-    await this.router.navigateByUrl('/');
-  }
-
-  protected toggleNavigation(): void {
-    this.navigationOpen.update((open) => !open);
-  }
-
-  protected navigateTo(route: string): void {
-    this.navigationOpen.set(false);
-    void this.router.navigateByUrl(route);
   }
 
   protected async saveProfile(event: SubmitEvent): Promise<void> {

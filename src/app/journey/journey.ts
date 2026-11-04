@@ -1,7 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApiUser, AuthService } from '../services/auth.service';
-import { NavigationOrb } from '../shared/navigation-orb';
+import { SystemNavigation } from '../shared/system-navigation';
 
 interface JourneyStage {
   title: string;
@@ -10,28 +9,16 @@ interface JourneyStage {
 
 @Component({
   selector: 'app-journey',
-  imports: [NavigationOrb],
+  imports: [SystemNavigation],
   templateUrl: './journey.html',
 })
 export class Journey implements OnInit {
   protected readonly authService = inject(AuthService);
-  protected readonly router = inject(Router);
   protected readonly employees = signal<ApiUser[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal('');
-  protected readonly navigationOpen = signal(false);
   protected readonly searchTerm = signal('');
   protected readonly selectedEmployeeId = signal<string | null>(null);
-  protected readonly navigationItems = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Funcionários', icon: 'employees', route: '/funcionarios' },
-    { label: 'Empresa', icon: 'company', route: '/empresa' },
-    { label: 'Jornada', icon: 'journey', route: '/jornada' },
-    { label: 'Calendário', icon: 'calendar', route: '/calendario' },
-    { label: 'Recrutamento', icon: 'recruitment', route: '/recrutamento' },
-    { label: 'Área do colaborador', icon: 'employee-area', route: '/area-colaborador' },
-    { label: 'Configurações', icon: 'settings', route: '/configuracoes' },
-  ];
   protected readonly stages: JourneyStage[] = [
     { title: 'Pré-boarding', description: 'Preparação do colaborador antes do primeiro dia oficial' },
     { title: 'Onboarding Institucional', description: 'Integração à empresa, cultura e regras organizacionais' },
@@ -86,26 +73,6 @@ export class Journey implements OnInit {
 
   protected isSelected(employee: ApiUser): boolean {
     return this.selectedEmployee()?.id === employee.id;
-  }
-
-  protected toggleNavigation(): void {
-    this.navigationOpen.update((open) => !open);
-  }
-
-  protected navigateTo(route: string | null): void {
-    if (!route) return;
-    this.navigationOpen.set(false);
-    void this.router.navigateByUrl(route);
-  }
-
-  protected async logout(): Promise<void> {
-    try {
-      await this.authService.logout();
-    } catch {
-      this.navigationOpen.set(false);
-    }
-
-    await this.router.navigate(['/']);
   }
 
   protected formatDate(value: string): string {

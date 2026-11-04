@@ -1,7 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApiUser, AuthService } from '../services/auth.service';
-import { NavigationOrb } from '../shared/navigation-orb';
+import { SystemNavigation } from '../shared/system-navigation';
 
 interface SectorMetric {
   name: string;
@@ -13,28 +12,16 @@ type DashboardTab = 'overview' | 'performance';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [NavigationOrb],
+  imports: [SystemNavigation],
   templateUrl: './dashboard.html',
 })
 export class Dashboard implements OnInit {
   protected readonly authService = inject(AuthService);
-  protected readonly router = inject(Router);
   protected readonly employees = signal<ApiUser[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal('');
-  protected readonly navigationOpen = signal(false);
   protected readonly activeTab = signal<DashboardTab>('overview');
   protected readonly selectedEmployeeId = signal<string | null>(null);
-  protected readonly navigationItems = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Funcionários', icon: 'employees', route: '/funcionarios' },
-    { label: 'Empresa', icon: 'company', route: '/empresa' },
-    { label: 'Jornada', icon: 'journey', route: '/jornada' },
-    { label: 'Calendário', icon: 'calendar', route: '/calendario' },
-    { label: 'Recrutamento', icon: 'recruitment', route: '/recrutamento' },
-    { label: 'Área do colaborador', icon: 'employee-area', route: '/area-colaborador' },
-    { label: 'Configurações', icon: 'settings', route: '/configuracoes' },
-  ];
   protected readonly sectorMetrics = computed<SectorMetric[]>(() => {
     const employees = this.employees();
     const counts = new Map<string, number>();
@@ -106,32 +93,12 @@ export class Dashboard implements OnInit {
     }
   }
 
-  protected toggleNavigation(): void {
-    this.navigationOpen.update((open) => !open);
-  }
-
   protected setTab(tab: DashboardTab): void {
     this.activeTab.set(tab);
   }
 
   protected selectEmployee(id: string): void {
     this.selectedEmployeeId.set(id);
-  }
-
-  protected navigateTo(route: string | null): void {
-    if (!route) return;
-    this.navigationOpen.set(false);
-    void this.router.navigateByUrl(route);
-  }
-
-  protected async logout(): Promise<void> {
-    try {
-      await this.authService.logout();
-    } catch {
-      this.navigationOpen.set(false);
-    }
-
-    await this.router.navigate(['/']);
   }
 
   protected formatDate(value: string): string {
