@@ -11,6 +11,7 @@ interface NavigationItem {
 
 @Component({
   selector: 'app-system-navigation',
+  host: { class: 'contents' },
   imports: [NavigationOrb],
   templateUrl: './system-navigation.html',
 })

@@ -13,6 +13,7 @@ export const routes: Routes = [
   { path: 'funcionarios', component: Employees, canActivate: [authGuard] },
   { path: 'jornada', component: Journey, canActivate: [authGuard] },
   { path: 'calendario', canActivate: [authGuard], loadComponent: () => import('./calendar/calendar').then((module) => module.Calendar) },
+  { path: 'recrutamento/candidatos', canActivate: [authGuard], loadComponent: () => import('./candidates/candidates').then((module) => module.Candidates) },
   { path: 'recrutamento', canActivate: [authGuard], loadComponent: () => import('./recruitment/recruitment').then((module) => module.Recruitment) },
   { path: 'area-colaborador', canActivate: [authGuard], loadComponent: () => import('./employee-area/employee-area').then((module) => module.EmployeeArea) },
   { path: 'configuracoes', canActivate: [authGuard], loadComponent: () => import('./settings/settings').then((module) => module.Settings) },

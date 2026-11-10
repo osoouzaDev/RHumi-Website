@@ -31,4 +31,10 @@
     }
     <app-navigation-orb [page]="currentPage" [expanded]="navigationOpen()" (toggle)="toggleNavigation()" />
   </div>
+  @if (currentPage === 'recruitment') {
+    <nav class="z-[70] flex w-fit items-center gap-1 rounded-xl border border-white/10 bg-[#101827] p-1 shadow-lg" aria-label="Seções de recrutamento">
+      <button class="cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold transition-colors" [class.bg-[#8b87c3]/25]="router.url === '/recrutamento/candidatos'" [class.text-white]="router.url === '/recrutamento/candidatos'" [class.text-white/55]="router.url !== '/recrutamento/candidatos'" type="button" [attr.aria-current]="router.url === '/recrutamento/candidatos' ? 'page' : null" (click)="navigateTo('/recrutamento/candidatos')">Candidatos</button>
+      <button class="cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold transition-colors" [class.bg-[#8b87c3]/25]="router.url === '/recrutamento'" [class.text-white]="router.url === '/recrutamento'" [class.text-white/55]="router.url !== '/recrutamento'" type="button" [attr.aria-current]="router.url === '/recrutamento' ? 'page' : null" (click)="navigateTo('/recrutamento')">Vagas</button>
+    </nav>
+  }
 }
