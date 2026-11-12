@@ -31,6 +31,30 @@ export interface ApiUser {
   descricao_cargo?: string | null;
 }
 
+export interface ApiJourneyTask {
+  key: string;
+  title: string;
+  concluida: boolean;
+  concluida_em: string | null;
+}
+
+export interface ApiJourneyStage {
+  key: string;
+  title: string;
+  description: string;
+  indicator: {
+    type: 'boolean' | 'percentage' | 'count';
+    title: string;
+    description: string;
+  };
+  tasks: ApiJourneyTask[];
+}
+
+export interface ApiEmployeeJourney {
+  employee: ApiUser;
+  stages: ApiJourneyStage[];
+}
+
 export type UpdateApiUser = Partial<
   Pick<
     ApiUser,
@@ -308,6 +332,76 @@ export class AuthService {
     }
 
     return users;
+  }
+
+  async listarJornadas(): Promise<ApiEmployeeJourney[]> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    const journeys = await this.request<ApiEmployeeJourney[]>('/api/jornadas', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (
+      !Array.isArray(journeys) ||
+      journeys.some(
+        (journey) =>
+          journey == null ||
+          !journey.employee?.id ||
+          !Array.isArray(journey.stages) ||
+          journey.stages.some((stage) => stage == null || !Array.isArray(stage.tasks))
+      )
+    ) {
+      throw new Error('A API retornou dados de jornada em formato inválido.');
+    }
+    return journeys;
+  }
+
+  async atualizarTarefaJornada(
+    usuarioId: string,
+    etapaKey: string,
+    tarefaKey: string,
+    concluida: boolean
+  ): Promise<string | null> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    const result = await this.request<{ atualizado: boolean; concluida_em: string | null }>(
+      `/api/jornadas/${encodeURIComponent(usuarioId)}/etapas/${encodeURIComponent(etapaKey)}/tarefas/${encodeURIComponent(tarefaKey)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ concluida }),
+      }
+    );
+    if (
+      result.atualizado !== true ||
+      (result.concluida_em !== null && typeof result.concluida_em !== 'string')
+    ) {
+      throw new Error('A API retornou uma confirmação de jornada inválida.');
+    }
+    return result.concluida_em;
+  }
+
+  async reabrirEtapaJornada(usuarioId: string, etapaKey: string): Promise<void> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    await this.request<{ atualizado: boolean }>(
+      `/api/jornadas/${encodeURIComponent(usuarioId)}/etapas/${encodeURIComponent(etapaKey)}`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
   }
 
   async buscarEmpresa(): Promise<CompanyData> {

@@ -104,6 +104,68 @@ describe('AuthService', () => {
     );
   });
 
+  it('should load and persist journey checklist changes through the authenticated endpoints', async () => {
+    authService.saveSession('access-token');
+    const journeys = [
+      {
+        employee: {
+          id: 'employee-id',
+          login: 'ana@example.com',
+          nome: 'Ana Silva',
+          email: 'ana@example.com',
+          classificacao: 'EMPLOYEE',
+          ativo: true,
+          data_criacao: '2026-03-09T12:00:00.000Z',
+          data_atualizacao: '2026-03-09T12:00:00.000Z',
+        },
+        stages: [
+          {
+            key: 'pre-boarding',
+            title: 'Pré-boarding',
+            description: 'Preparação',
+            indicator: { type: 'boolean' as const, title: 'Pronto?', description: 'Preparativos' },
+            tasks: [
+              {
+                key: 'documentos-admissionais-enviados',
+                title: 'Documentos enviados',
+                concluida: false,
+                concluida_em: null,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ status: 'success', data: journeys }))
+      .mockResolvedValueOnce(jsonResponse({
+        status: 'success',
+        data: { atualizado: true, concluida_em: '2026-03-09T17:04:00.000Z' },
+      }))
+      .mockResolvedValueOnce(jsonResponse({ status: 'success', data: { atualizado: true } }));
+
+    await expect(authService.listarJornadas()).resolves.toEqual(journeys);
+    await authService.atualizarTarefaJornada(
+      'employee-id',
+      'pre-boarding',
+      'documentos-admissionais-enviados',
+      true,
+    );
+    await authService.reabrirEtapaJornada('employee-id', 'pre-boarding');
+
+    expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:8000/api/jornadas');
+    expect(fetchMock.mock.calls[1][0]).toBe(
+      'http://localhost:8000/api/jornadas/employee-id/etapas/pre-boarding/tarefas/documentos-admissionais-enviados',
+    );
+    const updateRequest = fetchMock.mock.calls[1][1] as RequestInit;
+    expect(updateRequest.method).toBe('PATCH');
+    expect(JSON.parse(updateRequest.body as string)).toEqual({ concluida: true });
+    expect(fetchMock.mock.calls[2][0]).toBe(
+      'http://localhost:8000/api/jornadas/employee-id/etapas/pre-boarding',
+    );
+    expect((fetchMock.mock.calls[2][1] as RequestInit).method).toBe('DELETE');
+  });
+
   it('should update employee profile fields through the protected user endpoint', async () => {
     authService.saveSession('access-token');
     const updatedUser = {
