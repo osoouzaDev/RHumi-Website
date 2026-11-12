@@ -1,8 +1,6 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { NavigationOrb } from '../shared/navigation-orb';
+import { SystemNavigation } from '../shared/system-navigation';
 
 interface CalendarEvent {
   id: string;
@@ -20,13 +18,10 @@ interface CalendarDay {
 
 @Component({
   selector: 'app-calendar',
-  imports: [FormsModule, NavigationOrb],
+  imports: [FormsModule, SystemNavigation],
   templateUrl: './calendar.html',
 })
 export class Calendar {
-  protected readonly router = inject(Router);
-  protected readonly authService = inject(AuthService);
-  protected readonly navigationOpen = signal(false);
   protected readonly events = signal<CalendarEvent[]>(this.readEvents());
   protected readonly currentMonth = signal(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   protected readonly selectedDate = signal(this.toDateKey(new Date()));
@@ -34,16 +29,6 @@ export class Calendar {
   protected readonly title = signal('');
   protected readonly time = signal('09:00');
   protected readonly category = signal('Equipe');
-  protected readonly navigationItems = [
-    { label: 'Dashboard', route: '/dashboard' },
-    { label: 'Funcionários', route: '/funcionarios' },
-    { label: 'Empresa', route: '/empresa' },
-    { label: 'Jornada', route: '/jornada' },
-    { label: 'Calendário', route: '/calendario' },
-    { label: 'Recrutamento', route: '/recrutamento' },
-    { label: 'Área do colaborador', route: '/area-colaborador' },
-    { label: 'Configurações', route: '/configuracoes' },
-  ];
   protected readonly monthLabel = computed(() =>
     this.currentMonth().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
   );
@@ -70,24 +55,6 @@ export class Calendar {
   protected readonly eventCount = computed(() =>
     this.events().filter((event) => event.date.startsWith(this.toMonthKey(this.currentMonth()))).length,
   );
-
-  protected async logout(): Promise<void> {
-    try {
-      await this.authService.logout();
-    } catch {
-      this.navigationOpen.set(false);
-    }
-    await this.router.navigateByUrl('/');
-  }
-
-  protected toggleNavigation(): void {
-    this.navigationOpen.update((open) => !open);
-  }
-
-  protected navigateTo(route: string): void {
-    this.navigationOpen.set(false);
-    void this.router.navigateByUrl(route);
-  }
 
   protected shiftMonth(amount: number): void {
     this.currentMonth.update((month) => new Date(month.getFullYear(), month.getMonth() + amount, 1));

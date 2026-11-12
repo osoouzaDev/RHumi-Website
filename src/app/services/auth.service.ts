@@ -125,6 +125,52 @@ export interface CompanySector {
   quantidade: number;
 }
 
+export type RecruitmentContractType = 'CLT' | 'PJ' | 'TEMPORARIO' | 'ESTAGIARIO';
+export type RecruitmentVacancyStatus = 'ABERTA' | 'PAUSADA' | 'ENCERRADA';
+export type CandidateApplicationStatus =
+  | 'NOVA'
+  | 'EM_SELECAO'
+  | 'ENTREVISTA'
+  | 'CONTRATADA'
+  | 'REPROVADA';
+
+export interface RecruitmentVacancy {
+  id: string;
+  titulo: string;
+  setor: string;
+  localidade: string | null;
+  tipo_contrato: RecruitmentContractType;
+  descricao: string | null;
+  status: RecruitmentVacancyStatus;
+  created_at: string;
+}
+
+export interface CreateRecruitmentVacancy {
+  titulo: string;
+  setor: string;
+  localidade: string | null;
+  tipo_contrato: RecruitmentContractType;
+}
+
+export interface CandidateApplication {
+  id: string;
+  id_candidato: string;
+  nome: string;
+  email: string;
+  telefone: string | null;
+  id_vaga: string;
+  vaga_titulo: string;
+  status: CandidateApplicationStatus;
+  created_at: string;
+}
+
+export interface CreateCandidateApplication {
+  nome: string;
+  email: string;
+  telefone: string | null;
+  id_vaga: string;
+}
+
 export type UpdateCompanyData = Omit<
   CompanyData,
   'id' | 'created_at' | 'updated_at' | 'total_colaboradores' | 'setores' | 'classificacoes'
@@ -429,6 +475,103 @@ export class AuthService {
       throw new Error('A API retornou uma lista de setores em formato inválido.');
     }
     return setores;
+  }
+
+  async listarVagasRecrutamento(): Promise<RecruitmentVacancy[]> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    const vacancies = await this.request<RecruitmentVacancy[]>('/api/recrutamento/vagas', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!Array.isArray(vacancies)) {
+      throw new Error('A API retornou uma lista de vagas em formato inválido.');
+    }
+    return vacancies;
+  }
+
+  async criarVagaRecrutamento(data: CreateRecruitmentVacancy): Promise<RecruitmentVacancy> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    return this.request<RecruitmentVacancy>('/api/recrutamento/vagas', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+  }
+
+  async atualizarStatusVaga(id: string, status: RecruitmentVacancyStatus): Promise<RecruitmentVacancy> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    return this.request<RecruitmentVacancy>(`/api/recrutamento/vagas/${encodeURIComponent(id)}/status`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async listarCandidaturasRecrutamento(): Promise<CandidateApplication[]> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    const applications = await this.request<CandidateApplication[]>('/api/recrutamento/candidaturas', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!Array.isArray(applications)) {
+      throw new Error('A API retornou uma lista de candidaturas em formato inválido.');
+    }
+    return applications;
+  }
+
+  async criarCandidatura(data: CreateCandidateApplication): Promise<CandidateApplication> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    return this.request<CandidateApplication>('/api/recrutamento/candidaturas', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+  }
+
+  async atualizarStatusCandidatura(id: string, status: CandidateApplicationStatus): Promise<CandidateApplication> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    return this.request<CandidateApplication>(
+      `/api/recrutamento/candidaturas/${encodeURIComponent(id)}/status`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      }
+    );
   }
 
   async atualizarUsuario(id: string, dados: UpdateApiUser): Promise<ApiUser> {

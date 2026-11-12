@@ -1,8 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ApiUser, AuthService } from '../services/auth.service';
-import { NavigationOrb } from '../shared/navigation-orb';
+import { SystemNavigation } from '../shared/system-navigation';
 
 interface PersonalTask {
   id: string;
@@ -12,28 +12,16 @@ interface PersonalTask {
 
 @Component({
   selector: 'app-employee-area',
-  imports: [FormsModule, NavigationOrb, RouterLink],
+  imports: [FormsModule, SystemNavigation, RouterLink],
   templateUrl: './employee-area.html',
 })
 export class EmployeeArea implements OnInit {
   protected readonly authService = inject(AuthService);
-  protected readonly router = inject(Router);
-  protected readonly navigationOpen = signal(false);
   protected readonly loading = signal(true);
   protected readonly error = signal('');
   protected readonly employee = signal<ApiUser | null>(null);
   protected readonly tasks = signal<PersonalTask[]>(this.readTasks());
   protected readonly newTaskTitle = signal('');
-  protected readonly navigationItems = [
-    { label: 'Dashboard', route: '/dashboard' },
-    { label: 'Funcionários', route: '/funcionarios' },
-    { label: 'Empresa', route: '/empresa' },
-    { label: 'Jornada', route: '/jornada' },
-    { label: 'Calendário', route: '/calendario' },
-    { label: 'Recrutamento', route: '/recrutamento' },
-    { label: 'Área do colaborador', route: '/area-colaborador' },
-    { label: 'Configurações', route: '/configuracoes' },
-  ];
   protected readonly completedTasks = computed(() => this.tasks().filter((task) => task.completed).length);
   protected readonly sortedTasks = computed(() => [...this.tasks()].sort((a, b) => Number(a.completed) - Number(b.completed)));
 
@@ -52,24 +40,6 @@ export class EmployeeArea implements OnInit {
     } finally {
       this.loading.set(false);
     }
-  }
-
-  protected async logout(): Promise<void> {
-    try {
-      await this.authService.logout();
-    } catch {
-      this.navigationOpen.set(false);
-    }
-    await this.router.navigateByUrl('/');
-  }
-
-  protected toggleNavigation(): void {
-    this.navigationOpen.update((open) => !open);
-  }
-
-  protected navigateTo(route: string): void {
-    this.navigationOpen.set(false);
-    void this.router.navigateByUrl(route);
   }
 
   protected addTask(event: SubmitEvent): void {

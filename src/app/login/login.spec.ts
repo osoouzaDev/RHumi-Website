@@ -59,17 +59,16 @@ describe('Login', () => {
     });
   });
 
-  it('should render the centered circle above the minimal login form', async () => {
+  it('should render the login options without the decorative circle', async () => {
     const fixture = TestBed.createComponent(Login);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    const circle = compiled.querySelector('main > div[aria-hidden="true"]');
+    const main = compiled.querySelector('main');
 
-    expect(circle).toBeTruthy();
-    expect(circle?.className).toContain('size-[100px]');
-    expect(circle?.className).toContain('linear-gradient(180deg');
-    expect(circle?.className).toContain('animate-circle-gradient');
-    expect(circle?.className).not.toContain('motion-reduce:animate-none');
+    expect(compiled.querySelector('main > div[aria-hidden="true"]')).toBeNull();
+    expect(main?.className).toContain('items-center');
+    expect(compiled.querySelector('[role="tab"]')?.textContent).toContain('E-mail');
+    expect(compiled.querySelector('[role="tab"]:last-child')?.textContent).toContain('Código do colaborador');
     expect(compiled.querySelector('h1')?.textContent).toContain('Bem-vindo de volta');
   });
 

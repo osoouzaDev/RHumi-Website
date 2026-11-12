@@ -1,0 +1,40 @@
+@if (page(); as currentPage) {
+  <div class="fixed left-1/2 top-5 z-[70] -translate-x-1/2">
+    @if (navigationOpen()) {
+      <nav id="system-navigation" class="navigation-menu-opening fixed left-1/2 top-[80px] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 origin-top rounded-2xl border border-white/[0.1] bg-[#0c1222]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:p-4" aria-label="Navegação principal">
+        <ul class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          @for (item of navigationItems; track item.route) {
+            <li>
+              <button class="flex min-h-[78px] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-transparent px-2 py-3 text-center transition-colors hover:border-white/[0.08] hover:bg-white/[0.045] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8ab5ff]" type="button" [attr.aria-current]="item.page === currentPage ? 'page' : null" (click)="navigateTo(item.route)">
+                <span class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.035] text-[#8ab5ff]">
+                  @switch (item.page) {
+                    @case ('dashboard') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" /><rect x="13" y="3" width="8" height="5" rx="2" /><rect x="13" y="10" width="8" height="11" rx="2" /><rect x="3" y="13" width="8" height="8" rx="2" /></svg> }
+                    @case ('employees') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4" /><path d="M2 21v-1a7 7 0 0 1 14 0v1M16 4a4 4 0 0 1 0 8M18 15a6 6 0 0 1 4 5v1" /></svg> }
+                    @case ('company') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" /><path d="M8 9v.01M8 12v.01M8 15v.01M8 18v.01M16 13v.01M16 16v.01M16 19v.01" /></svg> }
+                    @case ('journey') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2M5 4l-2 2M19 4l2 2" /></svg> }
+                    @case ('calendar') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" /></svg> }
+                    @case ('recruitment') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18" /></svg> }
+                    @case ('employee-area') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21v-1a8 8 0 0 1 16 0v1" /></svg> }
+                    @case ('settings') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" /><circle cx="12" cy="12" r="3" /></svg> }
+                  }
+                </span>
+                <span class="text-sm font-medium leading-tight text-white/75">{{ item.label }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+        <p class="mt-2 text-center text-[11px] text-white/35">Selecione uma área para continuar.</p>
+        <div class="mt-3 flex justify-center border-t border-white/[0.08] pt-3">
+          <button class="cursor-pointer rounded-lg px-3 py-2 text-xs font-medium text-white/45 transition-colors hover:bg-white/[0.05] hover:text-white/80" type="button" (click)="logout()">Sair da conta</button>
+        </div>
+      </nav>
+    }
+    <app-navigation-orb [page]="currentPage" [expanded]="navigationOpen()" (toggle)="toggleNavigation()" />
+  </div>
+  @if (currentPage === 'recruitment') {
+    <nav class="z-[70] flex w-fit items-center gap-1 rounded-xl border border-white/10 bg-[#101827] p-1 shadow-lg" aria-label="Seções de recrutamento">
+      <button class="cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold transition-colors" [class.bg-[#8b87c3]/25]="router.url === '/recrutamento/candidatos'" [class.text-white]="router.url === '/recrutamento/candidatos'" [class.text-white/55]="router.url !== '/recrutamento/candidatos'" type="button" [attr.aria-current]="router.url === '/recrutamento/candidatos' ? 'page' : null" (click)="navigateTo('/recrutamento/candidatos')">Candidatos</button>
+      <button class="cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold transition-colors" [class.bg-[#8b87c3]/25]="router.url === '/recrutamento'" [class.text-white]="router.url === '/recrutamento'" [class.text-white/55]="router.url !== '/recrutamento'" type="button" [attr.aria-current]="router.url === '/recrutamento' ? 'page' : null" (click)="navigateTo('/recrutamento')">Vagas</button>
+    </nav>
+  }
+}

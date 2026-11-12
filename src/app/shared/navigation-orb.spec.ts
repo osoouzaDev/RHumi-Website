@@ -18,6 +18,16 @@ describe('NavigationOrb', () => {
     expect(button.querySelector('[data-page="company"]')).toBeTruthy();
   });
 
+  it('should center the settings gear hole on its icon', () => {
+    const fixture = TestBed.createComponent(NavigationOrb);
+    fixture.componentRef.setInput('page', 'settings');
+    fixture.detectChanges();
+
+    const center = fixture.nativeElement.querySelector('[data-page="settings"] circle') as SVGCircleElement;
+    expect(center.getAttribute('cx')).toBe('12');
+    expect(center.getAttribute('cy')).toBe('12');
+  });
+
   it('should emit toggle when clicked without replacing the page icon', () => {
     const fixture = TestBed.createComponent(NavigationOrb);
     fixture.componentRef.setInput('page', 'dashboard');

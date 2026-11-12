@@ -11,7 +11,7 @@ import { NavigationOrb } from '../shared/navigation-orb';
 
 @Component({
   selector: 'app-journey',
-  imports: [NavigationOrb],
+  imports: [SystemNavigation],
   templateUrl: './journey.html',
 })
 export class Journey implements OnInit {
