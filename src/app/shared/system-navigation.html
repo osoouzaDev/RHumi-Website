@@ -3,7 +3,7 @@
     @if (navigationOpen()) {
       <nav id="system-navigation" class="navigation-menu-opening fixed left-1/2 top-[80px] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 origin-top rounded-2xl border border-white/[0.1] bg-[#0c1222]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:p-4" aria-label="Navegação principal">
         <ul class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          @for (item of navigationItems; track item.route) {
+          @for (item of navigationItems(); track item.route) {
             <li>
               <button class="flex min-h-[78px] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-transparent px-2 py-3 text-center transition-colors hover:border-white/[0.08] hover:bg-white/[0.045] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8ab5ff]" type="button" [attr.aria-current]="item.page === currentPage ? 'page' : null" (click)="navigateTo(item.route)">
                 <span class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.035] text-[#8ab5ff]">

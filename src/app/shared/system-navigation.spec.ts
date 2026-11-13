@@ -6,11 +6,15 @@ import { SystemNavigation } from './system-navigation';
 
 describe('SystemNavigation', () => {
   const router = { navigateByUrl: vi.fn().mockResolvedValue(true) };
-  const authService = { logout: vi.fn().mockResolvedValue(undefined) };
+  const authService = {
+    logout: vi.fn().mockResolvedValue(undefined),
+    currentUser: vi.fn().mockReturnValue(null),
+  };
 
   beforeEach(() => {
     router.navigateByUrl.mockClear();
     authService.logout.mockClear();
+    authService.currentUser.mockReturnValue(null);
     TestBed.configureTestingModule({
       imports: [SystemNavigation],
       providers: [
@@ -62,5 +66,24 @@ describe('SystemNavigation', () => {
     dashboard.click();
 
     expect(router.navigateByUrl).toHaveBeenCalledWith('/dashboard');
+  });
+
+  it('only shows the employee area to EMPLOYEE profiles', () => {
+    authService.currentUser.mockReturnValue({ classificacao: 'EMPLOYEE' });
+    const fixture = TestBed.createComponent(SystemNavigation);
+    fixture.componentRef.setInput('page', 'employee-area');
+    fixture.detectChanges();
+
+    fixture.nativeElement
+      .querySelector('button[aria-label="Navegação do sistema"]')
+      .click();
+    fixture.detectChanges();
+
+    const navigation = fixture.nativeElement.querySelector(
+      'nav[aria-label="Navegação principal"]',
+    ) as HTMLElement;
+    expect(navigation.textContent).toContain('Área do colaborador');
+    expect(navigation.textContent).not.toContain('Dashboard');
+    expect(navigation.querySelectorAll('li')).toHaveLength(1);
   });
 });

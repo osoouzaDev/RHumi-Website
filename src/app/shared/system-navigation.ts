@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { NavigationOrb, NavigationPage } from './navigation-orb';
@@ -20,16 +20,23 @@ export class SystemNavigation {
   protected readonly router = inject(Router);
   protected readonly authService = inject(AuthService);
   protected readonly navigationOpen = signal(false);
-  protected readonly navigationItems: NavigationItem[] = [
+  private readonly allNavigationItems: NavigationItem[] = [
     { label: 'Dashboard', page: 'dashboard', route: '/dashboard' },
     { label: 'Funcionários', page: 'employees', route: '/funcionarios' },
     { label: 'Empresa', page: 'company', route: '/empresa' },
     { label: 'Jornada', page: 'journey', route: '/jornada' },
     { label: 'Calendário', page: 'calendar', route: '/calendario' },
-    { label: 'Recrutamento', page: 'recruitment', route: '/recrutamento' },
+    { label: 'Recrutamento', page: 'recruitment', route: '/recrutamento/candidatos' },
     { label: 'Área do colaborador', page: 'employee-area', route: '/area-colaborador' },
     { label: 'Configurações', page: 'settings', route: '/configuracoes' },
   ];
+  protected readonly navigationItems = computed(() => {
+    const isEmployee =
+      this.authService.currentUser()?.classificacao.trim().toUpperCase() === 'EMPLOYEE';
+    return isEmployee
+      ? this.allNavigationItems.filter((item) => item.page === 'employee-area')
+      : this.allNavigationItems;
+  });
 
   protected toggleNavigation(): void {
     this.navigationOpen.update((open) => !open);

@@ -1,0 +1,47 @@
+<main class="min-h-svh bg-[#070711] px-5 pb-16 pt-8 font-[family-name:Inter] text-white sm:px-8 sm:pt-12">
+  <div class="mx-auto flex w-full max-w-4xl flex-col gap-8">
+    <header class="flex flex-wrap items-center justify-between gap-4">
+      <a class="text-xl font-bold tracking-tight" routerLink="/vagas">RHumi<span class="text-[#9b8cff]">.</span></a>
+      <div class="flex flex-wrap items-center gap-2">
+        <a class="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-white/75 transition hover:bg-white/[0.06]" routerLink="/vagas">Ver vagas abertas</a>
+        <button class="cursor-pointer rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-white/75 transition hover:bg-white/[0.06] disabled:cursor-wait disabled:opacity-60" type="button" [disabled]="loggingOut()" (click)="logout()">
+          {{ loggingOut() ? 'Saindo...' : 'Sair' }}
+        </button>
+      </div>
+    </header>
+    @if (error() && !loading() && applications().length) {
+      <p class="rounded-xl border border-rose-300/20 bg-[#21151b] px-4 py-3 text-sm text-rose-100/85" role="alert">{{ error() }}</p>
+    }
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#aaa0ff]">Área do candidato</p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight">Minhas candidaturas</h1>
+      <p class="mt-2 text-sm text-white/50">Acompanhe as oportunidades para as quais você se candidatou.</p>
+      @if (loading()) {
+        <p class="mt-6 rounded-2xl border border-white/[0.08] bg-[#101827] p-10 text-center text-sm text-white/50" role="status">Carregando suas candidaturas...</p>
+      } @else if (error()) {
+        <div class="mt-6 rounded-2xl border border-rose-300/20 bg-[#21151b] p-8 text-center" role="alert">
+          <p class="text-sm text-rose-100/85">{{ error() }}</p>
+          <button class="mt-4 cursor-pointer rounded-lg border border-white/10 px-4 py-2 text-sm text-white/75 hover:bg-white/[0.06]" type="button" (click)="loadApplications()">Tentar novamente</button>
+        </div>
+      } @else if (applications().length) {
+        <div class="mt-6 space-y-3">
+          @for (application of applications(); track application.id) {
+            <article class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/[0.08] bg-[#0f172a]/90 p-5">
+              <div>
+                <h2 class="font-semibold">{{ application.vaga_titulo }}</h2>
+                <p class="mt-1 text-xs text-white/40">Candidatura enviada em {{ formatDate(application.created_at) }}</p>
+              </div>
+              <span class="rounded-full border border-[#aaa0ff]/20 bg-[#aaa0ff]/[0.07] px-3 py-1.5 text-xs font-semibold text-[#c5bdff]">{{ statusLabel(application.status) }}</span>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="mt-6 rounded-2xl border border-dashed border-white/[0.12] px-5 py-14 text-center">
+          <h2 class="text-sm font-semibold text-white/75">Você ainda não enviou candidaturas</h2>
+          <p class="mt-2 text-xs text-white/40">Confira as vagas abertas e encontre sua próxima oportunidade.</p>
+          <a class="mt-5 inline-flex rounded-xl bg-[#6558df] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#7669ef]" routerLink="/vagas">Explorar vagas</a>
+        </div>
+      }
+    </section>
+  </div>
+</main>

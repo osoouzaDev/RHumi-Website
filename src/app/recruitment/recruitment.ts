@@ -67,6 +67,7 @@ export class Recruitment implements OnInit {
   protected readonly title = signal('');
   protected readonly department = signal('');
   protected readonly location = signal('');
+  protected readonly description = signal('');
   protected readonly type = signal<RecruitmentContractType>('CLT');
   protected readonly contractTypes = Object.keys(CONTRACT_LABELS) as RecruitmentContractType[];
   protected readonly openCount = computed(() => this.vacancies().filter((vacancy) => vacancy.status === 'Aberta').length);
@@ -101,6 +102,7 @@ export class Recruitment implements OnInit {
     this.title.set('');
     this.department.set('');
     this.location.set('');
+    this.description.set('');
     this.type.set('CLT');
     this.error.set('');
     this.showForm.set(true);
@@ -123,6 +125,7 @@ export class Recruitment implements OnInit {
         setor: department,
         localidade: this.location().trim() || null,
         tipo_contrato: this.type(),
+        descricao: this.description().trim() || null,
       });
       this.vacancies.update((vacancies) => [vacancyFromApi(createdVacancy), ...vacancies]);
       this.showForm.set(false);

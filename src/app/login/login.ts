@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
+  imports: [RouterLink],
   templateUrl: './login.html',
 })
 export class Login {

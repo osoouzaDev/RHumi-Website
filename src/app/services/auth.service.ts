@@ -87,7 +87,7 @@ export interface CreateApiUser {
 }
 
 export interface CreatedApiUser extends ApiUser {
-  codigo_colaborador: string;
+  codigo_colaborador: string | null;
 }
 
 export interface CompanyData {
@@ -150,6 +150,7 @@ export interface CreateRecruitmentVacancy {
   setor: string;
   localidade: string | null;
   tipo_contrato: RecruitmentContractType;
+  descricao?: string | null;
 }
 
 export interface CandidateApplication {
@@ -164,11 +165,15 @@ export interface CandidateApplication {
   created_at: string;
 }
 
-export interface CreateCandidateApplication {
+export interface CandidateRegistration {
   nome: string;
   email: string;
   telefone: string | null;
-  id_vaga: string;
+  senha: string;
+}
+
+interface CandidateRegistrationResponse extends AuthSuccessData {
+  profile: UserSession;
 }
 
 export type UpdateCompanyData = Omit<
@@ -492,6 +497,59 @@ export class AuthService {
     return vacancies;
   }
 
+  async listarVagasPublicas(): Promise<RecruitmentVacancy[]> {
+    const vacancies = await this.request<RecruitmentVacancy[]>('/api/public/vagas');
+    if (!Array.isArray(vacancies)) {
+      throw new Error('A API retornou uma lista de vagas públicas em formato inválido.');
+    }
+    return vacancies;
+  }
+
+  async registrarCandidato(data: CandidateRegistration): Promise<void> {
+    const result = await this.request<CandidateRegistrationResponse>('/api/public/candidatos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (
+      !result.access_token ||
+      !result.profile?.id ||
+      result.profile.classificacao.trim().toUpperCase() !== 'CANDIDATE'
+    ) {
+      throw new Error('A API retornou dados inválidos ao criar sua conta de candidato.');
+    }
+    this.saveSession(result.access_token, result.refresh_token, result.profile);
+  }
+
+  async candidatarVaga(idVaga: string): Promise<CandidateApplication> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Entre ou crie sua conta de candidato para se candidatar.');
+    }
+    return this.request<CandidateApplication>('/api/candidato/candidaturas', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id_vaga: idVaga }),
+    });
+  }
+
+  async listarMinhasCandidaturas(): Promise<CandidateApplication[]> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+    const applications = await this.request<CandidateApplication[]>('/api/candidato/candidaturas', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!Array.isArray(applications)) {
+      throw new Error('A API retornou uma lista de candidaturas em formato inválido.');
+    }
+    return applications;
+  }
+
   async criarVagaRecrutamento(data: CreateRecruitmentVacancy): Promise<RecruitmentVacancy> {
     const token = this.getStoredToken();
     if (!token) {
@@ -537,22 +595,6 @@ export class AuthService {
       throw new Error('A API retornou uma lista de candidaturas em formato inválido.');
     }
     return applications;
-  }
-
-  async criarCandidatura(data: CreateCandidateApplication): Promise<CandidateApplication> {
-    const token = this.getStoredToken();
-    if (!token) {
-      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
-    }
-
-    return this.request<CandidateApplication>('/api/recrutamento/candidaturas', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
   }
 
   async atualizarStatusCandidatura(id: string, status: CandidateApplicationStatus): Promise<CandidateApplication> {

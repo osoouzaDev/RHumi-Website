@@ -58,7 +58,7 @@ export class Employees implements OnInit {
   protected readonly savingNewEmployee = signal(false);
   protected readonly createError = signal('');
   protected readonly createForm = signal<CreateEmployeeForm>(this.emptyCreateEmployeeForm());
-  protected readonly createdCollaboratorCode = signal('');
+  protected readonly createdCollaboratorCode = signal<string | null>('');
   protected readonly createdEmployee = signal<Employee | null>(null);
   protected readonly accessEmail = signal('');
   protected readonly newAccessPassword = signal('');

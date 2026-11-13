@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { AuthService, CandidateApplication, RecruitmentVacancy } from '../services/auth.service';
+import { AuthService, CandidateApplication } from '../services/auth.service';
 import { Candidates } from './candidates';
 
 describe('Candidates', () => {
@@ -19,28 +19,14 @@ describe('Candidates', () => {
     status: 'NOVA',
     created_at: '2026-11-10T12:00:00.000Z',
   };
-  const vacancy: RecruitmentVacancy = {
-    id: 'vacancy-1',
-    titulo: 'Analista de RH',
-    setor: 'Pessoas',
-    localidade: null,
-    tipo_contrato: 'CLT',
-    descricao: null,
-    status: 'ABERTA',
-    created_at: '2026-11-10T12:00:00.000Z',
-  };
   const authService = {
     listarCandidaturasRecrutamento: vi.fn().mockResolvedValue([application]),
-    listarVagasRecrutamento: vi.fn().mockResolvedValue([vacancy]),
-    criarCandidatura: vi.fn().mockResolvedValue(application),
     atualizarStatusCandidatura: vi.fn().mockResolvedValue({ ...application, status: 'CONTRATADA' }),
   };
 
   beforeEach(() => {
     router.navigateByUrl.mockClear();
     authService.listarCandidaturasRecrutamento.mockReset().mockResolvedValue([application]);
-    authService.listarVagasRecrutamento.mockReset().mockResolvedValue([vacancy]);
-    authService.criarCandidatura.mockReset().mockResolvedValue(application);
     authService.atualizarStatusCandidatura.mockReset()
       .mockResolvedValue({ ...application, status: 'CONTRATADA' });
     TestBed.configureTestingModule({
@@ -69,29 +55,14 @@ describe('Candidates', () => {
     expect(fixture.nativeElement.textContent).toContain('Aprovado');
   });
 
-  it('creates a candidate application with the selected vacancy through the API', async () => {
+  it('does not offer manual resume creation to administrators', async () => {
     const fixture = TestBed.createComponent(Candidates);
     fixture.detectChanges();
     await fixture.componentInstance['loadCandidates']();
     fixture.detectChanges();
 
-    fixture.componentInstance['openForm']();
-    fixture.componentInstance['name'].set('Ana Souza');
-    fixture.componentInstance['email'].set('ana@example.com');
-    fixture.componentInstance['vacancyId'].set('vacancy-1');
-    fixture.detectChanges();
-
-    const form = fixture.nativeElement.querySelector('form') as HTMLFormElement;
-    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    await fixture.whenStable();
-    fixture.detectChanges();
-
-    expect(authService.criarCandidatura).toHaveBeenCalledWith({
-      nome: 'Ana Souza',
-      email: 'ana@example.com',
-      telefone: null,
-      id_vaga: 'vacancy-1',
-    });
-    expect(fixture.nativeElement.textContent).toContain('Ana Souza');
+    expect(fixture.nativeElement.textContent).not.toContain('Novo currículo');
+    expect(fixture.nativeElement.querySelector('form')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('select')).toHaveLength(2);
   });
 });

@@ -11,7 +11,7 @@ import { NavigationOrb } from '../shared/navigation-orb';
 
 @Component({
   selector: 'app-journey',
-  imports: [SystemNavigation],
+  imports: [NavigationOrb],
   templateUrl: './journey.html',
 })
 export class Journey implements OnInit {
@@ -35,7 +35,7 @@ export class Journey implements OnInit {
     { label: 'Empresa', icon: 'company', route: '/empresa' },
     { label: 'Jornada', icon: 'journey', route: '/jornada' },
     { label: 'Calendário', icon: 'calendar', route: '/calendario' },
-    { label: 'Recrutamento', icon: 'recruitment', route: '/recrutamento' },
+    { label: 'Recrutamento', icon: 'recruitment', route: '/recrutamento/candidatos' },
     { label: 'Área do colaborador', icon: 'employee-area', route: '/area-colaborador' },
     { label: 'Configurações', icon: 'settings', route: '/configuracoes' },
   ];

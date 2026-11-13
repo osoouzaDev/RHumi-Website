@@ -20,6 +20,9 @@ export class EmployeeArea implements OnInit {
   protected readonly loading = signal(true);
   protected readonly error = signal('');
   protected readonly employee = signal<ApiUser | null>(null);
+  protected readonly isEmployee = computed(
+    () => this.authService.currentUser()?.classificacao.trim().toUpperCase() === 'EMPLOYEE',
+  );
   protected readonly tasks = signal<PersonalTask[]>(this.readTasks());
   protected readonly newTaskTitle = signal('');
   protected readonly completedTasks = computed(() => this.tasks().filter((task) => task.completed).length);
