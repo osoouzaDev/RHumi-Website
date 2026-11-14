@@ -38,7 +38,7 @@
               </div>
             }
             @if (visibleTrainings().length) {
-              <div class="grid items-start gap-3 lg:grid-cols-2" aria-label="Treinamentos disponíveis">
+              <div class="grid items-stretch gap-3 lg:grid-cols-2" aria-label="Treinamentos disponíveis">
                 @for (item of visibleTrainings(); track item.id) {
                   <article class="rounded-2xl border border-white/[0.08] bg-[#0f172a]/90 p-5" [style.grid-column]="selectedContentId() === item.id ? '1 / -1' : null">
                     <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-[#8ab5ff]">Treinamento</p>
