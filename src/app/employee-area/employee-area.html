@@ -19,6 +19,160 @@
           @if (sortedTasks().length) { <ul class="mt-4 space-y-2">@for (task of sortedTasks(); track task.id) { <li class="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] px-3 py-3"><input class="size-4 shrink-0 cursor-pointer accent-[#4385f5]" type="checkbox" [checked]="task.completed" [attr.aria-label]="'Concluir ' + task.title" (change)="toggleTask(task.id)"/><span class="min-w-0 flex-1 break-words text-sm" [class.text-white/35]="task.completed" [class.line-through]="task.completed">{{ task.title }}</span><button class="cursor-pointer px-2 py-1 text-[11px] text-white/35 hover:text-red-300" type="button" [attr.aria-label]="'Remover ' + task.title" (click)="removeTask(task.id)">Remover</button></li> }</ul> } @else { <div class="mt-4 rounded-xl border border-dashed border-white/[0.12] px-4 py-8 text-center"><p class="text-sm text-white/55">Sua lista está vazia</p><p class="mt-1 text-xs text-white/35">Adicione uma tarefa para acompanhar suas prioridades.</p></div> }
         </article>
       </section>
+      @if (isEmployee()) {
+        <section class="space-y-4" aria-labelledby="learning-heading">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-[#70aaff]">Desenvolvimento profissional</p>
+            <h2 id="learning-heading" class="mt-1 text-xl font-semibold">Treinamentos e avaliações</h2>
+            <p class="mt-1 text-xs text-white/40">Conteúdos ativos destinados ao seu setor.</p>
+          </div>
+          @if (learningNotice()) { <div class="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-3 text-sm text-emerald-200" role="status">{{ learningNotice() }}</div> }
+          @if (learningError()) { <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#ff8a8a]/20 bg-[#21151b] px-4 py-3 text-sm text-[#ffaaaa]" role="alert"><span>{{ learningError() }}</span><button class="cursor-pointer rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/70 hover:bg-white/[0.05]" type="button" (click)="loadEmployeeLearning()">Tentar novamente</button></div> }
+          @if (learningLoading()) {
+            <div class="rounded-2xl border border-white/[0.08] bg-[#101827] p-8 text-center text-sm text-white/55" role="status">Carregando treinamentos e avaliações...</div>
+          } @else {
+            @if (selectedLearningItem(); as selectedItem) {
+              <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-[#0f172a]/70 px-4 py-3">
+                <p class="min-w-0 text-sm font-medium text-white/75">{{ selectedItem.tipo === 'TREINAMENTO' ? 'Treinamento' : 'Avaliação' }}: {{ selectedItem.titulo }}</p>
+                <button class="min-h-9 shrink-0 cursor-pointer rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/70 hover:bg-white/[0.05]" type="button" (click)="closeSelectedContent()">{{ selectedItem.tipo === 'TREINAMENTO' ? '← Todos os treinamentos' : '← Todas as avaliações' }}</button>
+              </div>
+            }
+            @if (visibleTrainings().length) {
+              <div class="grid items-start gap-3 lg:grid-cols-2" aria-label="Treinamentos disponíveis">
+                @for (item of visibleTrainings(); track item.id) {
+                  <article class="rounded-2xl border border-white/[0.08] bg-[#0f172a]/90 p-5" [style.grid-column]="selectedContentId() === item.id ? '1 / -1' : null">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-[#8ab5ff]">Treinamento</p>
+                    <h3 class="mt-1 text-base font-semibold">{{ item.titulo }}</h3>
+                    @if (item.descricao) {
+                      <div class="mt-2">
+                        <p #learningDescription [attr.data-description-id]="item.id" class="whitespace-pre-line text-sm leading-relaxed text-white/50" [class.line-clamp-2]="!expandedDescriptions().has(item.id)">{{ item.descricao }}</p>
+                        @if (truncatedDescriptions().has(item.id) || expandedDescriptions().has(item.id)) {
+                          <button class="mt-1 cursor-pointer text-xs font-medium text-[#8ab5ff] hover:text-white" type="button" [attr.aria-expanded]="expandedDescriptions().has(item.id)" (click)="toggleDescription(item.id)">{{ expandedDescriptions().has(item.id) ? 'Ler menos' : 'Ler mais...' }}</button>
+                        }
+                      </div>
+                    }
+                    <div class="mt-4 flex flex-wrap gap-2">
+                      <button class="min-h-9 cursor-pointer rounded-lg bg-[#2868dc] px-3 text-xs font-semibold text-white hover:bg-[#3978ed]" type="button" (click)="openTraining(item)">{{ item.tipo_material === 'ARTIGO' ? 'Abrir artigo' : item.tipo_material === 'PDF' ? 'Visualizar PDF' : 'Assistir vídeo' }}</button>
+                      @if (item.tipo_material === 'ARTIGO' && item.url_material) { <a class="inline-flex min-h-9 items-center rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/70 hover:bg-white/[0.05]" [href]="item.url_material" target="_blank" rel="noopener noreferrer">Abrir em nova aba</a> }
+                    </div>
+                    @if (item.prova?.ativa) {
+                      <details class="mt-4 rounded-xl border border-white/[0.07] bg-white/[0.025]">
+                        <summary class="cursor-pointer list-none p-3" (click)="selectLearningContent(item)">
+                          <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-sm font-semibold text-white/80">{{ item.prova.titulo }}</span>
+                            @if (item.prova.tentada && item.prova.resultado) {
+                              <span class="rounded-md border px-2 py-1 text-[10px] font-semibold" [class.border-emerald-400/20]="item.prova.resultado.aprovado" [class.text-emerald-200]="item.prova.resultado.aprovado" [class.border-amber-300/20]="!item.prova.resultado.aprovado" [class.text-amber-200]="!item.prova.resultado.aprovado">{{ item.prova.resultado.aprovado ? 'Aprovado' : 'Não aprovado' }} · {{ item.prova.resultado.percentual }}%</span>
+                            } @else { <span class="text-[10px] text-white/40">Nota mínima: {{ item.prova.nota_minima }}%</span> }
+                          </div>
+                        </summary>
+                        <div class="border-t border-white/[0.06] p-3">
+                          @if (item.prova.descricao) { <p class="mb-3 text-xs leading-relaxed text-white/50">{{ item.prova.descricao }}</p> }
+                          @if (item.prova.tentada && item.prova.resultado) {
+                            <p class="text-xs text-white/50">Resultado: {{ item.prova.resultado.acertos }} de {{ item.prova.resultado.total_perguntas }} acertos. A nota mínima registrada nesta tentativa foi {{ item.prova.resultado.nota_minima }}%.</p>
+                          } @else {
+                            <div class="space-y-3">
+                              @for (question of assessmentQuestions(item); track question.id; let questionIndex = $index) {
+                                <fieldset class="rounded-lg border border-white/[0.07] p-3">
+                                  <legend class="max-w-full px-1 text-xs font-medium leading-relaxed text-white/75">{{ questionIndex + 1 }}. {{ question.texto }}</legend>
+                                  <div class="mt-1 space-y-1">
+                                    @for (alternative of question.alternativas; track alternative.id; let alternativeIndex = $index) {
+                                      <label class="flex cursor-pointer items-start gap-2 rounded-md px-2 py-1.5 text-xs text-white/60 hover:bg-white/[0.04]">
+                                        <input class="mt-0.5 size-3.5 shrink-0 accent-[#4385f5]" type="radio" [name]="'training-assessment-' + item.id + '-' + question.id" [checked]="assessmentAnswers()[question.id] === alternative.id" (change)="setAssessmentAnswer(question.id, alternative.id)" [attr.aria-label]="'Questão ' + (questionIndex + 1) + ', alternativa ' + (alternativeIndex + 1)" />
+                                        <span>{{ alternative.texto }}</span>
+                                      </label>
+                                    }
+                                  </div>
+                                </fieldset>
+                              }
+                            </div>
+                            <div class="mt-3 flex justify-end"><button class="min-h-9 cursor-pointer rounded-lg bg-[#2868dc] px-3 text-xs font-semibold text-white hover:bg-[#3978ed] disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="!hasAllAnswers(item) || submittingAssessment() === item.id" (click)="submitAssessment(item)">{{ submittingAssessment() === item.id ? 'Enviando...' : 'Enviar prova' }}</button></div>
+                          }
+                        </div>
+                      </details>
+                    }
+                  </article>
+                }
+              </div>
+            }
+
+            @if (visibleAssessments().length) {
+              <div class="space-y-3" aria-label="Avaliações disponíveis">
+                @for (item of visibleAssessments(); track item.id) {
+                  <article class="rounded-2xl border border-white/[0.08] bg-[#0f172a]/90 p-5 sm:p-6">
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                      <div><p class="text-[10px] font-bold uppercase tracking-[0.12em] text-[#8ab5ff]">Avaliação</p><h3 class="mt-1 text-base font-semibold">{{ item.titulo }}</h3></div>
+                      @if (item.tentada && item.resultado) { <span class="rounded-lg border border-emerald-400/20 bg-emerald-400/[0.07] px-3 py-2 text-xs font-semibold text-emerald-200">Enviada · {{ item.resultado.acertos }} de {{ item.resultado.total_perguntas }} acertos</span> }
+                    </div>
+                    @if (item.descricao) {
+                      <div class="mt-2">
+                        <p #learningDescription [attr.data-description-id]="item.id" class="whitespace-pre-line text-sm leading-relaxed text-white/50" [class.line-clamp-2]="!expandedDescriptions().has(item.id)">{{ item.descricao }}</p>
+                        @if (truncatedDescriptions().has(item.id) || expandedDescriptions().has(item.id)) {
+                          <button class="mt-1 cursor-pointer text-xs font-medium text-[#8ab5ff] hover:text-white" type="button" [attr.aria-expanded]="expandedDescriptions().has(item.id)" (click)="toggleDescription(item.id)">{{ expandedDescriptions().has(item.id) ? 'Ler menos' : 'Ler mais...' }}</button>
+                        }
+                      </div>
+                    }
+                    @if (selectedContentId() !== item.id) {
+                      <div class="mt-4 flex justify-end">
+                        <button class="min-h-9 cursor-pointer rounded-lg bg-[#2868dc] px-3 text-xs font-semibold text-white hover:bg-[#3978ed]" type="button" (click)="selectLearningContent(item)">{{ item.tentada ? 'Ver resultado' : 'Iniciar avaliação' }}</button>
+                      </div>
+                    }
+                    @if (selectedContentId() === item.id && !item.tentada) {
+                      <div class="mt-5 space-y-4">
+                        @for (question of item.perguntas; track question.id; let questionIndex = $index) {
+                          <fieldset class="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
+                            <legend class="max-w-full px-1 text-sm font-medium leading-relaxed text-white/80">{{ questionIndex + 1 }}. {{ question.texto }}</legend>
+                            <div class="mt-2 space-y-2">
+                              @for (alternative of question.alternativas; track alternative.id; let alternativeIndex = $index) {
+                                <label class="flex cursor-pointer items-start gap-2 rounded-lg px-2 py-2 text-sm text-white/65 transition hover:bg-white/[0.04]">
+                                  <input class="mt-0.5 size-4 shrink-0 accent-[#4385f5]" type="radio" [name]="'employee-question-' + item.id + '-' + question.id" [checked]="assessmentAnswers()[question.id] === alternative.id" (change)="setAssessmentAnswer(question.id, alternative.id)" [attr.aria-label]="'Pergunta ' + (questionIndex + 1) + ', alternativa ' + (alternativeIndex + 1)" />
+                                  <span>{{ alternative.texto }}</span>
+                                </label>
+                              }
+                            </div>
+                          </fieldset>
+                        }
+                      </div>
+                      <div class="mt-4 flex justify-end">
+                        <button class="min-h-10 cursor-pointer rounded-lg bg-[#2868dc] px-4 text-sm font-semibold text-white transition hover:bg-[#3978ed] disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="!hasAllAnswers(item) || submittingAssessment() === item.id" (click)="submitAssessment(item)">{{ submittingAssessment() === item.id ? 'Enviando...' : 'Enviar avaliação' }}</button>
+                      </div>
+                    } @else if (selectedContentId() === item.id && item.tentada) {
+                      <p class="mt-4 text-xs text-white/40">Esta avaliação já foi enviada e permite uma única tentativa.</p>
+                    }
+                  </article>
+                }
+              </div>
+            }
+
+            @if (!visibleTrainings().length && !visibleAssessments().length) {
+              <div class="rounded-2xl border border-dashed border-white/[0.12] bg-[#101827]/60 px-5 py-10 text-center">
+                <p class="text-sm font-medium text-white/65">Nenhum conteúdo ativo disponível</p>
+                <p class="mt-1 text-xs text-white/40">Novos treinamentos e avaliações destinados ao seu setor aparecerão aqui.</p>
+              </div>
+            }
+          }
+
+          @if (selectedLearningItem(); as selectedItem) {
+              @if (selectedItem.tipo_material === 'YOUTUBE' || selectedItem.tipo_material === 'PDF') {
+                <article class="rounded-2xl border border-white/[0.08] bg-[#0f172a]/95 p-4 sm:p-5">
+                  <div class="flex flex-wrap items-center justify-between gap-3">
+                    <h3 class="text-sm font-semibold">{{ selectedResourceTitle() }}</h3>
+                    <div class="flex gap-2">
+                      @if (resourceOpenUrl()) { <button class="min-h-9 cursor-pointer rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/70 hover:bg-white/[0.05]" type="button" (click)="openResourceInNewTab()">Abrir em nova aba</button> }
+                      <button class="min-h-9 cursor-pointer rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/55 hover:bg-white/[0.05]" type="button" (click)="closeSelectedContent()">Fechar</button>
+                    </div>
+                  </div>
+                  @if (pdfLoading()) { <div class="mt-4 rounded-xl bg-[#101827] p-10 text-center text-sm text-white/55" role="status">Carregando PDF...</div> }
+                  @else if (resourceFrame(); as frame) {
+                    <iframe class="mt-4 aspect-video w-full rounded-xl border border-white/[0.08] bg-[#101827]" [style.aspect-ratio]="selectedItem.tipo_material === 'PDF' ? '4 / 5' : '16 / 9'" [src]="frame" [title]="'Visualização: ' + selectedResourceTitle()" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <p class="mt-2 text-xs text-white/40">@if (selectedItem.tipo_material === 'YOUTUBE') { Se aparecer um erro, o vídeo pode estar indisponível ou não permitir incorporação. } @else { Se o visualizador do PDF não funcionar, abra o documento em uma nova aba. }</p>
+                  } @else if (!learningError()) {
+                    <p class="mt-4 rounded-xl bg-[#101827] p-6 text-center text-sm text-white/45">O vídeo pode estar indisponível ou não permitir incorporação.</p>
+                  }
+                </article>
+              }
+          }
+        </section>
+      }
       @if (!isEmployee()) { <section class="grid gap-3 sm:grid-cols-3" aria-label="Acessos rápidos"><a class="group rounded-2xl border border-white/[0.07] bg-[#101827] p-4 transition hover:border-[#4385f5]/30" routerLink="/jornada"><p class="text-sm font-semibold group-hover:text-[#8ab5ff]">Minha jornada</p><p class="mt-1 text-xs text-white/40">Acompanhe sua trajetória na empresa.</p></a><a class="group rounded-2xl border border-white/[0.07] bg-[#101827] p-4 transition hover:border-[#4385f5]/30" routerLink="/calendario"><p class="text-sm font-semibold group-hover:text-[#8ab5ff]">Calendário</p><p class="mt-1 text-xs text-white/40">Consulte compromissos e eventos.</p></a><a class="group rounded-2xl border border-white/[0.07] bg-[#101827] p-4 transition hover:border-[#4385f5]/30" routerLink="/configuracoes"><p class="text-sm font-semibold group-hover:text-[#8ab5ff]">Minha conta</p><p class="mt-1 text-xs text-white/40">Atualize seus dados e preferências.</p></a></section> }
     } @else {
       <div class="rounded-2xl border border-white/[0.08] bg-[#101827] p-8 text-center"><p class="text-sm text-white/65">Seu perfil não foi localizado na lista de colaboradores ativos.</p><p class="mt-2 text-xs text-white/40">Entre em contato com a equipe de RH para verificar seu acesso.</p></div>

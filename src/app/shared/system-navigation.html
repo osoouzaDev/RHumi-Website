@@ -1,10 +1,10 @@
 @if (page(); as currentPage) {
   <div class="fixed left-1/2 top-5 z-[70] -translate-x-1/2">
     @if (navigationOpen()) {
-      <nav id="system-navigation" class="navigation-menu-opening fixed left-1/2 top-[80px] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 origin-top rounded-2xl border border-white/[0.1] bg-[#0c1222]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:p-4" aria-label="Navegação principal">
+      <nav id="system-navigation" class="navigation-menu-opening fixed left-1/2 top-[80px] max-h-[calc(100svh-100px)] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 origin-top overflow-y-auto rounded-2xl border border-white/[0.1] bg-[#0c1222]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:max-h-[calc(100svh-120px)] sm:p-4" aria-label="Navegação principal">
         <ul class="grid grid-cols-2 gap-2 sm:grid-cols-4">
           @for (item of navigationItems(); track item.route) {
-            <li>
+            <li [class.navigation-settings-item]="item.page === 'settings'">
               <button class="flex min-h-[78px] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-transparent px-2 py-3 text-center transition-colors hover:border-white/[0.08] hover:bg-white/[0.045] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8ab5ff]" type="button" [attr.aria-current]="item.page === currentPage ? 'page' : null" (click)="navigateTo(item.route)">
                 <span class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.035] text-[#8ab5ff]">
                   @switch (item.page) {
@@ -14,6 +14,7 @@
                     @case ('journey') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2M5 4l-2 2M19 4l2 2" /></svg> }
                     @case ('calendar') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" /></svg> }
                     @case ('recruitment') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18" /></svg> }
+                    @case ('learning') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z" /><path d="M4 5.5v16M8 7h8M8 11h8M8 15h5" /></svg> }
                     @case ('employee-area') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21v-1a8 8 0 0 1 16 0v1" /></svg> }
                     @case ('settings') { <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" /><circle cx="12" cy="12" r="3" /></svg> }
                   }

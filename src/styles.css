@@ -56,6 +56,12 @@
   transform-origin: top center;
 }
 
+@media (min-width: 640px) {
+  .navigation-settings-item {
+    grid-column: 1 / -1;
+  }
+}
+
 @keyframes navigation-menu-opening {
   from {
     clip-path: inset(0 0 100% 0 round 1rem);

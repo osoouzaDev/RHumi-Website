@@ -1,6 +1,6 @@
 import { Component, HostListener, input, output, signal } from '@angular/core';
 
-export type NavigationPage = 'dashboard' | 'employees' | 'company' | 'journey' | 'calendar' | 'recruitment' | 'employee-area' | 'settings';
+export type NavigationPage = 'dashboard' | 'employees' | 'company' | 'journey' | 'calendar' | 'recruitment' | 'learning' | 'employee-area' | 'settings';
 
 @Component({
   selector: 'app-navigation-orb',
@@ -34,6 +34,9 @@ export type NavigationPage = 'dashboard' | 'employees' | 'company' | 'journey' |
           }
           @case ('recruitment') {
             <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18" /></svg>
+          }
+          @case ('learning') {
+            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z" /><path d="M4 5.5v16M8 7h8M8 11h8M8 15h5" /></svg>
           }
           @case ('employee-area') {
             <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21v-1a8 8 0 0 1 16 0v1" /></svg>

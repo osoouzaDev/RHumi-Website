@@ -54,6 +54,14 @@ export const candidateGuard: CanActivateFn = () => {
   return true;
 };
 
+export const learningAdminGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const profile = authService.currentUser()?.classificacao.trim().toLowerCase();
+  if (['sakai', 'admin', 'hr_admin', 'supervisor'].includes(profile ?? '')) return true;
+  return router.parseUrl(homeRouteForProfile(authService.currentUser()?.classificacao));
+};
+
 export const publicVacanciesGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   if (
