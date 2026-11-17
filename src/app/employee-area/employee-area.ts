@@ -50,6 +50,14 @@ export class EmployeeArea implements AfterViewInit, OnInit, OnDestroy {
   protected readonly activeAssessments = computed(() =>
     this.learningItems().filter((item) => item.tipo === 'AVALIACAO'),
   );
+  protected readonly learningTab = signal<'TREINAMENTO' | 'AVALIACAO'>('TREINAMENTO');
+  protected readonly completedAssessments = computed(() =>
+    this.activeAssessments().filter((item) => item.tentada).length,
+  );
+  protected readonly assessmentCompletion = computed(() => {
+    const total = this.activeAssessments().length;
+    return total ? Math.round((this.completedAssessments() / total) * 100) : 0;
+  });
   protected readonly learningLoading = signal(true);
   protected readonly learningError = signal('');
   protected readonly learningNotice = signal('');
@@ -62,12 +70,12 @@ export class EmployeeArea implements AfterViewInit, OnInit, OnDestroy {
   protected readonly visibleTrainings = computed(() => {
     const selected = this.selectedLearningItem();
     if (selected) return selected.tipo === 'TREINAMENTO' ? [selected] : [];
-    return this.activeTrainings();
+    return this.learningTab() === 'TREINAMENTO' ? this.activeTrainings() : [];
   });
   protected readonly visibleAssessments = computed(() => {
     const selected = this.selectedLearningItem();
     if (selected) return selected.tipo === 'AVALIACAO' ? [selected] : [];
-    return this.activeAssessments();
+    return this.learningTab() === 'AVALIACAO' ? this.activeAssessments() : [];
   });
   protected readonly resourceFrame = signal<SafeResourceUrl | null>(null);
   protected readonly resourceOpenUrl = signal<string | null>(null);
@@ -75,6 +83,8 @@ export class EmployeeArea implements AfterViewInit, OnInit, OnDestroy {
   protected readonly pdfLoading = signal(false);
   protected readonly submittingAssessment = signal<string | null>(null);
   protected readonly assessmentAnswers = signal<Record<string, string>>({});
+  protected readonly activeQuestionIndex = signal(0);
+  protected readonly assessmentViewMode = signal<'STEP' | 'ALL'>('STEP');
   @ViewChildren('learningDescription') private descriptionElements!: QueryList<ElementRef<HTMLParagraphElement>>;
   private readonly pdfObjectUrls = new Set<string>();
   private descriptionObserver: ResizeObserver | null = null;
@@ -187,6 +197,7 @@ export class EmployeeArea implements AfterViewInit, OnInit, OnDestroy {
   }
 
   protected async openTraining(item: LearningItem): Promise<void> {
+    this.learningTab.set('TREINAMENTO');
     if (item.tipo_material === 'PDF' && item.url_material) {
       this.learningError.set('');
       this.learningNotice.set('');
@@ -244,10 +255,20 @@ export class EmployeeArea implements AfterViewInit, OnInit, OnDestroy {
   protected selectLearningContent(item: LearningItem): void {
     this.learningError.set('');
     this.learningNotice.set('');
+    if (this.selectedContentId() !== item.id) {
+      this.activeQuestionIndex.set(0);
+      this.assessmentViewMode.set('STEP');
+    }
+    this.learningTab.set(item.tipo);
     this.selectedContentId.set(item.id);
     this.selectedResourceTitle.set(item.titulo);
     this.resourceFrame.set(null);
     this.resourceOpenUrl.set(null);
+  }
+
+  protected setLearningTab(tab: 'TREINAMENTO' | 'AVALIACAO'): void {
+    if (this.selectedLearningItem()?.tipo !== tab) this.closeSelectedContent();
+    this.learningTab.set(tab);
   }
 
   protected closeSelectedContent(): void {
@@ -265,10 +286,26 @@ export class EmployeeArea implements AfterViewInit, OnInit, OnDestroy {
     this.assessmentAnswers.update((answers) => ({ ...answers, [questionId]: alternativeId }));
   }
 
+  protected setAssessmentQuestion(item: LearningItem, index: number): void {
+    if (Number.isInteger(index) && index >= 0 && index < this.assessmentQuestions(item).length) {
+      this.activeQuestionIndex.set(index);
+    }
+  }
+
   protected hasAllAnswers(item: LearningItem): boolean {
     const answers = this.assessmentAnswers();
     const questions = this.assessmentQuestions(item);
     return questions.length > 0 && questions.every((question) => Boolean(answers[question.id]));
+  }
+
+  protected answeredQuestionCount(item: LearningItem): number {
+    const answers = this.assessmentAnswers();
+    return this.assessmentQuestions(item).filter((question) => Boolean(answers[question.id])).length;
+  }
+
+  protected assessmentProgress(item: LearningItem): number {
+    const total = this.assessmentQuestions(item).length;
+    return total ? Math.round((this.answeredQuestionCount(item) / total) * 100) : 0;
   }
 
   protected assessmentQuestions(item: LearningItem): LearningQuestion[] {

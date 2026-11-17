@@ -21,16 +21,44 @@
       </section>
       @if (isEmployee()) {
         <section class="space-y-4" aria-labelledby="learning-heading">
-          <div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-[#70aaff]">Desenvolvimento profissional</p>
-            <h2 id="learning-heading" class="mt-1 text-xl font-semibold">Treinamentos e avaliações</h2>
-            <p class="mt-1 text-xs text-white/40">Conteúdos ativos destinados ao seu setor.</p>
+          <div class="relative overflow-hidden rounded-2xl border border-[#4385f5]/20 bg-[linear-gradient(125deg,#101a32_0%,#111827_55%,#11152b_100%)] p-5 sm:p-7">
+            <div class="pointer-events-none absolute -right-16 -top-24 size-64 rounded-full bg-[#2868dc]/15 blur-3xl" aria-hidden="true"></div>
+            <div class="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.65fr)] lg:items-center">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8ab5ff]">Seu próximo passo começa aqui</p>
+                <h2 id="learning-heading" class="mt-2 text-2xl font-semibold tracking-[-0.03em] sm:text-3xl">Aprenda no seu ritmo.</h2>
+                <p class="mt-2 max-w-xl text-sm leading-relaxed text-white/55">Acesse os conteúdos do seu setor, desenvolva novas habilidades e acompanhe suas avaliações em um só lugar.</p>
+              </div>
+              <div class="rounded-xl border border-white/[0.08] bg-black/15 p-4">
+                <div class="flex items-center justify-between gap-3">
+                  <div>
+                    <p class="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/40">Avaliações respondidas</p>
+                    <p class="mt-1 text-lg font-semibold text-white">{{ completedAssessments() }} <span class="text-sm font-normal text-white/40">de {{ activeAssessments().length }}</span></p>
+                  </div>
+                  <span class="text-lg font-semibold text-[#8ab5ff]">{{ assessmentCompletion() }}%</span>
+                </div>
+                <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.08]" role="progressbar" [attr.aria-valuenow]="assessmentCompletion()" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso das avaliações">
+                  <div class="h-full rounded-full bg-[linear-gradient(90deg,#4385f5,#8ab5ff)] transition-[width] duration-500" [style.width.%]="assessmentCompletion()"></div>
+                </div>
+                <p class="mt-2 text-[11px] text-white/40">{{ activeTrainings().length }} {{ activeTrainings().length === 1 ? 'treinamento' : 'treinamentos' }} e {{ activeAssessments().length }} {{ activeAssessments().length === 1 ? 'avaliação' : 'avaliações' }} disponíveis</p>
+              </div>
+            </div>
           </div>
           @if (learningNotice()) { <div class="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-3 text-sm text-emerald-200" role="status">{{ learningNotice() }}</div> }
           @if (learningError()) { <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#ff8a8a]/20 bg-[#21151b] px-4 py-3 text-sm text-[#ffaaaa]" role="alert"><span>{{ learningError() }}</span><button class="cursor-pointer rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/70 hover:bg-white/[0.05]" type="button" (click)="loadEmployeeLearning()">Tentar novamente</button></div> }
           @if (learningLoading()) {
             <div class="rounded-2xl border border-white/[0.08] bg-[#101827] p-8 text-center text-sm text-white/55" role="status">Carregando treinamentos e avaliações...</div>
           } @else {
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h3 class="text-lg font-semibold">{{ learningTab() === 'TREINAMENTO' ? 'Continue seu aprendizado' : 'Hora de colocar em prática' }}</h3>
+                <p class="mt-1 text-xs text-white/40">{{ learningTab() === 'TREINAMENTO' ? 'Explore os materiais e avance nos conteúdos disponíveis.' : 'Responda às avaliações e confira seus resultados.' }}</p>
+              </div>
+              <div class="flex w-full rounded-xl border border-white/[0.08] bg-[#0f172a] p-1 sm:w-fit" role="group" aria-label="Filtrar conteúdos de desenvolvimento">
+                <button class="flex-1 rounded-lg px-4 py-2.5 text-xs font-semibold transition sm:flex-none" [class.bg-[#2868dc]]="learningTab() === 'TREINAMENTO'" [class.text-white]="learningTab() === 'TREINAMENTO'" [class.text-white/55]="learningTab() !== 'TREINAMENTO'" type="button" [attr.aria-pressed]="learningTab() === 'TREINAMENTO'" (click)="setLearningTab('TREINAMENTO')">Treinamentos <span class="ml-1 text-[10px] opacity-70">{{ activeTrainings().length }}</span></button>
+                <button class="flex-1 rounded-lg px-4 py-2.5 text-xs font-semibold transition sm:flex-none" [class.bg-[#2868dc]]="learningTab() === 'AVALIACAO'" [class.text-white]="learningTab() === 'AVALIACAO'" [class.text-white/55]="learningTab() !== 'AVALIACAO'" type="button" [attr.aria-pressed]="learningTab() === 'AVALIACAO'" (click)="setLearningTab('AVALIACAO')">Avaliações <span class="ml-1 text-[10px] opacity-70">{{ activeAssessments().length }}</span></button>
+              </div>
+            </div>
             @if (selectedLearningItem(); as selectedItem) {
               <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-[#0f172a]/70 px-4 py-3">
                 <p class="min-w-0 text-sm font-medium text-white/75">{{ selectedItem.tipo === 'TREINAMENTO' ? 'Treinamento' : 'Avaliação' }}: {{ selectedItem.titulo }}</p>
@@ -38,54 +66,132 @@
               </div>
             }
             @if (visibleTrainings().length) {
-              <div class="grid items-start gap-3 lg:grid-cols-2" aria-label="Treinamentos disponíveis">
+              <div class="grid items-stretch gap-4 lg:grid-cols-2" aria-label="Treinamentos disponíveis">
                 @for (item of visibleTrainings(); track item.id) {
-                  <article class="rounded-2xl border border-white/[0.08] bg-[#0f172a]/90 p-5" [style.grid-column]="selectedContentId() === item.id ? '1 / -1' : null">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-[#8ab5ff]">Treinamento</p>
-                    <h3 class="mt-1 text-base font-semibold">{{ item.titulo }}</h3>
+                  <article class="group flex h-full flex-col rounded-2xl border border-white/[0.08] bg-[linear-gradient(145deg,rgba(18,28,49,0.98),rgba(12,19,34,0.98))] p-5 transition duration-200 hover:border-[#4385f5]/30 hover:shadow-[0_12px_36px_rgba(0,0,0,0.18)] sm:p-6" [style.grid-column]="selectedContentId() === item.id ? '1 / -1' : null">
+                    <div class="flex items-start gap-3">
+                      <span class="flex size-11 shrink-0 items-center justify-center rounded-xl border border-[#4385f5]/20 bg-[#2868dc]/10 text-[#8ab5ff]">
+                        @if (item.tipo_material === 'YOUTUBE') {
+                          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></svg>
+                        } @else if (item.tipo_material === 'PDF') {
+                          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>
+                        } @else {
+                          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                        }
+                      </span>
+                      <div class="min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                          <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-[#8ab5ff]">Treinamento</p>
+                          <span class="rounded-md border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-[10px] font-medium text-white/50">{{ item.tipo_material === 'YOUTUBE' ? 'Vídeo' : item.tipo_material === 'PDF' ? (item.tem_pdf ? 'PDF anexado' : 'PDF externo') : 'Artigo' }}</span>
+                        </div>
+                        <h3 class="mt-1.5 text-base font-semibold leading-snug text-white">{{ item.titulo }}</h3>
+                      </div>
+                    </div>
                     @if (item.descricao) {
-                      <div class="mt-2">
-                        <p #learningDescription [attr.data-description-id]="item.id" class="whitespace-pre-line text-sm leading-relaxed text-white/50" [class.line-clamp-2]="!expandedDescriptions().has(item.id)">{{ item.descricao }}</p>
+                      <div class="mt-4">
+                        <p #learningDescription [attr.data-description-id]="item.id" class="whitespace-pre-line text-sm leading-relaxed text-white/55" [class.line-clamp-2]="!expandedDescriptions().has(item.id)">{{ item.descricao }}</p>
                         @if (truncatedDescriptions().has(item.id) || expandedDescriptions().has(item.id)) {
                           <button class="mt-1 cursor-pointer text-xs font-medium text-[#8ab5ff] hover:text-white" type="button" [attr.aria-expanded]="expandedDescriptions().has(item.id)" (click)="toggleDescription(item.id)">{{ expandedDescriptions().has(item.id) ? 'Ler menos' : 'Ler mais...' }}</button>
                         }
                       </div>
                     }
-                    <div class="mt-4 flex flex-wrap gap-2">
-                      <button class="min-h-9 cursor-pointer rounded-lg bg-[#2868dc] px-3 text-xs font-semibold text-white hover:bg-[#3978ed]" type="button" (click)="openTraining(item)">{{ item.tipo_material === 'ARTIGO' ? 'Abrir artigo' : item.tipo_material === 'PDF' ? 'Visualizar PDF' : 'Assistir vídeo' }}</button>
-                      @if (item.tipo_material === 'ARTIGO' && item.url_material) { <a class="inline-flex min-h-9 items-center rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/70 hover:bg-white/[0.05]" [href]="item.url_material" target="_blank" rel="noopener noreferrer">Abrir em nova aba</a> }
+                    <div class="mt-auto flex flex-wrap gap-2 pt-5">
+                      <button class="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg bg-[#2868dc] px-4 text-xs font-semibold text-white transition hover:bg-[#3978ed]" type="button" (click)="openTraining(item)">
+                        @if (item.tipo_material === 'YOUTUBE') { Assistir vídeo } @else if (item.tipo_material === 'PDF') { Visualizar PDF } @else { Abrir artigo }
+                        <svg class="size-3.5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M8 3l5 5-5 5"/></svg>
+                      </button>
+                      @if (item.tipo_material === 'ARTIGO' && item.url_material) { <a class="inline-flex min-h-10 items-center rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/65 transition hover:bg-white/[0.05] hover:text-white" [href]="item.url_material" target="_blank" rel="noopener noreferrer">Abrir em nova aba</a> }
                     </div>
                     @if (item.prova?.ativa) {
-                      <details class="mt-4 rounded-xl border border-white/[0.07] bg-white/[0.025]">
-                        <summary class="cursor-pointer list-none p-3" (click)="selectLearningContent(item)">
-                          <div class="flex flex-wrap items-center justify-between gap-2">
-                            <span class="text-sm font-semibold text-white/80">{{ item.prova.titulo }}</span>
+                      <details #trainingProof class="mt-4 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0b1322]/75">
+                        <summary class="flex cursor-pointer list-none items-center justify-between gap-3 p-3.5 transition hover:bg-white/[0.025]" (click)="selectLearningContent(item)">
+                          <span class="flex min-w-0 items-center gap-3">
+                            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4385f5]/10 text-[10px] font-bold text-[#8ab5ff]" aria-hidden="true">AV</span>
+                            <span class="min-w-0">
+                              <span class="block text-[10px] font-semibold uppercase tracking-[0.1em] text-white/40">Avaliação do treinamento</span>
+                              <span class="mt-0.5 block truncate text-sm font-semibold text-white/85">{{ item.prova.titulo }}</span>
+                            </span>
+                          </span>
+                          <span class="flex shrink-0 items-center gap-2">
                             @if (item.prova.tentada && item.prova.resultado) {
-                              <span class="rounded-md border px-2 py-1 text-[10px] font-semibold" [class.border-emerald-400/20]="item.prova.resultado.aprovado" [class.text-emerald-200]="item.prova.resultado.aprovado" [class.border-amber-300/20]="!item.prova.resultado.aprovado" [class.text-amber-200]="!item.prova.resultado.aprovado">{{ item.prova.resultado.aprovado ? 'Aprovado' : 'Não aprovado' }} · {{ item.prova.resultado.percentual }}%</span>
-                            } @else { <span class="text-[10px] text-white/40">Nota mínima: {{ item.prova.nota_minima }}%</span> }
-                          </div>
+                              <span class="rounded-md border px-2 py-1 text-[10px] font-semibold" [class.border-emerald-400/20]="item.prova.resultado.aprovado" [class.bg-emerald-400/[0.06]]="item.prova.resultado.aprovado" [class.text-emerald-200]="item.prova.resultado.aprovado" [class.border-amber-300/20]="!item.prova.resultado.aprovado" [class.bg-amber-300/[0.06]]="!item.prova.resultado.aprovado" [class.text-amber-200]="!item.prova.resultado.aprovado">{{ item.prova.resultado.aprovado ? 'Aprovado' : 'Não aprovado' }} · {{ item.prova.resultado.percentual }}%</span>
+                            } @else { <span class="text-right text-[10px] leading-relaxed text-white/40">{{ assessmentQuestions(item).length }} questões <span class="px-0.5 text-white/20">·</span> mínimo {{ item.prova.nota_minima }}%</span> }
+                            <svg class="size-4 text-white/35 transition-transform" [class.rotate-180]="trainingProof.open" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
+                          </span>
                         </summary>
-                        <div class="border-t border-white/[0.06] p-3">
+                        <div class="border-t border-white/[0.07] px-3.5 py-4">
                           @if (item.prova.descricao) { <p class="mb-3 text-xs leading-relaxed text-white/50">{{ item.prova.descricao }}</p> }
                           @if (item.prova.tentada && item.prova.resultado) {
-                            <p class="text-xs text-white/50">Resultado: {{ item.prova.resultado.acertos }} de {{ item.prova.resultado.total_perguntas }} acertos. A nota mínima registrada nesta tentativa foi {{ item.prova.resultado.nota_minima }}%.</p>
+                            <div class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-white/[0.06] bg-white/[0.025] px-3.5 py-3">
+                              <div><p class="text-[10px] font-semibold uppercase tracking-[0.1em] text-white/40">Seu resultado</p><p class="mt-1 text-sm text-white/75">{{ item.prova.resultado.acertos }} de {{ item.prova.resultado.total_perguntas }} respostas corretas <span class="px-1 text-white/20">·</span> mínimo {{ item.prova.resultado.nota_minima }}%</p></div>
+                              <span class="text-xl font-semibold tracking-tight" [class.text-emerald-200]="item.prova.resultado.aprovado" [class.text-amber-200]="!item.prova.resultado.aprovado">{{ item.prova.resultado.percentual }}<span class="text-sm">%</span></span>
+                            </div>
                           } @else {
-                            <div class="space-y-3">
-                              @for (question of assessmentQuestions(item); track question.id; let questionIndex = $index) {
-                                <fieldset class="rounded-lg border border-white/[0.07] p-3">
-                                  <legend class="max-w-full px-1 text-xs font-medium leading-relaxed text-white/75">{{ questionIndex + 1 }}. {{ question.texto }}</legend>
-                                  <div class="mt-1 space-y-1">
-                                    @for (alternative of question.alternativas; track alternative.id; let alternativeIndex = $index) {
-                                      <label class="flex cursor-pointer items-start gap-2 rounded-md px-2 py-1.5 text-xs text-white/60 hover:bg-white/[0.04]">
-                                        <input class="mt-0.5 size-3.5 shrink-0 accent-[#4385f5]" type="radio" [name]="'training-assessment-' + item.id + '-' + question.id" [checked]="assessmentAnswers()[question.id] === alternative.id" (change)="setAssessmentAnswer(question.id, alternative.id)" [attr.aria-label]="'Questão ' + (questionIndex + 1) + ', alternativa ' + (alternativeIndex + 1)" />
-                                        <span>{{ alternative.texto }}</span>
-                                      </label>
+                            <div class="overflow-hidden rounded-lg border border-white/[0.07] bg-black/10">
+                              <div class="border-b border-white/[0.06] p-3">
+                                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                  <div>
+                                    <p class="text-xs font-semibold text-white/80">Questionário da prova</p>
+                                    <p class="mt-1 text-[10px] text-white/40">{{ assessmentViewMode() === 'STEP' ? 'Questão ' + (activeQuestionIndex() + 1) + ' de ' + assessmentQuestions(item).length : 'Todas as questões' }} <span class="px-1 text-white/20">·</span> {{ answeredQuestionCount(item) }} de {{ assessmentQuestions(item).length }} respondidas</p>
+                                  </div>
+                                  <div class="flex items-center justify-between gap-3 sm:justify-end">
+                                    <div class="flex rounded-lg border border-white/[0.08] bg-black/10 p-1" role="group" aria-label="Forma de responder à prova">
+                                      <button class="rounded-md px-3 py-1.5 text-[10px] font-semibold transition" [class.bg-[#2868dc]]="assessmentViewMode() === 'STEP'" [class.text-white]="assessmentViewMode() === 'STEP'" [class.text-white/50]="assessmentViewMode() !== 'STEP'" type="button" [attr.aria-pressed]="assessmentViewMode() === 'STEP'" (click)="assessmentViewMode.set('STEP')">Uma por vez</button>
+                                      <button class="rounded-md px-3 py-1.5 text-[10px] font-semibold transition" [class.bg-[#2868dc]]="assessmentViewMode() === 'ALL'" [class.text-white]="assessmentViewMode() === 'ALL'" [class.text-white/50]="assessmentViewMode() !== 'ALL'" type="button" [attr.aria-pressed]="assessmentViewMode() === 'ALL'" (click)="assessmentViewMode.set('ALL')">Ver todas</button>
+                                    </div>
+                                    <span class="text-xs font-semibold text-[#a9c8ff]">{{ assessmentProgress(item) }}%</span>
+                                  </div>
+                                </div>
+                                <div class="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.08]" role="progressbar" [attr.aria-valuenow]="assessmentProgress(item)" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso das respostas da prova">
+                                  <div class="h-full rounded-full bg-[linear-gradient(90deg,#4385f5,#8ab5ff)] transition-[width] duration-300" [style.width.%]="assessmentProgress(item)"></div>
+                                </div>
+                              </div>
+                              @if (assessmentViewMode() === 'STEP') {
+                                <div class="border-b border-white/[0.06] p-3">
+                                  <p class="text-[9px] font-semibold uppercase tracking-[0.1em] text-white/40">Ir para questão</p>
+                                  <div class="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="Navegar pelas questões da prova">
+                                    @for (question of assessmentQuestions(item); track question.id; let questionIndex = $index) {
+                                      <button class="flex size-8 cursor-pointer items-center justify-center rounded-md border text-[10px] font-semibold transition hover:border-white/20" [class.border-[#4385f5]/50]="activeQuestionIndex() === questionIndex" [class.bg-[#2868dc]]="activeQuestionIndex() === questionIndex" [class.text-white]="activeQuestionIndex() === questionIndex" [class.border-emerald-400/20]="activeQuestionIndex() !== questionIndex && assessmentAnswers()[question.id]" [class.bg-emerald-400/[0.06]]="activeQuestionIndex() !== questionIndex && assessmentAnswers()[question.id]" [class.text-emerald-200]="activeQuestionIndex() !== questionIndex && assessmentAnswers()[question.id]" [class.border-white/[0.08]]="activeQuestionIndex() !== questionIndex && !assessmentAnswers()[question.id]" [class.bg-white/[0.025]]="activeQuestionIndex() !== questionIndex && !assessmentAnswers()[question.id]" [class.text-white/55]="activeQuestionIndex() !== questionIndex && !assessmentAnswers()[question.id]" type="button" [attr.aria-label]="'Ir para questão ' + (questionIndex + 1) + (assessmentAnswers()[question.id] ? ', respondida' : ', sem resposta')" [attr.aria-current]="activeQuestionIndex() === questionIndex ? 'step' : null" (click)="setAssessmentQuestion(item, questionIndex)">{{ questionIndex + 1 }}</button>
                                     }
                                   </div>
-                                </fieldset>
+                                </div>
                               }
+                              <div class="space-y-2 p-3">
+                              @for (question of assessmentQuestions(item); track question.id; let questionIndex = $index) {
+                                @if (assessmentViewMode() === 'ALL' || activeQuestionIndex() === questionIndex) {
+                                  @if (assessmentViewMode() === 'STEP') { <div class="sr-only" aria-live="polite" aria-atomic="true">Questão {{ questionIndex + 1 }} de {{ assessmentQuestions(item).length }}: {{ question.texto }}</div> }
+                                  <fieldset class="rounded-lg border border-white/[0.07] bg-white/[0.015] p-3">
+                                    <legend class="max-w-full px-1 text-xs font-medium leading-relaxed text-white/80">
+                                      <span class="inline-flex items-start gap-2"><span class="flex size-5 shrink-0 items-center justify-center rounded bg-[#4385f5]/10 text-[9px] font-bold text-[#a9c8ff]">{{ questionIndex + 1 }}</span><span>{{ question.texto }}</span></span>
+                                    </legend>
+                                    <div class="mt-2 space-y-1.5">
+                                      @for (alternative of question.alternativas; track alternative.id; let alternativeIndex = $index) {
+                                        <label class="flex cursor-pointer items-center gap-2 rounded-md border border-white/[0.05] px-2.5 py-2 text-xs text-white/60 transition hover:border-white/[0.12] hover:bg-white/[0.03] focus-within:ring-2 focus-within:ring-[#4385f5]/40" [class.border-[#4385f5]/40]="assessmentAnswers()[question.id] === alternative.id" [class.bg-[#2868dc]/[0.08]]="assessmentAnswers()[question.id] === alternative.id" [class.text-white]="assessmentAnswers()[question.id] === alternative.id">
+                                          <input class="size-3.5 shrink-0 accent-[#4385f5]" type="radio" [name]="'training-assessment-' + item.id + '-' + question.id" [checked]="assessmentAnswers()[question.id] === alternative.id" (change)="setAssessmentAnswer(question.id, alternative.id)" [attr.aria-label]="'Questão ' + (questionIndex + 1) + ', alternativa ' + (alternativeIndex + 1)" />
+                                          <span class="leading-relaxed">{{ alternative.texto }}</span>
+                                        </label>
+                                      }
+                                    </div>
+                                  </fieldset>
+                                }
+                              }
+                              </div>
+                              <div class="flex flex-col gap-2 border-t border-white/[0.06] p-3 sm:flex-row sm:items-center sm:justify-between">
+                                <p class="text-[10px] text-white/40">{{ hasAllAnswers(item) ? 'Todas as questões respondidas.' : 'Responda a todas as questões para enviar.' }}</p>
+                                <div class="flex items-center justify-between gap-2 sm:justify-end">
+                                  @if (assessmentViewMode() === 'STEP') {
+                                    <button class="inline-flex min-h-8 cursor-pointer items-center gap-1.5 rounded-md border border-white/[0.1] px-2.5 text-[10px] font-semibold text-white/70 transition hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-35" type="button" [disabled]="activeQuestionIndex() === 0" (click)="setAssessmentQuestion(item, activeQuestionIndex() - 1)">← Anterior</button>
+                                    @if (activeQuestionIndex() < assessmentQuestions(item).length - 1) {
+                                      <button class="inline-flex min-h-8 cursor-pointer items-center gap-1.5 rounded-md bg-[#2868dc] px-3 text-[10px] font-semibold text-white transition hover:bg-[#3978ed]" type="button" (click)="setAssessmentQuestion(item, activeQuestionIndex() + 1)">Próxima questão →</button>
+                                    } @else {
+                                      <button class="min-h-8 cursor-pointer rounded-md bg-[#2868dc] px-3 text-[10px] font-semibold text-white transition hover:bg-[#3978ed] disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="!hasAllAnswers(item) || submittingAssessment() === item.id" (click)="submitAssessment(item)">{{ submittingAssessment() === item.id ? 'Enviando...' : 'Enviar prova' }}</button>
+                                    }
+                                  } @else {
+                                    <button class="min-h-8 cursor-pointer rounded-md bg-[#2868dc] px-3 text-[10px] font-semibold text-white transition hover:bg-[#3978ed] disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="!hasAllAnswers(item) || submittingAssessment() === item.id" (click)="submitAssessment(item)">{{ submittingAssessment() === item.id ? 'Enviando...' : 'Enviar prova' }}</button>
+                                  }
+                                </div>
+                              </div>
                             </div>
-                            <div class="mt-3 flex justify-end"><button class="min-h-9 cursor-pointer rounded-lg bg-[#2868dc] px-3 text-xs font-semibold text-white hover:bg-[#3978ed] disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="!hasAllAnswers(item) || submittingAssessment() === item.id" (click)="submitAssessment(item)">{{ submittingAssessment() === item.id ? 'Enviando...' : 'Enviar prova' }}</button></div>
                           }
                         </div>
                       </details>
@@ -98,46 +204,138 @@
             @if (visibleAssessments().length) {
               <div class="space-y-3" aria-label="Avaliações disponíveis">
                 @for (item of visibleAssessments(); track item.id) {
-                  <article class="rounded-2xl border border-white/[0.08] bg-[#0f172a]/90 p-5 sm:p-6">
-                    <div class="flex flex-wrap items-start justify-between gap-3">
-                      <div><p class="text-[10px] font-bold uppercase tracking-[0.12em] text-[#8ab5ff]">Avaliação</p><h3 class="mt-1 text-base font-semibold">{{ item.titulo }}</h3></div>
-                      @if (item.tentada && item.resultado) { <span class="rounded-lg border border-emerald-400/20 bg-emerald-400/[0.07] px-3 py-2 text-xs font-semibold text-emerald-200">Enviada · {{ item.resultado.acertos }} de {{ item.resultado.total_perguntas }} acertos</span> }
-                    </div>
+                  <article class="overflow-hidden rounded-2xl border border-white/[0.08] bg-[linear-gradient(145deg,rgba(18,28,49,0.98),rgba(12,19,34,0.98))]">
+                    <div class="p-5 sm:p-6">
+                      <div class="flex flex-wrap items-start justify-between gap-4">
+                        <div class="flex min-w-0 items-start gap-3">
+                          <span class="flex size-11 shrink-0 items-center justify-center rounded-xl border border-[#4385f5]/20 bg-[#2868dc]/10 text-[#8ab5ff]">
+                            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h-2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m8 13 2 2 5-5"/></svg>
+                          </span>
+                          <div class="min-w-0">
+                            <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-[#8ab5ff]">Avaliação <span class="px-1 text-white/20">·</span> {{ item.perguntas.length }} {{ item.perguntas.length === 1 ? 'questão' : 'questões' }}</p>
+                            <h3 class="mt-1.5 text-base font-semibold leading-snug text-white">{{ item.titulo }}</h3>
+                          </div>
+                        </div>
+                        @if (item.tentada) {
+                          @if (item.resultado) {
+                            <span class="shrink-0 rounded-lg border px-3 py-2 text-xs font-semibold" [class.border-emerald-400/20]="item.resultado.aprovado" [class.bg-emerald-400/[0.07]]="item.resultado.aprovado" [class.text-emerald-200]="item.resultado.aprovado" [class.border-amber-300/20]="item.resultado.aprovado === false" [class.bg-amber-300/[0.07]]="item.resultado.aprovado === false" [class.text-amber-200]="item.resultado.aprovado === false" [class.border-white/10]="item.resultado.aprovado === null" [class.bg-white/[0.03]]="item.resultado.aprovado === null" [class.text-white/65]="item.resultado.aprovado === null">{{ item.resultado.aprovado === true ? 'Aprovada' : item.resultado.aprovado === false ? 'Não aprovada' : 'Respondida' }}</span>
+                          } @else {
+                            <span class="shrink-0 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/65">Enviada</span>
+                          }
+                        } @else {
+                          <span class="shrink-0 rounded-lg border border-[#4385f5]/20 bg-[#4385f5]/[0.07] px-3 py-2 text-xs font-semibold text-[#a9c8ff]">Pendente</span>
+                        }
+                      </div>
                     @if (item.descricao) {
-                      <div class="mt-2">
-                        <p #learningDescription [attr.data-description-id]="item.id" class="whitespace-pre-line text-sm leading-relaxed text-white/50" [class.line-clamp-2]="!expandedDescriptions().has(item.id)">{{ item.descricao }}</p>
+                      <div class="mt-4">
+                        <p #learningDescription [attr.data-description-id]="item.id" class="whitespace-pre-line text-sm leading-relaxed text-white/55" [class.line-clamp-2]="!expandedDescriptions().has(item.id)">{{ item.descricao }}</p>
                         @if (truncatedDescriptions().has(item.id) || expandedDescriptions().has(item.id)) {
                           <button class="mt-1 cursor-pointer text-xs font-medium text-[#8ab5ff] hover:text-white" type="button" [attr.aria-expanded]="expandedDescriptions().has(item.id)" (click)="toggleDescription(item.id)">{{ expandedDescriptions().has(item.id) ? 'Ler menos' : 'Ler mais...' }}</button>
                         }
                       </div>
                     }
                     @if (selectedContentId() !== item.id) {
-                      <div class="mt-4 flex justify-end">
-                        <button class="min-h-9 cursor-pointer rounded-lg bg-[#2868dc] px-3 text-xs font-semibold text-white hover:bg-[#3978ed]" type="button" (click)="selectLearningContent(item)">{{ item.tentada ? 'Ver resultado' : 'Iniciar avaliação' }}</button>
+                      <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.07] pt-4">
+                        @if (item.tentada && item.resultado) {
+                          <p class="text-xs text-white/45">Resultado: <span class="font-semibold text-white/75">{{ item.resultado.acertos }}/{{ item.resultado.total_perguntas }}</span> acertos <span class="px-1 text-white/20">·</span> <span class="font-semibold text-white/75">{{ item.resultado.percentual }}%</span></p>
+                        } @else {
+                          <p class="text-xs text-white/40">Uma tentativa <span class="px-1 text-white/20">·</span> {{ item.perguntas.length }} {{ item.perguntas.length === 1 ? 'questão' : 'questões' }}</p>
+                        }
+                        <button class="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg bg-[#2868dc] px-4 text-xs font-semibold text-white transition hover:bg-[#3978ed]" type="button" (click)="selectLearningContent(item)">{{ item.tentada ? 'Ver resultado' : 'Começar avaliação' }}<svg class="size-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M8 3l5 5-5 5"/></svg></button>
                       </div>
                     }
                     @if (selectedContentId() === item.id && !item.tentada) {
-                      <div class="mt-5 space-y-4">
-                        @for (question of item.perguntas; track question.id; let questionIndex = $index) {
-                          <fieldset class="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
-                            <legend class="max-w-full px-1 text-sm font-medium leading-relaxed text-white/80">{{ questionIndex + 1 }}. {{ question.texto }}</legend>
-                            <div class="mt-2 space-y-2">
-                              @for (alternative of question.alternativas; track alternative.id; let alternativeIndex = $index) {
-                                <label class="flex cursor-pointer items-start gap-2 rounded-lg px-2 py-2 text-sm text-white/65 transition hover:bg-white/[0.04]">
-                                  <input class="mt-0.5 size-4 shrink-0 accent-[#4385f5]" type="radio" [name]="'employee-question-' + item.id + '-' + question.id" [checked]="assessmentAnswers()[question.id] === alternative.id" (change)="setAssessmentAnswer(question.id, alternative.id)" [attr.aria-label]="'Pergunta ' + (questionIndex + 1) + ', alternativa ' + (alternativeIndex + 1)" />
-                                  <span>{{ alternative.texto }}</span>
-                                </label>
-                              }
+                      <section class="mt-5 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0b1322]/65" aria-label="Questionário">
+                        <div class="border-b border-white/[0.07] px-4 py-4 sm:px-5">
+                          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                              <p class="text-sm font-semibold text-white/85">Questionário</p>
+                              <p class="mt-1 text-xs text-white/40">{{ assessmentViewMode() === 'STEP' ? 'Questão ' + (activeQuestionIndex() + 1) + ' de ' + item.perguntas.length : 'Todas as questões' }} <span class="px-1 text-white/20">·</span> {{ answeredQuestionCount(item) }} de {{ item.perguntas.length }} respondidas</p>
                             </div>
-                          </fieldset>
+                            <div class="flex items-center justify-between gap-3 sm:justify-end">
+                              <div class="flex rounded-lg border border-white/[0.08] bg-black/10 p-1" role="group" aria-label="Forma de responder">
+                                <button class="rounded-md px-3 py-2 text-[10px] font-semibold transition sm:text-xs" [class.bg-[#2868dc]]="assessmentViewMode() === 'STEP'" [class.text-white]="assessmentViewMode() === 'STEP'" [class.text-white/50]="assessmentViewMode() !== 'STEP'" type="button" [attr.aria-pressed]="assessmentViewMode() === 'STEP'" (click)="assessmentViewMode.set('STEP')">Uma por vez</button>
+                                <button class="rounded-md px-3 py-2 text-[10px] font-semibold transition sm:text-xs" [class.bg-[#2868dc]]="assessmentViewMode() === 'ALL'" [class.text-white]="assessmentViewMode() === 'ALL'" [class.text-white/50]="assessmentViewMode() !== 'ALL'" type="button" [attr.aria-pressed]="assessmentViewMode() === 'ALL'" (click)="assessmentViewMode.set('ALL')">Ver todas</button>
+                              </div>
+                              <span class="text-sm font-semibold text-[#a9c8ff]">{{ assessmentProgress(item) }}%</span>
+                            </div>
+                          </div>
+                          <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.08]" role="progressbar" [attr.aria-valuenow]="assessmentProgress(item)" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso das respostas">
+                            <div class="h-full rounded-full bg-[linear-gradient(90deg,#4385f5,#8ab5ff)] transition-[width] duration-300" [style.width.%]="assessmentProgress(item)"></div>
+                          </div>
+                        </div>
+                        @if (assessmentViewMode() === 'STEP') {
+                          <div class="border-b border-white/[0.07] px-3 py-3 sm:px-5">
+                          <p class="text-[10px] font-semibold uppercase tracking-[0.1em] text-white/40">Ir para questão</p>
+                          <div class="mt-2 flex flex-wrap gap-2" role="group" aria-label="Navegar pelas questões">
+                            @for (question of item.perguntas; track question.id; let questionIndex = $index) {
+                              <button class="flex size-9 cursor-pointer items-center justify-center rounded-lg border text-xs font-semibold transition hover:border-white/20" [class.border-[#4385f5]/50]="activeQuestionIndex() === questionIndex" [class.bg-[#2868dc]]="activeQuestionIndex() === questionIndex" [class.text-white]="activeQuestionIndex() === questionIndex" [class.border-emerald-400/20]="activeQuestionIndex() !== questionIndex && assessmentAnswers()[question.id]" [class.bg-emerald-400/[0.06]]="activeQuestionIndex() !== questionIndex && assessmentAnswers()[question.id]" [class.text-emerald-200]="activeQuestionIndex() !== questionIndex && assessmentAnswers()[question.id]" [class.border-white/[0.08]]="activeQuestionIndex() !== questionIndex && !assessmentAnswers()[question.id]" [class.bg-white/[0.025]]="activeQuestionIndex() !== questionIndex && !assessmentAnswers()[question.id]" [class.text-white/55]="activeQuestionIndex() !== questionIndex && !assessmentAnswers()[question.id]" type="button" [attr.aria-label]="'Ir para questão ' + (questionIndex + 1) + (assessmentAnswers()[question.id] ? ', respondida' : ', sem resposta')" [attr.aria-current]="activeQuestionIndex() === questionIndex ? 'step' : null" (click)="setAssessmentQuestion(item, questionIndex)">{{ questionIndex + 1 }}</button>
+                            }
+                          </div>
+                          </div>
                         }
-                      </div>
-                      <div class="mt-4 flex justify-end">
-                        <button class="min-h-10 cursor-pointer rounded-lg bg-[#2868dc] px-4 text-sm font-semibold text-white transition hover:bg-[#3978ed] disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="!hasAllAnswers(item) || submittingAssessment() === item.id" (click)="submitAssessment(item)">{{ submittingAssessment() === item.id ? 'Enviando...' : 'Enviar avaliação' }}</button>
+                        <div class="p-3 sm:p-5">
+                          <div class="space-y-3">
+                            @for (question of item.perguntas; track question.id; let questionIndex = $index) {
+                              @if (assessmentViewMode() === 'ALL' || activeQuestionIndex() === questionIndex) {
+                                @if (assessmentViewMode() === 'STEP') { <div class="sr-only" aria-live="polite" aria-atomic="true">Questão {{ questionIndex + 1 }} de {{ item.perguntas.length }}: {{ question.texto }}</div> }
+                                <fieldset class="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 sm:p-6">
+                                <legend class="max-w-full px-1">
+                                  <span class="flex items-start gap-2.5">
+                                    <span class="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-[#4385f5]/10 text-[10px] font-bold text-[#a9c8ff]">{{ questionIndex + 1 }}</span>
+                                    <span class="text-sm font-semibold leading-relaxed text-white sm:text-base">{{ question.texto }}</span>
+                                  </span>
+                                </legend>
+                                <p class="mb-3 ml-10 text-[10px] font-medium uppercase tracking-[0.1em] text-white/35">Selecione uma alternativa</p>
+                                <div class="space-y-2">
+                                  @for (alternative of question.alternativas; track alternative.id; let alternativeIndex = $index) {
+                                    <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.015] px-3 py-3.5 text-sm text-white/65 transition hover:border-white/[0.15] hover:bg-white/[0.035] focus-within:ring-2 focus-within:ring-[#4385f5]/40 sm:px-4" [class.border-[#4385f5]/50]="assessmentAnswers()[question.id] === alternative.id" [class.bg-[#2868dc]/[0.09]]="assessmentAnswers()[question.id] === alternative.id" [class.text-white]="assessmentAnswers()[question.id] === alternative.id">
+                                      <input class="size-4 shrink-0 accent-[#4385f5]" type="radio" [name]="'employee-question-' + item.id + '-' + question.id" [checked]="assessmentAnswers()[question.id] === alternative.id" (change)="setAssessmentAnswer(question.id, alternative.id)" [attr.aria-label]="'Pergunta ' + (questionIndex + 1) + ', alternativa ' + (alternativeIndex + 1)" />
+                                      <span class="flex size-7 shrink-0 items-center justify-center rounded-md bg-white/[0.04] text-[10px] font-semibold text-white/45" [class.bg-[#4385f5]/15]="assessmentAnswers()[question.id] === alternative.id" [class.text-[#b8d2ff]]="assessmentAnswers()[question.id] === alternative.id">{{ alternativeIndex + 1 }}</span>
+                                      <span class="leading-relaxed">{{ alternative.texto }}</span>
+                                    </label>
+                                  }
+                                </div>
+                                </fieldset>
+                              }
+                            }
+                          </div>
+                        </div>
+                        <div class="flex flex-col gap-3 border-t border-white/[0.07] px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                          <p class="text-xs text-white/40">{{ hasAllAnswers(item) ? 'Tudo pronto. Confira suas respostas antes do envio.' : 'Responda a todas as questões para liberar o envio.' }}</p>
+                          <div class="flex items-center justify-between gap-2 sm:justify-end">
+                            @if (assessmentViewMode() === 'STEP') {
+                              <button class="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/[0.1] px-3 text-xs font-semibold text-white/70 transition hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-35" type="button" [disabled]="activeQuestionIndex() === 0" (click)="setAssessmentQuestion(item, activeQuestionIndex() - 1)"><svg class="size-3.5 rotate-180" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M8 3l5 5-5 5"/></svg>Anterior</button>
+                              @if (activeQuestionIndex() < item.perguntas.length - 1) {
+                                <button class="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg bg-[#2868dc] px-4 text-xs font-semibold text-white transition hover:bg-[#3978ed]" type="button" (click)="setAssessmentQuestion(item, activeQuestionIndex() + 1)">Próxima questão<svg class="size-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M8 3l5 5-5 5"/></svg></button>
+                              } @else {
+                                <button class="inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#2868dc] px-4 text-xs font-semibold text-white transition hover:bg-[#3978ed] disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="!hasAllAnswers(item) || submittingAssessment() === item.id" (click)="submitAssessment(item)">{{ submittingAssessment() === item.id ? 'Enviando...' : 'Enviar avaliação' }}@if (submittingAssessment() !== item.id) { <svg class="size-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M8 3l5 5-5 5"/></svg> }</button>
+                              }
+                            } @else {
+                              <button class="inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#2868dc] px-4 text-xs font-semibold text-white transition hover:bg-[#3978ed] disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="!hasAllAnswers(item) || submittingAssessment() === item.id" (click)="submitAssessment(item)">{{ submittingAssessment() === item.id ? 'Enviando...' : 'Enviar avaliação' }}@if (submittingAssessment() !== item.id) { <svg class="size-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M8 3l5 5-5 5"/></svg> }</button>
+                            }
+                          </div>
+                        </div>
+                      </section>
+                    } @else if (selectedContentId() === item.id && item.tentada && item.resultado) {
+                      <div class="mt-5 rounded-xl border border-white/[0.08] bg-[#0b1322]/65 p-4 sm:p-5">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                          <div>
+                            <p class="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/40">Resultado da avaliação</p>
+                            <p class="mt-1.5 text-sm text-white/70">{{ item.resultado.acertos }} de {{ item.resultado.total_perguntas }} respostas corretas</p>
+                            @if (item.resultado.nota_minima !== null) { <p class="mt-1 text-xs text-white/40">Nota mínima: {{ item.resultado.nota_minima }}%</p> }
+                          </div>
+                          <div class="flex items-center gap-3">
+                            <span class="text-3xl font-semibold tracking-tight" [class.text-emerald-200]="item.resultado.aprovado" [class.text-amber-200]="item.resultado.aprovado === false" [class.text-white]="item.resultado.aprovado === null">{{ item.resultado.percentual }}<span class="text-base">%</span></span>
+                            <span class="rounded-lg border px-3 py-2 text-xs font-semibold" [class.border-emerald-400/20]="item.resultado.aprovado" [class.bg-emerald-400/[0.07]]="item.resultado.aprovado" [class.text-emerald-200]="item.resultado.aprovado" [class.border-amber-300/20]="item.resultado.aprovado === false" [class.bg-amber-300/[0.07]]="item.resultado.aprovado === false" [class.text-amber-200]="item.resultado.aprovado === false" [class.border-white/10]="item.resultado.aprovado === null" [class.bg-white/[0.03]]="item.resultado.aprovado === null" [class.text-white/65]="item.resultado.aprovado === null">{{ item.resultado.aprovado === true ? 'Aprovada' : item.resultado.aprovado === false ? 'Não aprovada' : 'Concluída' }}</span>
+                          </div>
+                        </div>
+                        <p class="mt-4 border-t border-white/[0.07] pt-3 text-xs leading-relaxed text-white/40">Esta avaliação já foi enviada e permite uma única tentativa.</p>
                       </div>
                     } @else if (selectedContentId() === item.id && item.tentada) {
-                      <p class="mt-4 text-xs text-white/40">Esta avaliação já foi enviada e permite uma única tentativa.</p>
+                      <p class="mt-5 rounded-xl border border-white/[0.08] bg-[#0b1322]/65 p-4 text-sm text-white/55">Esta avaliação já foi enviada. O resultado detalhado não está disponível.</p>
                     }
+                    </div>
                   </article>
                 }
               </div>
@@ -145,8 +343,9 @@
 
             @if (!visibleTrainings().length && !visibleAssessments().length) {
               <div class="rounded-2xl border border-dashed border-white/[0.12] bg-[#101827]/60 px-5 py-10 text-center">
-                <p class="text-sm font-medium text-white/65">Nenhum conteúdo ativo disponível</p>
-                <p class="mt-1 text-xs text-white/40">Novos treinamentos e avaliações destinados ao seu setor aparecerão aqui.</p>
+                <span class="mx-auto flex size-11 items-center justify-center rounded-full bg-[#2868dc]/10 text-lg text-[#8ab5ff]" aria-hidden="true">{{ learningTab() === 'TREINAMENTO' ? '✦' : '✓' }}</span>
+                <p class="mt-3 text-sm font-medium text-white/65">{{ learningTab() === 'TREINAMENTO' ? 'Nenhum treinamento disponível por enquanto' : 'Nenhuma avaliação disponível por enquanto' }}</p>
+                <p class="mt-1 text-xs text-white/40">Quando houver novos conteúdos destinados ao seu setor, eles aparecerão aqui.</p>
               </div>
             }
           }
