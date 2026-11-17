@@ -95,6 +95,32 @@ export interface LearningResult {
   aprovado: boolean | null;
 }
 
+export interface LearningPerformanceResult {
+  id: string;
+  id_conteudo: string;
+  titulo: string;
+  tipo: LearningKind;
+  acertos: number;
+  total_perguntas: number;
+  percentual: number;
+  entregue_em: string;
+  nota_minima: number | null;
+  aprovado: boolean | null;
+}
+
+export interface LearningEmployeePerformance {
+  id_usuario: string;
+  nome: string;
+  email: string;
+  cargo: string | null;
+  setor: string | null;
+  total_respostas: number;
+  total_treinamentos: number;
+  total_avaliacoes: number;
+  media_percentual: number | null;
+  resultados: LearningPerformanceResult[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class LearningService {
   private readonly authService = inject(AuthService);
@@ -156,6 +182,12 @@ export class LearningService {
     );
     if (!Array.isArray(results)) throw new Error('A API retornou um histórico inválido.');
     return results;
+  }
+
+  async listarDesempenho(): Promise<LearningEmployeePerformance[]> {
+    const performance = await this.request<LearningEmployeePerformance[]>('/api/capacitacoes/desempenho');
+    if (!Array.isArray(performance)) throw new Error('A API retornou dados de desempenho inválidos.');
+    return performance;
   }
 
   async enviarAvaliacao(id: string, respostas: Array<{ pergunta_id: string; alternativa_id: string }>): Promise<LearningAttemptResult> {

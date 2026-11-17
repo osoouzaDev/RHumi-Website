@@ -187,6 +187,20 @@ export class EmployeeArea implements AfterViewInit, OnInit, OnDestroy {
   }
 
   protected async openTraining(item: LearningItem): Promise<void> {
+    if (item.tipo_material === 'PDF' && item.url_material) {
+      this.learningError.set('');
+      this.learningNotice.set('');
+      this.closeSelectedContent();
+      try {
+        const parsed = new URL(item.url_material);
+        if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error();
+        window.open(parsed.href, '_blank', 'noopener,noreferrer');
+      } catch {
+        this.learningError.set('O link deste PDF é inválido. Solicite a revisão do conteúdo ao RH.');
+      }
+      return;
+    }
+
     this.selectLearningContent(item);
 
     if (item.tipo_material === 'YOUTUBE' && item.url_material) {
@@ -203,18 +217,6 @@ export class EmployeeArea implements AfterViewInit, OnInit, OnDestroy {
 
     if (item.tipo_material === 'ARTIGO' && item.url_material) {
       window.open(item.url_material, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    if (item.tipo_material === 'PDF' && item.url_material) {
-      try {
-        const parsed = new URL(item.url_material);
-        if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error();
-        this.resourceFrame.set(this.sanitizer.bypassSecurityTrustResourceUrl(parsed.href));
-        this.resourceOpenUrl.set(parsed.href);
-      } catch {
-        this.learningError.set('O link deste PDF é inválido. Solicite a revisão do conteúdo ao RH.');
-      }
       return;
     }
 
