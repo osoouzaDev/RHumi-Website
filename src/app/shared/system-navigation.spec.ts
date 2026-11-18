@@ -1,16 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '../services/auth.service';
 import { NavigationPage } from './navigation-orb';
 import { SystemNavigation } from './system-navigation';
 
 describe('SystemNavigation', () => {
   const router = { navigateByUrl: vi.fn().mockResolvedValue(true) };
-  const authService = { logout: vi.fn().mockResolvedValue(undefined) };
+  const authService = {
+    logout: vi.fn().mockResolvedValue(undefined),
+    currentUser: vi.fn().mockReturnValue(null),
+  };
 
   beforeEach(() => {
     router.navigateByUrl.mockClear();
     authService.logout.mockClear();
+    authService.currentUser.mockReturnValue(null);
     TestBed.configureTestingModule({
       imports: [SystemNavigation],
       providers: [
@@ -29,6 +34,7 @@ describe('SystemNavigation', () => {
       'journey',
       'calendar',
       'recruitment',
+      'learning',
       'employee-area',
       'settings',
     ];
@@ -39,6 +45,35 @@ describe('SystemNavigation', () => {
 
       expect(fixture.nativeElement.querySelector(`[data-page="${page}"]`)).toBeTruthy();
     }
+  });
+
+  it('shows training management to administrators and centers settings on its own row', () => {
+    authService.currentUser.mockReturnValue({ classificacao: 'HR_ADMIN' });
+    const fixture = TestBed.createComponent(SystemNavigation);
+    fixture.componentRef.setInput('page', 'learning');
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('button[aria-label="Navegação do sistema"]').click();
+    fixture.detectChanges();
+
+    const navigation = fixture.nativeElement.querySelector('nav[aria-label="Navegação principal"]') as HTMLElement;
+    expect(navigation.textContent).toContain('Treinamentos e avaliações');
+    expect(navigation.querySelectorAll('li')).toHaveLength(9);
+    const labels = [...navigation.querySelectorAll('li button > span:last-child')]
+      .map((label) => label.textContent?.trim());
+    expect(labels).toEqual([
+      'Dashboard',
+      'Funcionários',
+      'Empresa',
+      'Jornada',
+      'Calendário',
+      'Recrutamento',
+      'Treinamentos e avaliações',
+      'Área do colaborador',
+      'Configurações',
+    ]);
+    expect(navigation.querySelector('.navigation-settings-item')?.className).toContain('navigation-settings-item');
+    expect(navigation.querySelector('ul')?.className).toContain('sm:grid-cols-4');
   });
 
   it('opens the shared menu, marks the active page, and navigates to another route', () => {
@@ -62,5 +97,43 @@ describe('SystemNavigation', () => {
     dashboard.click();
 
     expect(router.navigateByUrl).toHaveBeenCalledWith('/dashboard');
+  });
+
+  it('closes the menu on an outside click without navigating away', () => {
+    const fixture = TestBed.createComponent(SystemNavigation);
+    fixture.componentRef.setInput('page', 'calendar');
+    fixture.detectChanges();
+
+    fixture.nativeElement
+      .querySelector('button[aria-label="Navegação do sistema"]')
+      .click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('#system-navigation')).toBeTruthy();
+
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('#system-navigation')).toBeNull();
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+  });
+
+  it('only shows the employee area to EMPLOYEE profiles', () => {
+    authService.currentUser.mockReturnValue({ classificacao: 'EMPLOYEE' });
+    const fixture = TestBed.createComponent(SystemNavigation);
+    fixture.componentRef.setInput('page', 'employee-area');
+    fixture.detectChanges();
+
+    fixture.nativeElement
+      .querySelector('button[aria-label="Navegação do sistema"]')
+      .click();
+    fixture.detectChanges();
+
+    const navigation = fixture.nativeElement.querySelector(
+      'nav[aria-label="Navegação principal"]',
+    ) as HTMLElement;
+    expect(navigation.textContent).toContain('Área do colaborador');
+    expect(navigation.textContent).toContain('Configurações');
+    expect(navigation.textContent).not.toContain('Dashboard');
+    expect(navigation.querySelectorAll('li')).toHaveLength(2);
   });
 });

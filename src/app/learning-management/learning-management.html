@@ -1,0 +1,254 @@
+<main class="relative min-h-svh overflow-x-clip bg-[#070711] px-5 pb-12 pt-36 font-[family-name:Inter] text-white sm:px-8 lg:px-12">
+  <div class="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[420px] bg-[radial-gradient(ellipse_at_50%_-10%,rgba(54,91,226,0.2),transparent_68%)]" aria-hidden="true"></div>
+  <app-system-navigation page="learning" />
+
+  <div class="relative mx-auto flex w-full max-w-[1440px] flex-col gap-6">
+    <header>
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#70aaff]">Gestão de pessoas <span class="px-1 text-white/20">•</span> Desenvolvimento</p>
+      <h1 class="mt-1 text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">Treinamentos e avaliações</h1>
+      <p class="mt-1 text-xs text-white/45 sm:text-sm">Gerencie conteúdos, setores destinatários e avaliações da equipe.</p>
+    </header>
+
+    @if (!canManage()) {
+      <section class="rounded-2xl border border-[#ff8a8a]/20 bg-[#21151b] p-8 text-center" role="alert">
+        <h2 class="text-lg font-semibold text-[#ffaaaa]">Acesso restrito</h2>
+        <p class="mt-2 text-sm text-white/55">Seu perfil não tem autorização para gerenciar treinamentos e avaliações.</p>
+      </section>
+    } @else {
+      @if (notice()) { <div class="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-3 text-sm text-emerald-200" role="status">{{ notice() }}</div> }
+      @if (error()) { <div class="rounded-xl border border-[#ff8a8a]/20 bg-[#21151b] px-4 py-3 text-sm text-[#ffaaaa]" role="alert">{{ error() }}</div> }
+
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex w-full rounded-xl border border-white/[0.08] bg-[#0f172a] p-1 sm:w-fit" role="tablist" aria-label="Tipo de conteúdo">
+          <button class="flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none" [class.bg-[#2868dc]]="activeTab() === 'TREINAMENTO'" [class.text-white]="activeTab() === 'TREINAMENTO'" [class.text-white/55]="activeTab() !== 'TREINAMENTO'" type="button" role="tab" [attr.aria-selected]="activeTab() === 'TREINAMENTO'" [disabled]="formOpen()" (click)="activeTab.set('TREINAMENTO')">Treinamentos</button>
+          <button class="flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none" [class.bg-[#2868dc]]="activeTab() === 'AVALIACAO'" [class.text-white]="activeTab() === 'AVALIACAO'" [class.text-white/55]="activeTab() !== 'AVALIACAO'" type="button" role="tab" [attr.aria-selected]="activeTab() === 'AVALIACAO'" [disabled]="formOpen()" (click)="activeTab.set('AVALIACAO')">Avaliações</button>
+        </div>
+        <div class="flex w-full flex-wrap items-center justify-between gap-3 sm:w-auto sm:justify-end">
+          <label class="inline-flex items-center gap-2 text-xs text-white/55"><input class="size-4 accent-[#4385f5]" type="checkbox" [checked]="showInactive()" (change)="showInactive.set($any($event.target).checked)" /> Incluir inativos</label>
+          <button class="min-h-10 cursor-pointer rounded-lg bg-[#2868dc] px-4 text-sm font-semibold text-white transition hover:bg-[#3978ed] disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="formOpen()" (click)="openNew(activeTab())">Novo {{ activeTab() === 'TREINAMENTO' ? 'treinamento' : 'avaliação' }}</button>
+        </div>
+      </div>
+
+      @if (formOpen()) {
+        <form class="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-3 backdrop-blur-sm sm:p-6" (ngSubmit)="save($event)">
+          <section class="flex max-h-[calc(100dvh-24px)] w-full max-w-[760px] flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-[#0c1222] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.65)] sm:max-h-[calc(100dvh-48px)] sm:p-6" role="dialog" aria-modal="true" aria-labelledby="learning-form-title">
+          <div class="flex shrink-0 items-start justify-between gap-3 border-b border-white/[0.08] pb-3">
+            <div>
+              <h2 id="learning-form-title" class="text-lg font-semibold">{{ editingId() ? 'Editar' : 'Criar' }} {{ activeTab() === 'TREINAMENTO' ? 'treinamento' : 'avaliação' }}</h2>
+              <p class="mt-0.5 text-[11px] text-white/45">Cadastre um novo {{ activeTab() === 'TREINAMENTO' ? 'treinamento para os colaboradores' : 'conteúdo de avaliação' }}.</p>
+            </div>
+            <div class="flex shrink-0 items-center gap-2">
+              <label class="inline-flex items-center gap-1.5 text-[10px] text-white/55"><input class="size-3.5 accent-[#4385f5]" type="checkbox" [checked]="active()" (change)="active.set($any($event.target).checked)" /> Ativo</label>
+              <button class="flex size-8 cursor-pointer items-center justify-center rounded-lg border border-white/10 text-lg leading-none text-white/50 transition hover:bg-white/[0.06] hover:text-white" type="button" aria-label="Fechar formulário" (click)="cancelEdit()">×</button>
+            </div>
+          </div>
+
+          <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <section class="mt-4">
+            <h3 class="text-xs font-semibold text-white/80">1. Dados do {{ activeTab() === 'TREINAMENTO' ? 'treinamento' : 'avaliação' }}</h3>
+            <div class="mt-2 grid gap-3">
+              <label><span class="mb-1 block text-[11px] font-medium text-white/65">Título do {{ activeTab() === 'TREINAMENTO' ? 'treinamento' : 'avaliação' }}</span><input class="min-h-9 w-full rounded-lg border border-white/10 bg-[#101827] px-2.5 text-xs text-white outline-none placeholder:text-white/30 focus:border-[#4385f5]/60" [ngModel]="title()" (ngModelChange)="title.set($event)" name="title" maxlength="200" placeholder="Ex: Segurança da Informação" required /></label>
+              <label><span class="mb-1 block text-[11px] font-medium text-white/65">Descrição</span><textarea class="min-h-16 w-full resize-y rounded-lg border border-white/10 bg-[#101827] px-2.5 py-2 text-xs text-white outline-none placeholder:text-white/30 focus:border-[#4385f5]/60" [ngModel]="description()" (ngModelChange)="description.set($event)" name="description" maxlength="5000" placeholder="Descreva brevemente o conteúdo"></textarea></label>
+            </div>
+          </section>
+
+          <section class="mt-4">
+            <h3 class="text-xs font-semibold text-white/80">2. Setores destinatários</h3>
+            <details class="relative mt-2">
+              <summary class="cursor-pointer list-none"><span class="mb-1 block text-[11px] font-medium text-white/65">Selecionar setores</span><span class="flex min-h-9 items-center justify-between rounded-lg border border-white/10 bg-[#101827] px-2.5 text-xs text-white/75"><span class="truncate">{{ sectorSelectionLabel() }}</span><span class="ml-2 text-white/45">⌄</span></span></summary>
+              <div class="absolute inset-x-0 top-full z-10 mt-1 max-h-48 overflow-y-auto rounded-lg border border-white/10 bg-[#101827] p-2 shadow-xl">
+                @if (sectors().length) {
+                  <label class="flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 text-xs font-semibold text-white/75 hover:bg-white/[0.05]"><input class="size-3.5 accent-[#4385f5]" type="checkbox" [checked]="selectedSectors().length === sectors().length" (change)="toggleAllSectors($any($event.target).checked)" /> Todos os setores</label>
+                  @for (sector of sectors(); track sector.id) { <label class="flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 text-xs text-white/60 hover:bg-white/[0.05]"><input class="size-3.5 accent-[#4385f5]" type="checkbox" [checked]="selectedSectors().includes(sector.id)" (change)="toggleSectorFromEvent($event, sector.id)" /> {{ sector.nome_setor }}</label> }
+                } @else { <p class="p-2 text-xs text-white/45">Cadastre setores da empresa antes de criar conteúdos.</p> }
+              </div>
+            </details>
+          </section>
+
+          @if (activeTab() === 'TREINAMENTO') {
+            <fieldset class="mt-4 rounded-xl border border-white/[0.08] p-3">
+              <legend class="px-1 text-xs font-semibold text-white/80">3. Material do treinamento</legend>
+              <label class="block"><span class="mb-1 block text-[11px] font-medium text-white/65">Tipo de material</span><select class="min-h-9 w-full rounded-lg border border-white/10 bg-[#101827] px-2.5 text-xs text-white outline-none focus:border-[#4385f5]/60" [ngModel]="materialType()" (ngModelChange)="changeMaterialType($event)" name="materialType"><option class="bg-[#101827]" value="YOUTUBE">Vídeo do YouTube</option><option class="bg-[#101827]" value="ARTIGO">Artigo externo</option><option class="bg-[#101827]" value="PDF">PDF</option></select></label>
+              @if (materialType() === 'PDF') {
+                <div class="mt-3 grid gap-3 sm:grid-cols-2">
+                  <label><span class="mb-1 block text-[11px] font-medium text-white/65">URL do material</span><input class="min-h-9 w-full rounded-lg border border-white/10 bg-[#101827] px-2.5 text-xs text-white outline-none placeholder:text-white/30 focus:border-[#4385f5]/60" type="url" [ngModel]="url()" (ngModelChange)="url.set($event)" name="pdfUrl" placeholder="https://..." /></label>
+                  <div><span class="mb-1 block text-[11px] font-medium text-white/65">Ou anexe um PDF (até 10 MiB)</span><label class="flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-[#101827] px-2.5 text-[10px] text-white/70 focus-within:border-[#4385f5]/60"><input class="sr-only" type="file" accept="application/pdf,.pdf" (change)="selectPdf($event)" /><span class="shrink-0 rounded-md bg-white/10 px-2 py-1 text-[10px] text-white/80">Escolher arquivo</span><span class="min-w-0 truncate">{{ pdfNameLabel() }}</span></label></div>
+                  @if (pdf(); as file) { <p class="text-[10px] text-white/45 sm:col-span-2">Arquivo selecionado: {{ file.name }}</p> }
+                  @else if (hasPdf()) { <p class="text-[10px] text-white/45 sm:col-span-2">O PDF atual será mantido; anexe outro para substituí-lo.</p> }
+                </div>
+              } @else {
+                <label class="mt-3 block"><span class="mb-1 block text-[11px] font-medium text-white/65">URL do material</span><input class="min-h-9 w-full rounded-lg border border-white/10 bg-[#101827] px-2.5 text-xs text-white outline-none placeholder:text-white/30 focus:border-[#4385f5]/60" type="url" [ngModel]="url()" (ngModelChange)="url.set($event)" name="materialUrl" placeholder="https://..." required /></label>
+              }
+            </fieldset>
+            <fieldset class="mt-4 rounded-xl border border-white/[0.08] bg-[#101827]/70 p-3">
+              <div class="flex items-center justify-between gap-3">
+                <div><p class="text-xs font-semibold text-white/85">4. Prova da Aula</p><p class="mt-0.5 text-[10px] text-white/40">Adicione uma avaliação ao final do treinamento</p></div>
+                <button class="relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition" [class.bg-[#2868dc]]="proofEnabled()" [class.bg-white/15]="!proofEnabled()" type="button" role="switch" [attr.aria-checked]="proofEnabled()" aria-label="Ativar prova da aula" (click)="proofEnabled.set(!proofEnabled())"><span class="absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow transition-transform" [class.translate-x-5]="proofEnabled()"></span></button>
+              </div>
+              @if (proofEnabled()) {
+                <div class="mt-3 grid gap-3">
+                  <label><span class="mb-1 block text-[11px] font-medium text-white/60">Título da prova</span><input class="min-h-9 w-full rounded-lg border border-white/10 bg-[#0b1322] px-2.5 text-xs text-white outline-none placeholder:text-white/30 focus:border-[#4385f5]/60" [ngModel]="proofTitle()" (ngModelChange)="proofTitle.set($event)" name="proofTitle" maxlength="200" placeholder="Prova da Aula" /></label>
+                  <label><span class="mb-1 block text-[11px] font-medium text-white/60">Descrição da prova</span><textarea class="min-h-16 w-full resize-y rounded-lg border border-white/10 bg-[#0b1322] px-2.5 py-2 text-xs text-white outline-none placeholder:text-white/30 focus:border-[#4385f5]/60" [ngModel]="proofDescription()" (ngModelChange)="proofDescription.set($event)" name="proofDescription" maxlength="5000" placeholder="Oriente o colaborador sobre a prova"></textarea></label>
+                  <label><span class="mb-1 block text-[11px] font-medium text-white/60">Nota mínima (%)</span><input class="min-h-9 w-full rounded-lg border border-white/10 bg-[#0b1322] px-2.5 text-xs text-white outline-none focus:border-[#4385f5]/60" type="number" min="0" max="100" step="1" [ngModel]="minimumScore()" (ngModelChange)="minimumScore.set(+$event)" name="minimumScore" /></label>
+                </div>
+              }
+            </fieldset>
+            @if (proofEnabled()) {
+              <fieldset class="mt-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <legend class="text-xs font-semibold text-white/80">5. Questões ({{ questions().length }})</legend>
+                  <div class="flex flex-wrap gap-2">
+                    <button class="min-h-8 cursor-pointer rounded-lg border border-white/10 px-2.5 text-[10px] font-semibold text-white/75 transition hover:bg-white/[0.05]" type="button" (click)="toggleQuestionImport()">{{ questionImportOpen() ? 'Fechar importação' : 'Importar questões' }}</button>
+                    <button class="min-h-8 cursor-pointer rounded-lg border border-white/10 px-2.5 text-[10px] font-semibold text-white/75 transition hover:bg-white/[0.05]" type="button" (click)="addQuestion()">＋ Adicionar questão</button>
+                  </div>
+                </div>
+                @if (questionImportOpen()) {
+                  <div class="mt-3 rounded-xl border border-white/[0.08] bg-[#101827] p-3">
+                    <p class="text-[11px] text-white/55">Cole texto estruturado ou JSON. O título preencherá o título da prova; as questões atuais serão substituídas após confirmação.</p>
+                    <textarea class="mt-2 min-h-32 w-full resize-y rounded-lg border border-white/10 bg-[#0b1322] px-3 py-2 font-mono text-[11px] text-white outline-none placeholder:text-white/30 focus:border-[#4385f5]/60" [ngModel]="questionImportText()" (ngModelChange)="questionImportText.set($event)" name="trainingQuestionImport" placeholder="Título: Proteção de Dados&#10;&#10;Pergunta: Qual dado deve ser protegido?&#10;A) Dados pessoais&#10;B) Dados públicos&#10;Correta: A"></textarea>
+                    <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
+                      <label class="inline-flex min-h-9 cursor-pointer items-center rounded-lg border border-[#4385f5]/40 bg-[#2868dc]/15 px-3 text-xs font-semibold text-[#b8d2ff] shadow-sm transition hover:bg-[#2868dc]/25 focus-within:ring-2 focus-within:ring-[#4385f5]/50"><span aria-hidden="true" class="mr-2 text-sm">↑</span>Selecionar arquivo JSON<input class="sr-only" type="file" accept=".json,application/json" (change)="loadQuestionImportFile($event)" /></label>
+                      <button class="min-h-8 cursor-pointer rounded-lg bg-[#2868dc] px-3 text-[10px] font-semibold text-white hover:bg-[#3978ed]" type="button" (click)="importQuestions()">Importar para o formulário</button>
+                    </div>
+                    @if (questionImportError()) { <p class="mt-2 text-xs text-[#ffaaaa]" role="alert">{{ questionImportError() }}</p> }
+                    @if (questionImportNotice()) { <p class="mt-2 text-xs text-emerald-200" role="status">{{ questionImportNotice() }}</p> }
+                  </div>
+                }
+                <div class="mt-2 space-y-3">
+                  @for (question of questions(); track question.id; let questionIndex = $index) {
+                    <article class="rounded-xl border border-white/[0.07] bg-[#18243c] p-3">
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="text-[10px] font-medium text-white/45">Questão {{ questionIndex + 1 }}</span>
+                        <button class="cursor-pointer rounded p-1 text-[11px] text-red-300/70 hover:bg-red-400/10 hover:text-red-200 disabled:opacity-30" type="button" [disabled]="questions().length <= 1" (click)="removeQuestion(question.id)" [attr.aria-label]="'Remover questão ' + (questionIndex + 1)">▣</button>
+                      </div>
+                      <label class="mt-1 block"><span class="sr-only">Digite a pergunta</span><input class="min-h-8 w-full rounded-md border border-white/10 bg-[#111c31] px-2 text-[10px] text-white outline-none placeholder:text-white/35 focus:border-[#4385f5]/60" [ngModel]="question.texto" (ngModelChange)="updateQuestionText(question.id, $event)" [name]="'training-question-' + question.id" maxlength="2000" placeholder="Digite a pergunta..." /></label>
+                      <div class="mt-2 space-y-1">
+                        @for (alternative of question.alternativas; track alternative.id; let alternativeIndex = $index) {
+                          <div class="flex items-center gap-2">
+                            <input class="size-3.5 shrink-0 accent-emerald-400" type="radio" [name]="'training-correct-' + question.id" [checked]="alternative.correta" (change)="setCorrectAlternative(question.id, alternative.id)" [attr.aria-label]="'Definir alternativa ' + (alternativeIndex + 1) + ' como correta'" />
+                            <label class="min-w-0 flex-1"><span class="sr-only">Alternativa {{ alternativeIndex + 1 }}</span><input class="min-h-7 w-full rounded-md border border-white/10 bg-[#111c31] px-2 text-[10px] text-white outline-none placeholder:text-white/35 focus:border-[#4385f5]/60" [ngModel]="alternative.texto" (ngModelChange)="updateAlternativeText(question.id, alternative.id, $event)" [name]="'training-option-' + alternative.id" maxlength="500" [placeholder]="'Alternativa ' + ['A', 'B', 'C', 'D'][alternativeIndex]" /></label>
+                            <button class="cursor-pointer px-1 text-xs text-white/30 hover:text-red-200 disabled:opacity-20" type="button" [disabled]="question.alternativas.length <= 2" (click)="removeAlternative(question.id, alternative.id)" [attr.aria-label]="'Remover alternativa ' + (alternativeIndex + 1)">×</button>
+                          </div>
+                        }
+                      </div>
+                      <button class="mt-2 cursor-pointer text-[9px] text-white/35 hover:text-white/65" type="button" (click)="addAlternative(question.id)">Clique ou adicione uma alternativa</button>
+                    </article>
+                  }
+                </div>
+              </fieldset>
+            }
+          } @else {
+            <fieldset class="mt-6 border-t border-white/[0.07] pt-5">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <legend class="text-sm font-semibold text-white/80">3. Perguntas e alternativas</legend>
+                <div class="flex flex-wrap gap-2">
+                  <button class="min-h-9 cursor-pointer rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/75 transition hover:bg-white/[0.05]" type="button" (click)="toggleQuestionImport()">{{ questionImportOpen() ? 'Fechar importação' : 'Importar questões' }}</button>
+                  <button class="min-h-9 cursor-pointer rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/75 transition hover:bg-white/[0.05]" type="button" (click)="addQuestion()">Adicionar pergunta</button>
+                </div>
+              </div>
+              @if (questionImportOpen()) {
+                <div class="mt-3 rounded-xl border border-white/[0.08] bg-[#101827] p-3">
+                  <p class="text-[11px] text-white/55">Cole texto estruturado ou JSON. O título preencherá o título da avaliação; as questões atuais serão substituídas após confirmação.</p>
+                  <textarea class="mt-2 min-h-32 w-full resize-y rounded-lg border border-white/10 bg-[#0b1322] px-3 py-2 font-mono text-[11px] text-white outline-none placeholder:text-white/30 focus:border-[#4385f5]/60" [ngModel]="questionImportText()" (ngModelChange)="questionImportText.set($event)" name="assessmentQuestionImport" placeholder="Título: Proteção de Dados&#10;&#10;Pergunta: Qual dado deve ser protegido?&#10;A) Dados pessoais&#10;B) Dados públicos&#10;Correta: A"></textarea>
+                  <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
+                    <label class="inline-flex min-h-9 cursor-pointer items-center rounded-lg border border-[#4385f5]/40 bg-[#2868dc]/15 px-3 text-xs font-semibold text-[#b8d2ff] shadow-sm transition hover:bg-[#2868dc]/25 focus-within:ring-2 focus-within:ring-[#4385f5]/50"><span aria-hidden="true" class="mr-2 text-sm">↑</span>Selecionar arquivo JSON<input class="sr-only" type="file" accept=".json,application/json" (change)="loadQuestionImportFile($event)" /></label>
+                    <button class="min-h-8 cursor-pointer rounded-lg bg-[#2868dc] px-3 text-[10px] font-semibold text-white hover:bg-[#3978ed]" type="button" (click)="importQuestions()">Importar para o formulário</button>
+                  </div>
+                  @if (questionImportError()) { <p class="mt-2 text-xs text-[#ffaaaa]" role="alert">{{ questionImportError() }}</p> }
+                  @if (questionImportNotice()) { <p class="mt-2 text-xs text-emerald-200" role="status">{{ questionImportNotice() }}</p> }
+                </div>
+              }
+              <div class="mt-4 space-y-4">
+                @for (question of questions(); track question.id; let questionIndex = $index) {
+                  <article class="rounded-xl border border-white/[0.08] bg-[#101827] p-4">
+                    <div class="flex items-start gap-3">
+                      <label class="min-w-0 flex-1"><span class="mb-1.5 block text-xs font-medium text-white/55">Pergunta {{ questionIndex + 1 }} *</span><textarea class="min-h-16 w-full resize-y rounded-lg border border-white/10 bg-[#0b1322] px-3 py-2 text-sm text-white outline-none focus:border-[#4385f5]/60" [ngModel]="question.texto" (ngModelChange)="updateQuestionText(question.id, $event)" [name]="'question-' + question.id" maxlength="2000" required></textarea></label>
+                      <button class="mt-6 cursor-pointer rounded-lg px-2 py-2 text-xs text-white/40 hover:bg-red-400/10 hover:text-red-200 disabled:opacity-30" type="button" [disabled]="questions().length <= 1" (click)="removeQuestion(question.id)">Remover</button>
+                    </div>
+                    <div class="mt-3 space-y-2">
+                      @for (alternative of question.alternativas; track alternative.id; let alternativeIndex = $index) {
+                        <div class="flex items-center gap-2">
+                          <input class="size-4 shrink-0 accent-emerald-400" type="radio" [name]="'correct-' + question.id" [checked]="alternative.correta" [attr.aria-label]="'Definir alternativa ' + (alternativeIndex + 1) + ' como correta'" (change)="setCorrectAlternative(question.id, alternative.id)" />
+                          <label class="min-w-0 flex-1"><span class="sr-only">Alternativa {{ alternativeIndex + 1 }}</span><input class="min-h-10 w-full rounded-lg border border-white/10 bg-[#0b1322] px-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#4385f5]/60" [ngModel]="alternative.texto" (ngModelChange)="updateAlternativeText(question.id, alternative.id, $event)" [name]="'option-' + alternative.id" maxlength="500" required [placeholder]="'Alternativa ' + (alternativeIndex + 1)" /></label>
+                          <span class="hidden text-[10px] text-emerald-300 sm:block">{{ alternative.correta ? 'Correta' : '' }}</span>
+                          <button class="cursor-pointer rounded-lg px-2 py-2 text-xs text-white/35 hover:text-red-200 disabled:opacity-25" type="button" [disabled]="question.alternativas.length <= 2" (click)="removeAlternative(question.id, alternative.id)" [attr.aria-label]="'Remover alternativa ' + (alternativeIndex + 1)">×</button>
+                        </div>
+                      }
+                    </div>
+                    <button class="mt-3 cursor-pointer text-xs font-semibold text-[#8ab5ff] hover:text-white" type="button" (click)="addAlternative(question.id)">+ Adicionar alternativa</button>
+                    <p class="mt-2 text-[10px] text-white/35">Marque o círculo da resposta correta.</p>
+                  </article>
+                }
+              </div>
+            </fieldset>
+          }
+
+          </div>
+
+          <div class="-mx-4 flex shrink-0 flex-wrap justify-end gap-2 border-t border-white/[0.07] bg-[#0c1222] px-4 py-3 sm:-mx-6 sm:px-6">
+            <button class="min-h-9 cursor-pointer rounded-lg border border-white/10 px-4 text-xs font-medium text-white/60 hover:bg-white/[0.05]" type="button" (click)="cancelEdit()">Cancelar</button>
+            <button class="inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg bg-[#0645ee] px-4 text-xs font-semibold text-white transition hover:bg-[#1c5aff] disabled:cursor-wait disabled:opacity-60" type="submit" [disabled]="saving()"><span aria-hidden="true">＋</span>{{ saving() ? 'Salvando...' : editingId() ? 'Salvar alterações' : 'Criar ' + (activeTab() === 'TREINAMENTO' ? 'treinamento' : 'avaliação') }}</button>
+          </div>
+          </section>
+        </form>
+      }
+
+      @if (loading()) {
+        <div class="rounded-2xl border border-white/[0.08] bg-[#101827] p-10 text-center text-sm text-white/55" role="status">Carregando conteúdos...</div>
+      } @else if (filteredItems().length) {
+        <section class="grid items-start gap-3 lg:grid-cols-2" [attr.aria-label]="activeTab() === 'TREINAMENTO' ? 'Treinamentos cadastrados' : 'Avaliações cadastradas'">
+          @for (item of filteredItems(); track item.id) {
+            <article class="rounded-2xl border border-white/[0.08] bg-[#0f172a]/90 p-5">
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="rounded-md border px-2 py-1 text-[10px] font-bold uppercase tracking-[0.1em]" [class.border-emerald-400/20]="item.ativo" [class.bg-emerald-400/[0.07]]="item.ativo" [class.text-emerald-200]="item.ativo" [class.border-white/10]="!item.ativo" [class.text-white/45]="!item.ativo">{{ item.ativo ? 'Ativo' : 'Inativo' }}</span>
+                    <span class="text-[10px] font-medium uppercase tracking-[0.1em] text-white/35">{{ item.tipo === 'TREINAMENTO' ? materialTypeLabel(item.tipo_material) : item.perguntas.length + ' perguntas' }}</span>
+                  </div>
+                  <h2 class="mt-2 break-words text-base font-semibold">{{ item.titulo }}</h2>
+                </div>
+              </div>
+              @if (item.descricao) {
+                <div class="mt-2">
+                  <p class="whitespace-pre-line text-sm leading-relaxed text-white/50" [class.line-clamp-2]="!expandedDescriptions().has(item.id)">{{ item.descricao }}</p>
+                  @if (item.descricao.length > 180) {
+                    <button class="mt-1 cursor-pointer text-xs font-medium text-[#8ab5ff] hover:text-white" type="button" [attr.aria-expanded]="expandedDescriptions().has(item.id)" (click)="toggleDescription(item.id)">{{ expandedDescriptions().has(item.id) ? 'Ler menos' : 'Ler mais...' }}</button>
+                  }
+                </div>
+              }
+              <p class="mt-3 text-xs text-white/40">Setores: {{ item.setores.map((sector) => sector.nome_setor).join(', ') }}</p>
+              <div class="mt-4 flex flex-wrap justify-end gap-2 border-t border-white/[0.06] pt-3">
+                @if (item.tipo === 'AVALIACAO' || item.prova?.ativa || item.tem_resultados) { <button class="min-h-9 cursor-pointer rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/70 hover:bg-white/[0.05]" type="button" (click)="loadResults(item)">Histórico de resultados</button> }
+                <button class="min-h-9 cursor-pointer rounded-lg border border-white/10 px-3 text-xs font-semibold text-white/70 hover:bg-white/[0.05]" type="button" (click)="edit(item)">Editar</button>
+                <button class="min-h-9 cursor-pointer rounded-lg border px-3 text-xs font-semibold transition" [class.border-emerald-400/20]="!item.ativo" [class.text-emerald-200]="!item.ativo" [class.border-amber-300/20]="item.ativo" [class.text-amber-200]="item.ativo" type="button" (click)="toggleActive(item)">{{ item.ativo ? 'Desativar' : 'Ativar' }}</button>
+                <button class="min-h-9 cursor-pointer rounded-lg border border-red-300/20 px-3 text-xs font-semibold text-red-200 transition hover:bg-red-400/10 disabled:cursor-not-allowed disabled:opacity-40" type="button" [disabled]="deletingId() === item.id" (click)="deleteItem(item)">{{ deletingId() === item.id ? 'Excluindo...' : 'Excluir' }}</button>
+              </div>
+              @if (item.tem_resultados) { <p class="mt-2 text-right text-[10px] text-amber-200/60">Excluir este conteúdo também apagará os resultados vinculados.</p> }
+              @if (historyItemId() === item.id) {
+                <section class="mt-4 rounded-xl border border-white/[0.07] bg-[#101827] p-4" aria-label="Histórico de resultados">
+                  <h3 class="text-sm font-semibold">Histórico de resultados</h3>
+                  @if (historyLoading()) { <p class="mt-3 text-xs text-white/45" role="status">Carregando resultados...</p> }
+                  @else if (history().length) {
+                    <ul class="mt-3 divide-y divide-white/[0.06]">
+                      @for (result of history(); track result.id) {
+                        <li class="flex flex-wrap items-center justify-between gap-2 py-3 first:pt-0 last:pb-0">
+                          <div><p class="text-sm font-medium text-white/80">{{ result.nome }}</p><p class="mt-0.5 text-xs text-white/40">{{ result.email }} · {{ formatDateTime(result.entregue_em) }}</p></div>
+                          <span class="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/70">{{ result.acertos }} de {{ result.total_perguntas }} acertos@if (result.aprovado !== null) { · {{ result.aprovado ? 'Aprovado' : 'Não aprovado' }} }</span>
+                        </li>
+                      }
+                    </ul>
+                  } @else { <p class="mt-2 text-xs text-white/45">Ainda não há respostas enviadas.</p> }
+                </section>
+              }
+            </article>
+          }
+        </section>
+      } @else if (!loading()) {
+        <div class="rounded-2xl border border-dashed border-white/[0.12] bg-[#101827]/60 px-5 py-12 text-center">
+          <p class="text-sm font-medium text-white/65">Nenhum {{ activeTab() === 'TREINAMENTO' ? 'treinamento' : 'avaliação' }} encontrado.</p>
+          <p class="mt-1 text-xs text-white/40">{{ showInactive() ? 'Crie um conteúdo para disponibilizá-lo aos setores selecionados.' : 'Ative o filtro de inativos para consultar conteúdos desativados.' }}</p>
+        </div>
+      }
+    }
+  </div>
+</main>

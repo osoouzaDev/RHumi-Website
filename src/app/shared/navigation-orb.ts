@@ -7,7 +7,7 @@ export type NavigationPage = 'dashboard' | 'employees' | 'company' | 'journey' |
   host: { class: 'block' },
   template: `
     <button
-      class="flex size-[60px] cursor-pointer items-center justify-center rounded-full border border-white/10 bg-[linear-gradient(180deg,#1d108f_0%,#4841a0_25%,#8b87c3_50%,#4841a0_75%,#1d108f_100%)] [background-size:100%_200%] text-white shadow-[0_12px_36px_rgba(57,43,170,0.38)] transition-all duration-300 hover:scale-[1.04] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a99bff] animate-circle-gradient"
+      class="flex size-[60px] cursor-pointer items-center justify-center rounded-full border border-white/10 bg-[linear-gradient(180deg,#1d108f_0%,#4841a0_25%,#8b87c3_50%,#4841a0_75%,#1d108f_100%)] [background-size:100%_200%] text-white shadow-[0_12px_36px_rgba(57,43,170,0.38)] transition-transform duration-300 hover:scale-[1.04] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a99bff] animate-circle-gradient"
       [class.-translate-y-[50px]]="scrolled()"
       type="button"
       aria-label="Navegação do sistema"
