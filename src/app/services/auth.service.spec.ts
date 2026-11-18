@@ -104,6 +104,78 @@ describe('AuthService', () => {
     );
   });
 
+  it('should fetch advertised vacancies without requiring a session', async () => {
+    const vacancies = [{
+      id: 'vacancy-id',
+      titulo: 'Analista',
+      setor: 'Pessoas',
+      localidade: 'Remoto',
+      tipo_contrato: 'CLT' as const,
+      descricao: 'Descrição',
+      status: 'ABERTA' as const,
+      created_at: '2026-11-12T12:00:00.000Z',
+    }];
+    fetchMock.mockResolvedValueOnce(jsonResponse({ status: 'success', data: vacancies }));
+
+    await expect(authService.listarVagasPublicas()).resolves.toEqual(vacancies);
+    expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:8000/api/public/vagas');
+    expect(new Headers(fetchMock.mock.calls[0][1].headers).get('Authorization')).toBeNull();
+  });
+
+  it('should create candidate accounts, apply for vacancies, and load their applications', async () => {
+    const profile = {
+      id: 'candidate-id',
+      userLogin: 'ana@example.com',
+      classificacao: 'CANDIDATE',
+    };
+    const application = {
+      id: 'application-id',
+      id_candidato: 'application-id',
+      nome: 'Ana Silva',
+      email: 'ana@example.com',
+      telefone: null,
+      id_vaga: 'vacancy-id',
+      vaga_titulo: 'Analista',
+      status: 'NOVA' as const,
+      created_at: '2026-11-12T12:00:00.000Z',
+    };
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({
+        status: 'success',
+        data: {
+          access_token: 'candidate-token',
+          refresh_token: 'candidate-refresh',
+          token_type: 'Bearer',
+          expires_in: 1800,
+          profile,
+        },
+      }, 201))
+      .mockResolvedValueOnce(jsonResponse({ status: 'success', data: application }, 201))
+      .mockResolvedValueOnce(jsonResponse({ status: 'success', data: [application] }));
+
+    await authService.registrarCandidato({
+      nome: 'Ana Silva',
+      email: 'ana@example.com',
+      telefone: null,
+      senha: 'senha-segura-123',
+    });
+    await expect(authService.candidatarVaga('vacancy-id')).resolves.toEqual(application);
+    await expect(authService.listarMinhasCandidaturas()).resolves.toEqual([application]);
+
+    expect(authService.currentUser()).toEqual(profile);
+    expect(localStorage.getItem('rhumi_access_token')).toBe('candidate-token');
+    expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:8000/api/public/candidatos');
+    expect(JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string)).toEqual({
+      nome: 'Ana Silva',
+      email: 'ana@example.com',
+      telefone: null,
+      senha: 'senha-segura-123',
+    });
+    expect(fetchMock.mock.calls[1][0]).toBe('http://localhost:8000/api/candidato/candidaturas');
+    expect(new Headers((fetchMock.mock.calls[1][1] as RequestInit).headers).get('Authorization'))
+      .toBe('Bearer candidate-token');
+  });
+
   it('should load and persist journey checklist changes through the authenticated endpoints', async () => {
     authService.saveSession('access-token');
     const journeys = [

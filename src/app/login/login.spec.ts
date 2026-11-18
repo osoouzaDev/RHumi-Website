@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { Login } from './login';
 import { AuthService } from '../services/auth.service';
 
@@ -8,30 +9,28 @@ describe('Login', () => {
     loginComEmail: ReturnType<typeof vi.fn>;
     loginComCodigo: ReturnType<typeof vi.fn>;
     isAuthenticated: ReturnType<typeof vi.fn>;
+    currentUser: ReturnType<typeof vi.fn>;
   };
 
-  let mockRouter: {
-    navigate: ReturnType<typeof vi.fn>;
-  };
+  let mockRouter: Router;
 
   beforeEach(async () => {
     mockAuthService = {
       loginComEmail: vi.fn(),
       loginComCodigo: vi.fn(),
       isAuthenticated: vi.fn().mockReturnValue(false),
-    };
-
-    mockRouter = {
-      navigate: vi.fn().mockResolvedValue(true),
+      currentUser: vi.fn().mockReturnValue({ classificacao: 'HR_ADMIN' }),
     };
 
     await TestBed.configureTestingModule({
       imports: [Login],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter },
+        provideRouter([]),
       ],
     }).compileComponents();
+    mockRouter = TestBed.inject(Router);
+    vi.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
   });
 
   it('should render the login screen with email and password fields', async () => {

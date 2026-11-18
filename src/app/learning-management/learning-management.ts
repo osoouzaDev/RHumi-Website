@@ -41,7 +41,6 @@ export class LearningManagement implements OnInit {
   protected readonly materialType = signal<LearningMaterialType>('YOUTUBE');
   protected readonly url = signal('');
   protected readonly pdf = signal<File | null>(null);
-  protected readonly existingPdfName = signal<string | null>(null);
   protected readonly questions = signal<LearningQuestion[]>([]);
   protected readonly proofEnabled = signal(true);
   protected readonly proofTitle = signal('Prova da Aula');
@@ -77,9 +76,6 @@ export class LearningManagement implements OnInit {
   });
   protected readonly hasPdf = computed(
     () => this.items().find((item) => item.id === this.editingId())?.tem_pdf ?? false,
-  );
-  protected readonly pdfNameLabel = computed(() =>
-    this.pdf()?.name ?? this.existingPdfName() ?? 'Nenhum arquivo escolhido',
   );
 
   ngOnInit(): void {
@@ -131,7 +127,6 @@ export class LearningManagement implements OnInit {
     this.materialType.set('YOUTUBE');
     this.url.set('');
     this.pdf.set(null);
-    this.existingPdfName.set(null);
     this.proofEnabled.set(type === 'TREINAMENTO');
     this.proofTitle.set('Prova da Aula');
     this.proofDescription.set('');
@@ -155,7 +150,6 @@ export class LearningManagement implements OnInit {
     this.materialType.set(item.tipo_material ?? 'YOUTUBE');
     this.url.set(item.url_material ?? '');
     this.pdf.set(null);
-    this.existingPdfName.set(item.nome_arquivo_pdf ?? null);
     this.questions.set(item.perguntas.map((question) => ({
       ...question,
       alternativas: question.alternativas.map((alternative) => ({ ...alternative })),
@@ -179,7 +173,6 @@ export class LearningManagement implements OnInit {
     this.formOpen.set(false);
     this.editingId.set(null);
     this.pdf.set(null);
-    this.existingPdfName.set(null);
     this.error.set('');
     this.notice.set('');
   }

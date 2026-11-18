@@ -71,6 +71,7 @@ describe('Recruitment', () => {
       setor: 'Pessoas',
       localidade: null,
       tipo_contrato: 'CLT',
+      descricao: null,
     });
     expect(fixture.nativeElement.textContent).toContain('Vagas da empresa');
   });

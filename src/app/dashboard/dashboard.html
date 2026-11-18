@@ -23,9 +23,9 @@
         <p class="mt-1 text-xs text-blue-100/70">Acompanhe a equipe e os indicadores de desempenho.</p>
       </div>
       <div class="sm:text-right">
-        <p class="text-3xl font-bold tracking-tight sm:text-4xl">—</p>
-        <p class="text-xs font-semibold text-blue-100/80">Média de avaliações</p>
-        <p class="mt-0.5 text-[10px] text-blue-100/55">Dados de avaliação indisponíveis</p>
+        <p class="text-3xl font-bold tracking-tight sm:text-4xl">{{ overallScore() === null ? '—' : overallScore() + '%' }}</p>
+        <p class="text-xs font-semibold text-blue-100/80">Média geral de desempenho</p>
+        <p class="mt-0.5 text-[10px] text-blue-100/55">Provas de treinamentos e avaliações</p>
       </div>
     </section>
 
@@ -64,18 +64,40 @@
 
         <div class="grid gap-4 xl:grid-cols-2">
           <article class="min-h-52 rounded-2xl border border-white/[0.07] bg-[#101827] p-5 sm:p-6">
-            <h2 class="font-semibold">Desempenho por funcionário</h2>
-            <div class="mt-5 flex min-h-28 flex-col items-center justify-center rounded-xl border border-dashed border-white/[0.1] px-4 text-center">
-              <p class="text-sm text-white/55">Ainda não há avaliações para exibir.</p>
-              <p class="mt-1 text-xs text-white/35">Os dados de desempenho não estão disponíveis na API.</p>
-            </div>
+            <h2 class="font-semibold">Desempenho por colaborador</h2>
+            @if (topPerformance().length) {
+              <ul class="mt-5 space-y-4">
+                @for (employee of topPerformance(); track employee.id_usuario) {
+                  <li>
+                    <div class="mb-2 flex items-center justify-between gap-3 text-sm">
+                      <span class="truncate text-white/75">{{ employee.nome }}</span>
+                      <span class="shrink-0 text-xs text-white/50">{{ employee.media_percentual }}% · {{ employee.total_respostas }} respostas</span>
+                    </div>
+                    <div class="h-2 overflow-hidden rounded-full bg-white/[0.08]"><div class="h-full rounded-full bg-[#2f78ec] transition-[width]" [style.width.%]="employee.media_percentual"></div></div>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="mt-5 rounded-xl border border-dashed border-white/[0.1] px-4 py-8 text-center text-sm text-white/45">Ainda não há respostas de avaliações ou provas de treinamento.</p>
+            }
           </article>
           <article class="min-h-52 rounded-2xl border border-white/[0.07] bg-[#101827] p-5 sm:p-6">
-            <h2 class="font-semibold">Resultados das avaliações</h2>
-            <div class="mt-5 flex min-h-28 flex-col items-center justify-center rounded-xl border border-dashed border-white/[0.1] px-4 text-center">
-              <p class="text-sm text-white/55">Nenhum resultado de avaliação disponível.</p>
-              <p class="mt-1 text-xs text-white/35">Quando a integração estiver ativa, os resultados aparecerão aqui.</p>
-            </div>
+            <h2 class="font-semibold">Respostas recentes</h2>
+            @if (recentResults().length) {
+              <ul class="mt-3 divide-y divide-white/[0.06]">
+                @for (result of recentResults(); track result.id) {
+                  <li class="flex flex-wrap items-center justify-between gap-2 py-3 first:pt-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="truncate text-sm font-medium text-white/80">{{ result.colaborador }}</p>
+                      <p class="mt-0.5 truncate text-xs text-white/40">{{ result.titulo }} · {{ formatDateTime(result.entregue_em) }}</p>
+                    </div>
+                    <span class="shrink-0 rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/70">{{ result.percentual }}% · {{ resultStatus(result) }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="mt-5 rounded-xl border border-dashed border-white/[0.1] px-4 py-8 text-center text-sm text-white/45">Nenhuma resposta registrada até o momento.</p>
+            }
           </article>
           <article class="rounded-2xl border border-white/[0.07] bg-[#101827] p-5 sm:p-6">
             <div class="flex items-center justify-between gap-3"><h2 class="font-semibold">Colaboradores por setor</h2><span class="text-xs text-white/40">{{ employees().length }} pessoas</span></div>
@@ -113,38 +135,95 @@
       <section id="performance-panel" role="tabpanel" aria-labelledby="performance-tab" class="flex flex-col gap-5">
         <div class="grid grid-cols-2 gap-3 xl:grid-cols-4">
           @for (metric of [
-            { label: 'Top Performers', detail: 'Acima de 80%', color: 'text-emerald-400', icon: '★' },
-            { label: 'Em desenvolvimento', detail: 'Entre 60% e 80%', color: 'text-amber-400', icon: '↗' },
-            { label: 'Atenção necessária', detail: 'Abaixo de 60%', color: 'text-red-400', icon: '!' },
-            { label: 'Média geral', detail: 'Sem avaliações', color: 'text-blue-400', icon: '◎' }
+            { label: 'Top performers', value: topPerformerCount(), detail: 'Média igual ou acima de 80%', color: 'text-emerald-400', icon: '★' },
+            { label: 'Em desenvolvimento', value: developingCount(), detail: 'Média entre 60% e 79%', color: 'text-amber-400', icon: '↗' },
+            { label: 'Atenção necessária', value: attentionCount(), detail: 'Média abaixo de 60%', color: 'text-red-400', icon: '!' },
+            { label: 'Média geral', value: overallScore() === null ? '—' : overallScore() + '%', detail: 'Percentual de acertos', color: 'text-blue-400', icon: '◎' }
           ]; track metric.label) {
             <article class="flex min-h-20 items-center gap-3 rounded-2xl border border-white/[0.07] bg-[#101827] px-3 py-4 sm:gap-4 sm:px-5">
               <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.05] text-lg" [class]="metric.color" aria-hidden="true">{{ metric.icon }}</span>
-              <div class="min-w-0"><p class="text-xl font-bold" [class]="metric.color">—</p><p class="truncate text-xs font-semibold text-white/70">{{ metric.label }}</p><p class="truncate text-[10px] text-white/35">{{ metric.detail }}</p></div>
+              <div class="min-w-0"><p class="text-xl font-bold" [class]="metric.color">{{ metric.value }}</p><p class="truncate text-xs font-semibold text-white/70">{{ metric.label }}</p><p class="truncate text-[10px] text-white/35">{{ metric.detail }}</p></div>
             </article>
           }
         </div>
 
         <div class="grid gap-4 xl:grid-cols-[minmax(0,1.8fr)_minmax(280px,0.9fr)]">
           <article class="min-h-[270px] rounded-2xl border border-white/[0.07] bg-[#101827] p-5 sm:p-6">
-            <div class="flex flex-wrap items-center justify-between gap-3"><h2 class="font-semibold">Ranking de desempenho</h2><span class="rounded-lg border border-white/[0.1] px-3 py-1.5 text-xs text-white/45">Avaliações</span></div>
-            <div class="mt-5 flex min-h-[190px] flex-col items-center justify-center rounded-xl border border-dashed border-white/[0.1] px-5 text-center">
-              <span class="flex size-11 items-center justify-center rounded-full bg-[#2868dc]/10 text-[#77aaff]" aria-hidden="true"><svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0V4ZM7 6H4v2a4 4 0 0 0 4 4m9-6h3v2a4 4 0 0 1-4 4" /></svg></span>
-              <p class="mt-3 text-sm font-medium text-white/65">Ainda não há avaliações para montar o ranking.</p>
-              <p class="mt-1 max-w-md text-xs leading-5 text-white/40">A lista será preenchida quando os resultados de desempenho estiverem disponíveis.</p>
-            </div>
+            <div class="flex flex-wrap items-center justify-between gap-3"><h2 class="font-semibold">Ranking de desempenho</h2><span class="rounded-lg border border-white/[0.1] px-3 py-1.5 text-xs text-white/45">{{ performance().length }} colaboradores</span></div>
+            @if (orderedPerformance().length) {
+              <ul class="mt-4 max-h-[340px] space-y-2 overflow-y-auto">
+                @for (employee of orderedPerformance(); track employee.id_usuario) {
+                  <li>
+                    <button class="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-transparent bg-[#1a2538] px-3 py-3 text-left transition-colors hover:border-[#4385f5]/40 hover:bg-[#1d2b42] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8ab5ff] sm:px-4" type="button" [class.border-[#4385f5]]="selectedPerformance()?.id_usuario === employee.id_usuario" [attr.aria-pressed]="selectedPerformance()?.id_usuario === employee.id_usuario" (click)="selectEmployee(employee.id_usuario)">
+                      <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(145deg,#2875f0,#3953bd)] text-xs font-bold">{{ initials(employee.nome) }}</span>
+                      <span class="min-w-0 flex-1"><span class="block truncate text-sm font-semibold text-white/90">{{ employee.nome }}</span><span class="mt-0.5 block truncate text-xs text-white/45">{{ employee.setor || 'Setor não informado' }} · {{ employee.total_treinamentos }} provas de treinamento · {{ employee.total_avaliacoes }} avaliações</span><span class="mt-1 block truncate text-xs text-[#8ab5ff]">{{ trainingResults(employee).length ? 'Treinamentos: ' + trainingTitles(employee) : 'Nenhuma prova de treinamento respondida' }}</span></span>
+                      @if (employee.media_percentual === null) {
+                        <span class="shrink-0 rounded-full bg-white/[0.06] px-2.5 py-1 text-[10px] font-medium text-white/45 sm:text-xs">Sem respostas</span>
+                      } @else {
+                        <span class="shrink-0 rounded-full bg-[#2868dc]/20 px-2.5 py-1 text-xs font-semibold text-[#9bc1ff]">{{ employee.media_percentual }}%</span>
+                      }
+                    </button>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="mt-5 flex min-h-[190px] items-center justify-center rounded-xl border border-dashed border-white/[0.1] px-5 text-center text-sm text-white/45">Nenhum colaborador ativo encontrado.</p>
+            }
           </article>
 
           <article class="min-h-[270px] rounded-2xl border border-white/[0.07] bg-[#101827] p-5 sm:p-6">
             <h2 class="font-semibold">Detalhes do funcionário</h2>
-            @if (selectedEmployee(); as employee) {
+            @if (selectedPerformance(); as employee) {
               <div class="mt-6 flex flex-col items-center text-center">
-                <span class="flex size-14 items-center justify-center rounded-full bg-[linear-gradient(145deg,#2875f0,#3953bd)] text-sm font-bold">{{ initials(employee.nome || employee.login) }}</span>
-                <p class="mt-3 max-w-full truncate text-sm font-semibold">{{ employee.nome || employee.login }}</p>
+                <span class="flex size-14 items-center justify-center rounded-full bg-[linear-gradient(145deg,#2875f0,#3953bd)] text-sm font-bold">{{ initials(employee.nome) }}</span>
+                <p class="mt-3 max-w-full truncate text-sm font-semibold">{{ employee.nome }}</p>
                 <p class="mt-1 text-xs text-white/45">{{ employee.cargo || employee.setor || 'Cargo não informado' }}</p>
-                <span class="mt-4 rounded-full bg-white/[0.06] px-3 py-1 text-xs text-white/55">Sem avaliação</span>
-                <p class="mt-3 text-xs text-white/35">Pontuação indisponível</p>
+                @if (employee.media_percentual === null) {
+                  <span class="mt-4 rounded-full bg-white/[0.06] px-3 py-1 text-xs text-white/55">Sem respostas</span>
+                  <p class="mt-3 text-xs text-white/35">Ainda não há avaliações ou provas de treinamento enviadas.</p>
+                } @else {
+                  <span class="mt-4 rounded-full bg-[#2868dc]/20 px-3 py-1 text-xs font-semibold text-[#9bc1ff]">{{ employee.media_percentual }}% de média</span>
+                  <p class="mt-2 text-xs text-white/45">{{ employee.total_treinamentos }} provas de treinamento · {{ employee.total_avaliacoes }} avaliações</p>
+                }
               </div>
+              @if (employee.resultados.length) {
+                <section class="mt-5" aria-label="Treinamentos realizados">
+                  <h3 class="text-sm font-semibold text-white/80">Treinamentos realizados</h3>
+                  @if (trainingResults(employee).length) {
+                    <ul class="mt-2 divide-y divide-white/[0.06]">
+                      @for (result of trainingResults(employee); track result.id) {
+                        <li class="flex flex-wrap items-center justify-between gap-2 py-3 first:pt-0 last:pb-0">
+                          <div class="min-w-0">
+                            <p class="text-sm font-medium text-white/80">{{ result.titulo }}</p>
+                            <p class="mt-0.5 text-xs text-white/40">{{ formatDateTime(result.entregue_em) }}</p>
+                          </div>
+                          <span class="shrink-0 text-right text-xs font-semibold text-white/70">{{ result.acertos }}/{{ result.total_perguntas }} · {{ result.percentual }}%<br />{{ resultStatus(result) }}</span>
+                        </li>
+                      }
+                    </ul>
+                  } @else {
+                    <p class="mt-2 text-xs text-white/45">Nenhuma prova de treinamento respondida.</p>
+                  }
+                </section>
+                <section class="mt-5" aria-label="Avaliações respondidas">
+                  <h3 class="text-sm font-semibold text-white/80">Avaliações respondidas</h3>
+                  @if (assessmentResults(employee).length) {
+                    <ul class="mt-2 divide-y divide-white/[0.06]">
+                      @for (result of assessmentResults(employee); track result.id) {
+                        <li class="flex flex-wrap items-center justify-between gap-2 py-3 first:pt-0 last:pb-0">
+                          <div class="min-w-0">
+                            <p class="text-sm font-medium text-white/80">{{ result.titulo }}</p>
+                            <p class="mt-0.5 text-xs text-white/40">{{ formatDateTime(result.entregue_em) }}</p>
+                          </div>
+                          <span class="shrink-0 text-right text-xs font-semibold text-white/70">{{ result.acertos }}/{{ result.total_perguntas }} · {{ result.percentual }}%<br />{{ resultStatus(result) }}</span>
+                        </li>
+                      }
+                    </ul>
+                  } @else {
+                    <p class="mt-2 text-xs text-white/45">Nenhuma avaliação respondida.</p>
+                  }
+                </section>
+              }
             } @else {
               <p class="mt-8 text-center text-sm text-white/45">Nenhum colaborador ativo para exibir.</p>
             }
@@ -152,15 +231,15 @@
         </div>
 
         <article class="rounded-2xl border border-white/[0.07] bg-[#101827] p-5 sm:p-6">
-          <div class="flex flex-wrap items-center justify-between gap-3"><h2 class="font-semibold">Lista de funcionários</h2><span class="text-xs text-white/40">{{ employees().length }} ativos</span></div>
-          @if (orderedEmployees().length) {
+          <div class="flex flex-wrap items-center justify-between gap-3"><h2 class="font-semibold">Colaboradores e resultados</h2><span class="text-xs text-white/40">{{ performance().length }} ativos</span></div>
+          @if (orderedPerformance().length) {
             <ul class="mt-4 space-y-2">
-              @for (employee of orderedEmployees(); track employee.id) {
+              @for (employee of orderedPerformance(); track employee.id_usuario) {
                 <li>
-                  <button class="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-transparent bg-[#1a2538] px-3 py-3 text-left transition-colors hover:border-[#4385f5]/40 hover:bg-[#1d2b42] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8ab5ff] sm:px-4" type="button" [class.border-[#4385f5]]="selectedEmployee()?.id === employee.id" [attr.aria-pressed]="selectedEmployee()?.id === employee.id" (click)="selectEmployee(employee.id)">
-                    <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(145deg,#2875f0,#3953bd)] text-xs font-bold">{{ initials(employee.nome || employee.login) }}</span>
-                    <span class="min-w-0 flex-1"><span class="block truncate text-sm font-semibold text-white/90">{{ employee.nome || employee.login }}</span><span class="mt-0.5 block truncate text-xs text-white/45">{{ employee.setor || 'Setor não informado' }} <span class="px-1 text-white/20">·</span> {{ employee.classificacao }}</span></span>
-                    <span class="shrink-0 rounded-full bg-white/[0.06] px-2.5 py-1 text-[10px] font-medium text-white/45 sm:text-xs">Sem avaliação</span>
+                  <button class="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-transparent bg-[#1a2538] px-3 py-3 text-left transition-colors hover:border-[#4385f5]/40 hover:bg-[#1d2b42] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8ab5ff] sm:px-4" type="button" [class.border-[#4385f5]]="selectedPerformance()?.id_usuario === employee.id_usuario" [attr.aria-pressed]="selectedPerformance()?.id_usuario === employee.id_usuario" (click)="selectEmployee(employee.id_usuario)">
+                    <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(145deg,#2875f0,#3953bd)] text-xs font-bold">{{ initials(employee.nome) }}</span>
+                    <span class="min-w-0 flex-1"><span class="block truncate text-sm font-semibold text-white/90">{{ employee.nome }}</span><span class="mt-0.5 block truncate text-xs text-white/45">{{ employee.setor || 'Setor não informado' }} · {{ employee.total_treinamentos }} provas · {{ employee.total_avaliacoes }} avaliações</span><span class="mt-1 block truncate text-xs text-[#8ab5ff]">{{ trainingResults(employee).length ? 'Treinamentos: ' + trainingTitles(employee) : 'Nenhuma prova de treinamento respondida' }}</span></span>
+                    <span class="shrink-0 rounded-full bg-white/[0.06] px-2.5 py-1 text-[10px] font-medium text-white/45 sm:text-xs">{{ employee.media_percentual === null ? 'Sem respostas' : employee.media_percentual + '%' }}</span>
                   </button>
                 </li>
               }

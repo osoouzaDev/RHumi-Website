@@ -132,8 +132,7 @@ describe('SystemNavigation', () => {
       'nav[aria-label="Navegação principal"]',
     ) as HTMLElement;
     expect(navigation.textContent).toContain('Área do colaborador');
-    expect(navigation.textContent).toContain('Configurações');
     expect(navigation.textContent).not.toContain('Dashboard');
-    expect(navigation.querySelectorAll('li')).toHaveLength(2);
+    expect(navigation.querySelectorAll('li')).toHaveLength(1);
   });
 });

@@ -40,18 +40,13 @@ export class SystemNavigation {
     );
     return this.allNavigationItems.filter((item) =>
       isEmployee
-        ? item.page === 'employee-area' || item.page === 'settings'
+        ? item.page === 'employee-area'
         : item.page !== 'learning' || canManageLearning,
     );
   });
 
   protected toggleNavigation(): void {
     this.navigationOpen.update((open) => !open);
-  }
-
-  @HostListener('document:keydown.escape')
-  protected closeOnEscape(): void {
-    this.navigationOpen.set(false);
   }
 
   @HostListener('document:click', ['$event'])

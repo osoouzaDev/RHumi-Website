@@ -22,7 +22,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
   }
 
   const isEmployee = homeRouteForProfile(authService.currentUser()?.classificacao) === '/area-colaborador';
-  if (isEmployee && !state.url.startsWith('/area-colaborador') && !state.url.startsWith('/configuracoes')) {
+  if (isEmployee && !state.url.startsWith('/area-colaborador')) {
     return router.parseUrl('/area-colaborador');
   }
   const isCandidate =

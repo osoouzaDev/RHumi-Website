@@ -4,7 +4,6 @@ import {
   AuthService,
   CandidateApplication,
   CandidateApplicationStatus,
-  RecruitmentVacancy,
 } from '../services/auth.service';
 import { SystemNavigation } from '../shared/system-navigation';
 
@@ -61,18 +60,11 @@ function errorMessage(error: unknown): string {
 export class Candidates implements OnInit {
   private readonly authService = inject(AuthService);
   protected readonly candidates = signal<Candidate[]>([]);
-  protected readonly availableVacancies = signal<RecruitmentVacancy[]>([]);
   protected readonly loading = signal(true);
-  protected readonly saving = signal(false);
   protected readonly savingStatusId = signal<string | null>(null);
   protected readonly error = signal('');
   protected readonly searchTerm = signal('');
   protected readonly statusFilter = signal<CandidateFilter>('Todos');
-  protected readonly showForm = signal(false);
-  protected readonly name = signal('');
-  protected readonly email = signal('');
-  protected readonly phone = signal('');
-  protected readonly vacancyId = signal('');
   protected readonly candidateStatuses = CANDIDATE_STATUSES;
   protected readonly totalCount = computed(() => this.candidates().length);
   protected readonly analysisCount = computed(() => this.countByStatus('Em análise'));
@@ -97,60 +89,12 @@ export class Candidates implements OnInit {
     this.loading.set(true);
     this.error.set('');
     try {
-      const [applications, vacancies] = await Promise.all([
-        this.authService.listarCandidaturasRecrutamento(),
-        this.authService.listarVagasRecrutamento(),
-      ]);
+      const applications = await this.authService.listarCandidaturasRecrutamento();
       this.candidates.set(applications.map(candidateFromApi));
-      this.availableVacancies.set(vacancies.filter((vacancy) => vacancy.status === 'ABERTA'));
-      if (!this.vacancyId() && this.availableVacancies().length) {
-        this.vacancyId.set(this.availableVacancies()[0].id);
-      }
     } catch (error: unknown) {
       this.error.set(errorMessage(error));
     } finally {
       this.loading.set(false);
-    }
-  }
-
-  protected openForm(): void {
-    this.name.set('');
-    this.email.set('');
-    this.phone.set('');
-    this.vacancyId.set(this.availableVacancies()[0]?.id ?? '');
-    this.error.set('');
-    this.showForm.set(true);
-  }
-
-  protected async createCandidate(event: SubmitEvent): Promise<void> {
-    event.preventDefault();
-    const name = this.name().trim();
-    const email = this.email().trim();
-    const vacancyId = this.vacancyId();
-    if (!name || !email || !vacancyId) {
-      this.error.set('Preencha nome, e-mail e selecione uma vaga aberta.');
-      return;
-    }
-
-    this.saving.set(true);
-    this.error.set('');
-    try {
-      const application = await this.authService.criarCandidatura({
-        nome: name,
-        email,
-        telefone: this.phone().trim() || null,
-        id_vaga: vacancyId,
-      });
-      const candidate = candidateFromApi(application);
-      this.candidates.update((candidates) => [
-        candidate,
-        ...candidates.filter((item) => item.id !== candidate.id),
-      ]);
-      this.showForm.set(false);
-    } catch (error: unknown) {
-      this.error.set(errorMessage(error));
-    } finally {
-      this.saving.set(false);
     }
   }
 
