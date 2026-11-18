@@ -1,7 +1,7 @@
 @if (page(); as currentPage) {
   <div class="fixed left-1/2 top-5 z-[70] -translate-x-1/2">
     @if (navigationOpen()) {
-      <nav id="system-navigation" class="navigation-menu-opening fixed left-1/2 top-[80px] max-h-[calc(100svh-100px)] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 origin-top overflow-y-auto rounded-2xl border border-white/[0.1] bg-[#0c1222]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:max-h-[calc(100svh-120px)] sm:p-4" aria-label="Navegação principal">
+      <nav id="system-navigation" class="navigation-menu-opening fixed left-1/2 top-[80px] max-h-[calc(100svh-100px)] w-[min(720px,calc(100vw-32px))] -translate-x-1/2 origin-top overflow-y-auto rounded-2xl border border-white/[0.1] bg-[#0c1222]/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:top-[96px] sm:max-h-[calc(100svh-120px)] sm:p-4" [class.employee-navigation-menu]="isEmployee()" aria-label="Navegação principal">
         <ul class="grid grid-cols-2 gap-2 sm:grid-cols-4">
           @for (item of navigationItems(); track item.route) {
             <li [class.navigation-settings-item]="item.page === 'settings'">

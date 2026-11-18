@@ -21,6 +21,11 @@ export class SystemNavigation {
   protected readonly router = inject(Router);
   protected readonly authService = inject(AuthService);
   protected readonly navigationOpen = signal(false);
+  protected readonly isEmployee = computed(() =>
+    ['EMPLOYEE', 'USUARIO', 'USER'].includes(
+      this.authService.currentUser()?.classificacao.trim().toUpperCase() ?? '',
+    ),
+  );
   private readonly allNavigationItems: NavigationItem[] = [
     { label: 'Dashboard', page: 'dashboard', route: '/dashboard' },
     { label: 'Funcionários', page: 'employees', route: '/funcionarios' },
@@ -33,14 +38,12 @@ export class SystemNavigation {
     { label: 'Configurações', page: 'settings', route: '/configuracoes' },
   ];
   protected readonly navigationItems = computed(() => {
-    const isEmployee =
-      this.authService.currentUser()?.classificacao.trim().toUpperCase() === 'EMPLOYEE';
     const canManageLearning = ['sakai', 'admin', 'hr_admin', 'supervisor'].includes(
       this.authService.currentUser()?.classificacao.trim().toLowerCase() ?? '',
     );
     return this.allNavigationItems.filter((item) =>
-      isEmployee
-        ? item.page === 'employee-area'
+      this.isEmployee()
+        ? ['employee-area', 'calendar', 'settings'].includes(item.page)
         : item.page !== 'learning' || canManageLearning,
     );
   });

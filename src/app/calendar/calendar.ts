@@ -1,14 +1,8 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SystemNavigation } from '../shared/system-navigation';
-
-interface CalendarEvent {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  category: string;
-}
+import { AuthService } from '../services/auth.service';
+import { CalendarEvent, CalendarScope, CalendarSector, CalendarService } from '../services/calendar.service';
 
 interface CalendarDay {
   date: string;
@@ -21,14 +15,32 @@ interface CalendarDay {
   imports: [FormsModule, SystemNavigation],
   templateUrl: './calendar.html',
 })
-export class Calendar {
-  protected readonly events = signal<CalendarEvent[]>(this.readEvents());
+export class Calendar implements OnInit {
+  private readonly calendarService = inject(CalendarService);
+  protected readonly authService = inject(AuthService);
+  protected readonly events = signal<CalendarEvent[]>([]);
+  protected readonly sectors = signal<CalendarSector[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly saving = signal(false);
+  protected readonly error = signal('');
   protected readonly currentMonth = signal(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   protected readonly selectedDate = signal(this.toDateKey(new Date()));
   protected readonly showEventForm = signal(false);
   protected readonly title = signal('');
   protected readonly time = signal('09:00');
   protected readonly category = signal('Equipe');
+  protected readonly scope = signal<CalendarScope>('PESSOAL');
+  protected readonly sectorId = signal('');
+  protected readonly isAdmin = computed(() =>
+    ['sakai', 'admin', 'hr_admin'].includes(
+      this.authService.currentUser()?.classificacao.trim().toLowerCase() ?? '',
+    ),
+  );
+  protected readonly isSupervisor = computed(() =>
+    ['supervisor', 'gestor'].includes(
+      this.authService.currentUser()?.classificacao.trim().toLowerCase() ?? '',
+    ),
+  );
   protected readonly monthLabel = computed(() =>
     this.currentMonth().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
   );
@@ -49,12 +61,37 @@ export class Calendar {
   });
   protected readonly selectedEvents = computed(() =>
     this.events()
-      .filter((event) => event.date === this.selectedDate())
-      .sort((a, b) => a.time.localeCompare(b.time)),
+      .filter((event) => event.data === this.selectedDate())
+      .sort((a, b) => a.horario.localeCompare(b.horario)),
   );
   protected readonly eventCount = computed(() =>
-    this.events().filter((event) => event.date.startsWith(this.toMonthKey(this.currentMonth()))).length,
+    this.events().filter((event) => event.data.startsWith(this.toMonthKey(this.currentMonth()))).length,
   );
+
+  ngOnInit(): void {
+    void this.loadCalendar();
+  }
+
+  protected async loadCalendar(): Promise<void> {
+    this.loading.set(true);
+    this.error.set('');
+    try {
+      if (this.isAdmin()) {
+        const [events, sectors] = await Promise.all([
+          this.calendarService.listar(),
+          this.calendarService.listarSetores(),
+        ]);
+        this.events.set(events);
+        this.sectors.set(sectors);
+      } else {
+        this.events.set(await this.calendarService.listar());
+      }
+    } catch (error: unknown) {
+      this.error.set(error instanceof Error ? error.message : 'Não foi possível carregar o calendário.');
+    } finally {
+      this.loading.set(false);
+    }
+  }
 
   protected shiftMonth(amount: number): void {
     this.currentMonth.update((month) => new Date(month.getFullYear(), month.getMonth() + amount, 1));
@@ -66,35 +103,70 @@ export class Calendar {
   }
 
   protected hasEvent(date: string): boolean {
-    return this.events().some((event) => event.date === date);
+    return this.events().some((event) => event.data === date);
   }
 
   protected openEventForm(): void {
     this.title.set('');
+    this.scope.set('PESSOAL');
+    this.sectorId.set('');
     this.showEventForm.set(true);
   }
 
-  protected addEvent(event: SubmitEvent): void {
+  protected async addEvent(event: SubmitEvent): Promise<void> {
     event.preventDefault();
     const title = this.title().trim();
-    if (!title) return;
-    const next = [...this.events(), {
-      id: crypto.randomUUID(),
-      title,
-      date: this.selectedDate(),
-      time: this.time(),
-      category: this.category(),
-    }];
-    this.events.set(next);
-    this.persistEvents(next);
-    this.showEventForm.set(false);
-    this.title.set('');
+    if (!title || this.saving()) return;
+    this.saving.set(true);
+    this.error.set('');
+    try {
+      const created = await this.calendarService.criar({
+        titulo: title,
+        data: this.selectedDate(),
+        horario: this.time(),
+        categoria: this.category(),
+        escopo: this.scope(),
+        ...(this.scope() === 'SETOR' && this.isAdmin() ? { id_setor: this.sectorId() } : {}),
+      });
+      this.events.update((events) => [...events, created]);
+      this.showEventForm.set(false);
+      this.title.set('');
+    } catch (error: unknown) {
+      this.error.set(error instanceof Error ? error.message : 'Não foi possível salvar o evento.');
+    } finally {
+      this.saving.set(false);
+    }
   }
 
-  protected removeEvent(id: string): void {
-    const next = this.events().filter((event) => event.id !== id);
-    this.events.set(next);
-    this.persistEvents(next);
+  protected async removeEvent(id: string): Promise<void> {
+    this.error.set('');
+    try {
+      await this.calendarService.excluir(id);
+      this.events.update((events) => events.filter((event) => event.id !== id));
+    } catch (error: unknown) {
+      this.error.set(error instanceof Error ? error.message : 'Não foi possível remover o evento.');
+    }
+  }
+
+  protected canRemove(event: CalendarEvent): boolean {
+    return event.id_criador === this.authService.currentUser()?.id;
+  }
+
+  protected eventScopeLabel(event: CalendarEvent): string {
+    if (event.escopo === 'SETOR') return `Setor: ${event.nome_setor ?? 'não informado'}`;
+    if (event.escopo === 'EMPRESA') return 'Toda a empresa';
+    return 'Pessoal';
+  }
+
+  protected allowedScopes(): CalendarScope[] {
+    if (this.isAdmin()) return ['PESSOAL', 'SETOR', 'EMPRESA'];
+    if (this.isSupervisor()) return ['PESSOAL', 'SETOR'];
+    return ['PESSOAL'];
+  }
+
+  protected scopeChanged(scope: CalendarScope): void {
+    this.scope.set(scope);
+    if (scope !== 'SETOR') this.sectorId.set('');
   }
 
   protected formatSelectedDate(): string {
@@ -116,16 +188,4 @@ export class Calendar {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
 
-  private readEvents(): CalendarEvent[] {
-    try {
-      const stored = localStorage.getItem('rhumi_calendar_events');
-      return stored ? JSON.parse(stored) as CalendarEvent[] : [];
-    } catch {
-      return [];
-    }
-  }
-
-  private persistEvents(events: CalendarEvent[]): void {
-    localStorage.setItem('rhumi_calendar_events', JSON.stringify(events));
-  }
 }

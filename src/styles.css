@@ -66,6 +66,27 @@ app-navigation-orb .animate-circle-gradient {
   }
 }
 
+.employee-navigation-menu ul {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.employee-navigation-menu .navigation-settings-item {
+  grid-column: 1 / -1;
+}
+
+.employee-navigation-menu li button {
+  min-height: 96px;
+}
+
+.employee-navigation-menu li button > span:first-child {
+  width: 3rem;
+  height: 3rem;
+}
+
+.employee-navigation-menu li button > span:last-child {
+  font-size: 0.9375rem;
+}
+
 @keyframes navigation-menu-opening {
   from {
     clip-path: inset(0 0 100% 0 round 1rem);

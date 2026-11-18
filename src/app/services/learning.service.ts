@@ -199,17 +199,9 @@ export class LearningService {
   }
 
   async baixarPdf(id: string): Promise<Blob> {
-    const token = this.authService.getStoredToken();
-    if (!token) throw new Error('Sua sessão expirou. Entre novamente para continuar.');
-    let response: Response;
-    try {
-      response = await fetch(`${this.apiUrl}/api/capacitacoes/${encodeURIComponent(id)}/pdf`, {
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: 'include',
-      });
-    } catch {
-      throw new Error(`Não foi possível conectar à API em ${this.apiUrl}. Verifique se ela está ativa.`);
-    }
+    const response = await this.authService.fetchWithSession(
+      `${this.apiUrl}/api/capacitacoes/${encodeURIComponent(id)}/pdf`
+    );
     if (!response.ok) {
       let message = `Não foi possível abrir o PDF (HTTP ${response.status}).`;
       try {
@@ -226,21 +218,7 @@ export class LearningService {
   }
 
   private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
-    const token = this.authService.getStoredToken();
-    if (!token) throw new Error('Sua sessão expirou. Entre novamente para continuar.');
-    let response: Response;
-    try {
-      const headers = new Headers(init.headers);
-      headers.set('Authorization', `Bearer ${token}`);
-      headers.set('Accept', 'application/json');
-      response = await fetch(`${this.apiUrl}${path}`, {
-        ...init,
-        credentials: 'include',
-        headers,
-      });
-    } catch {
-      throw new Error(`Não foi possível conectar à API em ${this.apiUrl}. Verifique se ela está ativa.`);
-    }
+    const response = await this.authService.fetchWithSession(`${this.apiUrl}${path}`, init);
     if (response.status === 204) return undefined as T;
     let payload: { status?: string; data?: T; message?: string };
     try {

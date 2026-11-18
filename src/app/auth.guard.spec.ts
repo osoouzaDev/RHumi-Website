@@ -31,17 +31,21 @@ describe('authorization route guards', () => {
   it('selects the employee area as the EMPLOYEE landing route', () => {
     expect(homeRouteForProfile('EMPLOYEE')).toBe('/area-colaborador');
     expect(homeRouteForProfile('employee')).toBe('/area-colaborador');
+    expect(homeRouteForProfile('usuario')).toBe('/area-colaborador');
     expect(homeRouteForProfile('CANDIDATE')).toBe('/vagas');
     expect(homeRouteForProfile('HR_ADMIN')).toBe('/dashboard');
   });
 
-  it('redirects authenticated employees away from every protected route except their area', () => {
+  it('redirects authenticated employees away from protected routes outside their allowed areas', () => {
     authService.isAuthenticated.mockReturnValue(true);
     authService.currentUser.mockReturnValue({ classificacao: 'EMPLOYEE' });
     const guard = TestBed.runInInjectionContext(() => authGuard({} as never, { url: '/dashboard' } as never));
 
     expect(guard).toEqual({ url: '/area-colaborador' });
     expect(parseUrl).toHaveBeenCalledWith('/area-colaborador');
+    for (const url of ['/area-colaborador', '/calendario', '/configuracoes']) {
+      expect(TestBed.runInInjectionContext(() => authGuard({} as never, { url } as never))).toBe(true);
+    }
   });
 
   it('allows employees into their area and other profiles into their protected screens', () => {

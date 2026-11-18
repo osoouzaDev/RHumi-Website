@@ -8,10 +8,8 @@ export interface UserSession {
 }
 
 export interface AuthSuccessData {
-  access_token: string;
-  token_type: string;
+  token_type?: string;
   expires_in: number;
-  refresh_token?: string;
 }
 
 export interface ApiUser {
@@ -202,29 +200,21 @@ export interface ApiResponse<T> {
 })
 export class AuthService {
   private readonly apiUrl = environment.apiUrl || 'http://localhost:8000';
-  private readonly tokenKey = 'rhumi_access_token';
-  private readonly refreshKey = 'rhumi_refresh_token';
   private readonly userKey = 'rhumi_user';
+  private refreshInProgress: Promise<void> | null = null;
 
   readonly currentUser = signal<UserSession | null>(this.getStoredUser());
-  readonly isAuthenticated = signal<boolean>(Boolean(this.getStoredToken()));
+  readonly isAuthenticated = signal<boolean>(Boolean(this.currentUser()));
+
+  constructor() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem('rhumi_access_token');
+      localStorage.removeItem('rhumi_refresh_token');
+    }
+  }
 
   private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
-    let response: Response;
-    try {
-      const headers = new Headers(init.headers);
-      if (!headers.has('Accept')) {
-        headers.set('Accept', 'application/json');
-      }
-
-      response = await fetch(`${this.apiUrl}${path}`, {
-        ...init,
-        credentials: 'include',
-        headers,
-      });
-    } catch {
-      throw new Error(`Não foi possível conectar à API em ${this.apiUrl}. Verifique se ela está ativa.`);
-    }
+    const response = await this.fetchWithSession(`${this.apiUrl}${path}`, init);
 
     if (response.status === 204) {
       return undefined as T;
@@ -244,35 +234,83 @@ export class AuthService {
     return payload.data;
   }
 
-  getStoredToken(): string | null {
-    if (typeof window === 'undefined' || !window.localStorage) return null;
-    return localStorage.getItem(this.tokenKey);
-  }
-
   getStoredUser(): UserSession | null {
     if (typeof window === 'undefined' || !window.localStorage) return null;
     const raw = localStorage.getItem(this.userKey);
     if (!raw) return null;
     try {
-      return JSON.parse(raw);
+      const user = JSON.parse(raw) as UserSession;
+      return user.id && user.userLogin && user.classificacao ? user : null;
     } catch {
       return null;
     }
   }
 
-  saveSession(token: string, refreshToken?: string, user?: UserSession): void {
+  getStoredToken(): string | null {
+    return this.currentUser() ? 'cookie-session' : null;
+  }
+
+  saveSession(user: UserSession): void {
     if (typeof window === 'undefined' || !window.localStorage) return;
-    localStorage.setItem(this.tokenKey, token);
-    if (refreshToken) {
-      localStorage.setItem(this.refreshKey, refreshToken);
-    } else {
-      localStorage.removeItem(this.refreshKey);
-    }
-    if (user) {
-      localStorage.setItem(this.userKey, JSON.stringify(user));
-      this.currentUser.set(user);
-    }
+    localStorage.setItem(this.userKey, JSON.stringify(user));
+    this.currentUser.set(user);
     this.isAuthenticated.set(true);
+  }
+
+  async fetchWithSession(url: string, init: RequestInit = {}): Promise<Response> {
+    const fetchRequest = async (): Promise<Response> => {
+      const headers = new Headers(init.headers);
+      headers.delete('Authorization');
+      headers.set('Accept', 'application/json');
+      try {
+        return await fetch(url, { ...init, credentials: 'include', headers });
+      } catch {
+        throw new Error(`Não foi possível conectar à API em ${this.apiUrl}. Verifique se ela está ativa.`);
+      }
+    };
+
+    let response = await fetchRequest();
+    const isAuthEndpoint = new URL(url, this.apiUrl).pathname.startsWith('/api/auth/');
+    if (response.status === 401 && this.currentUser() && !isAuthEndpoint) {
+      await this.refreshSession();
+      response = await fetchRequest();
+    }
+    if (response.status === 401 && this.currentUser() && !isAuthEndpoint) {
+      this.clearSession();
+    }
+    return response;
+  }
+
+  private async refreshSession(): Promise<void> {
+    if (!this.refreshInProgress) {
+      this.refreshInProgress = this.performRefresh().finally(() => {
+        this.refreshInProgress = null;
+      });
+    }
+    await this.refreshInProgress;
+  }
+
+  private async performRefresh(): Promise<void> {
+    const response = await this.fetchWithSession(`${this.apiUrl}/api/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    if (!response.ok) {
+      this.clearSession();
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+    let payload: ApiResponse<AuthSuccessData>;
+    try {
+      payload = await response.json() as ApiResponse<AuthSuccessData>;
+    } catch {
+      this.clearSession();
+      throw new Error('A API retornou uma resposta inválida ao renovar a sessão.');
+    }
+    if (payload.status !== 'success') {
+      this.clearSession();
+      throw new Error(payload.message || 'Não foi possível renovar sua sessão.');
+    }
   }
 
   /**
@@ -512,13 +550,12 @@ export class AuthService {
       body: JSON.stringify(data),
     });
     if (
-      !result.access_token ||
       !result.profile?.id ||
       result.profile.classificacao.trim().toUpperCase() !== 'CANDIDATE'
     ) {
       throw new Error('A API retornou dados inválidos ao criar sua conta de candidato.');
     }
-    this.saveSession(result.access_token, result.refresh_token, result.profile);
+    this.saveSession(result.profile);
   }
 
   async candidatarVaga(idVaga: string): Promise<CandidateApplication> {
@@ -685,9 +722,6 @@ export class AuthService {
       try {
         await this.request<void>('/api/auth/logout', {
           method: 'POST',
-          headers: {
-            Authorization: ['Bearer', token].join(' '),
-          },
         });
       } catch (error: unknown) {
         logoutError = error;
@@ -701,7 +735,7 @@ export class AuthService {
   }
 
   private async autenticar(credentials: Record<string, string>): Promise<AuthSuccessData> {
-    const token = await this.request<AuthSuccessData>('/api/auth/login', {
+    const result = await this.request<AuthSuccessData>('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -709,16 +743,8 @@ export class AuthService {
       body: JSON.stringify(credentials),
     });
 
-    if (!token.access_token) {
-      throw new Error('A API não retornou um token de acesso válido.');
-    }
-
     try {
-      const profile = await this.request<UserSession>('/api/auth/me', {
-        headers: {
-          Authorization: ['Bearer', token.access_token].join(' '),
-        },
-      });
+      const profile = await this.request<UserSession>('/api/auth/me');
       if (!profile.id || !profile.userLogin || !profile.classificacao) {
         throw new Error('A API retornou um perfil de usuário inválido.');
       }
@@ -727,19 +753,19 @@ export class AuthService {
         userLogin: profile.userLogin,
         classificacao: profile.classificacao,
       };
-      this.saveSession(token.access_token, token.refresh_token, user);
+      this.saveSession(user);
     } catch (error: unknown) {
       this.clearSession();
       throw error;
     }
 
-    return token;
+    return result;
   }
 
   private clearSession(): void {
     if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.removeItem(this.tokenKey);
-      localStorage.removeItem(this.refreshKey);
+      localStorage.removeItem('rhumi_access_token');
+      localStorage.removeItem('rhumi_refresh_token');
       localStorage.removeItem(this.userKey);
     }
     this.currentUser.set(null);
