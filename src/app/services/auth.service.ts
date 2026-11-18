@@ -616,6 +616,19 @@ export class AuthService {
     );
   }
 
+  async buscarUsuario(id: string): Promise<ApiUser> {
+    const token = this.getStoredToken();
+    if (!token) {
+      throw new Error('Sua sessão expirou. Entre novamente para continuar.');
+    }
+
+    return this.request<ApiUser>(`/api/usuarios/${encodeURIComponent(id)}`, {
+      headers: {
+        Authorization: ['Bearer', token].join(' '),
+      },
+    });
+  }
+
   async atualizarUsuario(id: string, dados: UpdateApiUser): Promise<ApiUser> {
     const token = this.getStoredToken();
     if (!token) {

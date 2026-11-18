@@ -1,35 +1,44 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { ApiUser, AuthService } from '../services/auth.service';
 import { SystemNavigation } from '../shared/system-navigation';
 
-interface UserPreferences {
-  emailNotifications: boolean;
-  weeklySummary: boolean;
-}
+type ThemePreference = 'light' | 'dark' | 'device';
 
 @Component({
   selector: 'app-settings',
-  imports: [FormsModule, SystemNavigation, RouterLink],
+  imports: [FormsModule, SystemNavigation],
   templateUrl: './settings.html',
 })
-export class Settings implements OnInit {
+export class Settings implements OnInit, OnDestroy {
   protected readonly authService = inject(AuthService);
   protected readonly loading = signal(true);
   protected readonly savingProfile = signal(false);
   protected readonly error = signal('');
   protected readonly profileError = signal('');
   protected readonly profileMessage = signal('');
-  protected readonly preferenceMessage = signal('');
+  protected readonly themePreference = signal<ThemePreference>(this.readTheme());
+  protected readonly themeMessage = signal('');
+  protected readonly isEmployee = computed(() =>
+    this.authService.currentUser()?.classificacao.trim().toUpperCase() === 'EMPLOYEE',
+  );
   protected readonly employee = signal<ApiUser | null>(null);
   protected readonly name = signal('');
   protected readonly email = signal('');
   protected readonly phone = signal('');
-  protected readonly preferences = signal<UserPreferences>(this.readPreferences());
+  private readonly deviceMedia = window.matchMedia('(prefers-color-scheme: dark)');
+  private readonly deviceThemeListener = () => {
+    if (this.themePreference() === 'device') this.applyTheme();
+  };
 
   ngOnInit(): void {
+    this.applyTheme();
+    this.deviceMedia.addEventListener('change', this.deviceThemeListener);
     void this.loadProfile();
+  }
+
+  ngOnDestroy(): void {
+    this.deviceMedia.removeEventListener('change', this.deviceThemeListener);
   }
 
   protected async loadProfile(): Promise<void> {
@@ -37,7 +46,7 @@ export class Settings implements OnInit {
     this.error.set('');
     try {
       const userId = this.authService.currentUser()?.id;
-      const profile = (await this.authService.listarUsuariosAtivos()).find((user) => user.id === userId) ?? null;
+      const profile = userId ? await this.authService.buscarUsuario(userId) : null;
       this.employee.set(profile);
       this.name.set(profile?.nome ?? '');
       this.email.set(profile?.email ?? '');
@@ -74,26 +83,25 @@ export class Settings implements OnInit {
     }
   }
 
-  protected updatePreference(key: keyof UserPreferences, value: boolean): void {
-    this.preferences.update((preferences) => ({ ...preferences, [key]: value }));
-    this.preferenceMessage.set('');
+  protected setTheme(theme: ThemePreference): void {
+    this.themePreference.set(theme);
+    localStorage.setItem('rhumi_theme', theme);
+    this.applyTheme();
+    this.themeMessage.set('Tema aplicado neste dispositivo.');
   }
 
-  protected savePreferences(): void {
-    localStorage.setItem('rhumi_user_preferences', JSON.stringify(this.preferences()));
-    this.preferenceMessage.set('Preferências salvas neste navegador.');
+  private readTheme(): ThemePreference {
+    const stored = localStorage.getItem('rhumi_theme');
+    return stored === 'light' || stored === 'dark' || stored === 'device'
+      ? stored
+      : 'device';
   }
 
-  private readPreferences(): UserPreferences {
-    try {
-      const stored = localStorage.getItem('rhumi_user_preferences');
-      return stored ? { ...this.defaultPreferences(), ...JSON.parse(stored) } : this.defaultPreferences();
-    } catch {
-      return this.defaultPreferences();
-    }
-  }
-
-  private defaultPreferences(): UserPreferences {
-    return { emailNotifications: true, weeklySummary: false };
+  private applyTheme(): void {
+    const resolved = this.themePreference() === 'device'
+      ? (this.deviceMedia.matches ? 'dark' : 'light')
+      : this.themePreference();
+    document.documentElement.dataset['theme'] = resolved;
+    document.documentElement.style.colorScheme = resolved;
   }
 }

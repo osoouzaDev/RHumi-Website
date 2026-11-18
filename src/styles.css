@@ -44,11 +44,15 @@
     50% { transform: scale(1.035); }
   }
 
-  @keyframes circle-gradient {
+  @keyframes navigation-orb-static-gradient {
     from { background-position: 50% 0%; }
     to { background-position: 50% 100%; }
   }
 
+}
+
+app-navigation-orb .animate-circle-gradient {
+  animation: none !important;
 }
 
 .navigation-menu-opening {
