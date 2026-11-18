@@ -27,12 +27,7 @@ describe('AuthService', () => {
   });
 
   it('should authenticate against the API and store its verified user session', async () => {
-    const token = {
-      access_token: 'access-token',
-      refresh_token: 'refresh-token',
-      token_type: 'Bearer',
-      expires_in: 1800,
-    };
+    const token = { token_type: 'Bearer', expires_in: 600 };
     const user = {
       id: 'user-id',
       userLogin: 'ana@example.com',
@@ -52,11 +47,11 @@ describe('AuthService', () => {
       JSON.stringify({ email: 'ana@example.com', senha: 'secure-password' })
     );
     expect(fetchMock.mock.calls[1][0]).toBe('http://localhost:8000/api/auth/me');
-    expect(new Headers(profileRequest.headers).get('Authorization')).toBe('Bearer access-token');
+    expect(new Headers(profileRequest.headers).get('Authorization')).toBeNull();
     expect(authService.currentUser()).toEqual(user);
     expect(authService.isAuthenticated()).toBe(true);
-    expect(localStorage.getItem('rhumi_access_token')).toBe('access-token');
-    expect(localStorage.getItem('rhumi_refresh_token')).toBe('refresh-token');
+    expect(localStorage.getItem('rhumi_access_token')).toBeNull();
+    expect(localStorage.getItem('rhumi_refresh_token')).toBeNull();
   });
 
   it('should load all active users through the paginated API endpoint', async () => {
@@ -70,7 +65,7 @@ describe('AuthService', () => {
       data_criacao: '2026-03-09T12:00:00.000Z',
       data_atualizacao: '2026-03-09T12:00:00.000Z',
     };
-    authService.saveSession('access-token');
+    authService.saveSession({ id: 'user-id', userLogin: 'ana@example.com', classificacao: 'HR_ADMIN' });
     fetchMock
       .mockResolvedValueOnce(
         jsonResponse({
@@ -98,7 +93,7 @@ describe('AuthService', () => {
     expect(fetchMock.mock.calls[0][0]).toBe(
       'http://localhost:8000/api/usuarios?ativo=true&por_pagina=100&pagina=1'
     );
-    expect(new Headers(firstRequest.headers).get('Authorization')).toBe('Bearer access-token');
+    expect(new Headers(firstRequest.headers).get('Authorization')).toBeNull();
     expect(fetchMock.mock.calls[1][0]).toBe(
       'http://localhost:8000/api/usuarios?ativo=true&por_pagina=100&pagina=2'
     );
@@ -143,10 +138,8 @@ describe('AuthService', () => {
       .mockResolvedValueOnce(jsonResponse({
         status: 'success',
         data: {
-          access_token: 'candidate-token',
-          refresh_token: 'candidate-refresh',
           token_type: 'Bearer',
-          expires_in: 1800,
+          expires_in: 600,
           profile,
         },
       }, 201))
@@ -163,7 +156,7 @@ describe('AuthService', () => {
     await expect(authService.listarMinhasCandidaturas()).resolves.toEqual([application]);
 
     expect(authService.currentUser()).toEqual(profile);
-    expect(localStorage.getItem('rhumi_access_token')).toBe('candidate-token');
+    expect(localStorage.getItem('rhumi_access_token')).toBeNull();
     expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:8000/api/public/candidatos');
     expect(JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string)).toEqual({
       nome: 'Ana Silva',
@@ -172,12 +165,11 @@ describe('AuthService', () => {
       senha: 'senha-segura-123',
     });
     expect(fetchMock.mock.calls[1][0]).toBe('http://localhost:8000/api/candidato/candidaturas');
-    expect(new Headers((fetchMock.mock.calls[1][1] as RequestInit).headers).get('Authorization'))
-      .toBe('Bearer candidate-token');
+    expect(new Headers((fetchMock.mock.calls[1][1] as RequestInit).headers).get('Authorization')).toBeNull();
   });
 
   it('should load and persist journey checklist changes through the authenticated endpoints', async () => {
-    authService.saveSession('access-token');
+    authService.saveSession({ id: 'user-id', userLogin: 'ana@example.com', classificacao: 'HR_ADMIN' });
     const journeys = [
       {
         employee: {
@@ -239,7 +231,7 @@ describe('AuthService', () => {
   });
 
   it('should update employee profile fields through the protected user endpoint', async () => {
-    authService.saveSession('access-token');
+    authService.saveSession({ id: 'user-id', userLogin: 'ana@example.com', classificacao: 'HR_ADMIN' });
     const updatedUser = {
       id: 'user-id',
       login: 'ana@example.com',
@@ -267,12 +259,12 @@ describe('AuthService', () => {
     expect(result).toEqual(updatedUser);
     expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:8000/api/usuarios/user-id');
     expect(request.method).toBe('PUT');
-    expect(new Headers(request.headers).get('Authorization')).toBeTruthy();
+    expect(new Headers(request.headers).get('Authorization')).toBeNull();
     expect(JSON.parse(request.body as string)).toMatchObject({ setor: 'Tecnologia', cargo: 'Analista' });
   });
 
   it('should create an employee through the authenticated users endpoint', async () => {
-    authService.saveSession('access-token');
+    authService.saveSession({ id: 'user-id', userLogin: 'ana@example.com', classificacao: 'HR_ADMIN' });
     const createdUser = {
       id: 'user-id',
       login: 'ana@example.com',
@@ -300,7 +292,7 @@ describe('AuthService', () => {
     const request = fetchMock.mock.calls[0][1] as RequestInit;
     expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:8000/api/usuarios');
     expect(request.method).toBe('POST');
-    expect(new Headers(request.headers).get('Authorization')).toBeTruthy();
+    expect(new Headers(request.headers).get('Authorization')).toBeNull();
     expect(JSON.parse(request.body as string)).toMatchObject({
       login: 'ana@example.com',
       email: 'ana@example.com',
@@ -311,7 +303,7 @@ describe('AuthService', () => {
   });
 
   it('should send an administrative password reset to the dedicated endpoint', async () => {
-    authService.saveSession('access-token');
+    authService.saveSession({ id: 'user-id', userLogin: 'ana@example.com', classificacao: 'HR_ADMIN' });
     fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }));
 
     await expect(authService.redefinirSenhaUsuario('user/id', 'new-secure-password')).resolves.toBeUndefined();
@@ -319,12 +311,12 @@ describe('AuthService', () => {
     const request = fetchMock.mock.calls[0][1] as RequestInit;
     expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:8000/api/usuarios/user%2Fid/reset-senha');
     expect(request.method).toBe('PATCH');
-    expect(new Headers(request.headers).get('Authorization')).toBeTruthy();
+    expect(new Headers(request.headers).get('Authorization')).toBeNull();
     expect(JSON.parse(request.body as string)).toEqual({ nova_senha: 'new-secure-password' });
   });
 
   it('should load sector options from the authenticated API endpoint', async () => {
-    authService.saveSession('access-token');
+    authService.saveSession({ id: 'user-id', userLogin: 'ana@example.com', classificacao: 'HR_ADMIN' });
     fetchMock.mockResolvedValueOnce(
       jsonResponse({
         status: 'success',
@@ -335,14 +327,13 @@ describe('AuthService', () => {
     await expect(authService.listarSetores()).resolves.toEqual(['Tecnologia', 'Contábil', 'Fiscal']);
     const request = fetchMock.mock.calls[0][1] as RequestInit;
     expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:8000/api/setores');
-    expect(new Headers(request.headers).get('Authorization')).toBeTruthy();
+    expect(new Headers(request.headers).get('Authorization')).toBeNull();
   });
 
   it('should send a four-digit collaborator code without dropping leading zeroes', async () => {
     const token = {
-      access_token: 'access-token',
       token_type: 'Bearer',
-      expires_in: 1800,
+      expires_in: 600,
     };
     fetchMock
       .mockResolvedValueOnce(jsonResponse({ status: 'success', data: token }))
@@ -359,6 +350,53 @@ describe('AuthService', () => {
     expect(loginRequest.body).toBe(JSON.stringify({ codigo_colaborador: '0042' }));
   });
 
+  it('should share one cookie refresh across concurrent requests that receive 401', async () => {
+    authService.saveSession({ id: 'user-id', userLogin: 'ana@example.com', classificacao: 'HR_ADMIN' });
+    let protectedRequests = 0;
+    let refreshRequests = 0;
+    fetchMock.mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.endsWith('/api/auth/refresh')) {
+        refreshRequests += 1;
+        return Promise.resolve(jsonResponse({
+          status: 'success',
+          data: { token_type: 'Bearer', expires_in: 600 },
+        }));
+      }
+      protectedRequests += 1;
+      return Promise.resolve(
+        protectedRequests <= 2
+          ? jsonResponse({ status: 'error', message: 'Unauthorized' }, 401)
+          : jsonResponse({ status: 'success', data: [] })
+      );
+    });
+
+    const responses = await Promise.all([
+      authService.fetchWithSession('http://localhost:8000/api/usuarios'),
+      authService.fetchWithSession('http://localhost:8000/api/calendario/eventos'),
+    ]);
+
+    expect(responses.every((response) => response.ok)).toBe(true);
+    expect(refreshRequests).toBe(1);
+    expect(protectedRequests).toBe(4);
+    expect(fetchMock.mock.calls.every(([, init]) => init.credentials === 'include')).toBe(true);
+    expect(fetchMock.mock.calls.every(([, init]) =>
+      new Headers(init.headers).get('Authorization') === null
+    )).toBe(true);
+  });
+
+  it('should clear the client session when the refresh cookie is rejected', async () => {
+    authService.saveSession({ id: 'user-id', userLogin: 'ana@example.com', classificacao: 'HR_ADMIN' });
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ status: 'error', message: 'Unauthorized' }, 401))
+      .mockResolvedValueOnce(jsonResponse({ status: 'error', message: 'Unauthorized' }, 401));
+
+    await expect(authService.fetchWithSession('http://localhost:8000/api/usuarios'))
+      .rejects.toThrow('Sua sessão expirou. Entre novamente para continuar.');
+    expect(authService.currentUser()).toBeNull();
+    expect(authService.isAuthenticated()).toBe(false);
+  });
+
   it('should reject collaborator codes that are not four digits', async () => {
     await expect(authService.loginComCodigo('42')).rejects.toThrow(
       'Informe o código do colaborador com exatamente 4 dígitos.'
@@ -367,7 +405,7 @@ describe('AuthService', () => {
   });
 
   it('should clear the local session after calling the API logout endpoint', async () => {
-    authService.saveSession('access-token');
+    authService.saveSession({ id: 'user-id', userLogin: 'ana@example.com', classificacao: 'HR_ADMIN' });
     fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }));
 
     await authService.logout();
@@ -375,7 +413,7 @@ describe('AuthService', () => {
     const logoutRequest = fetchMock.mock.calls[0][1] as RequestInit;
     expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:8000/api/auth/logout');
     expect(logoutRequest.method).toBe('POST');
-    expect(new Headers(logoutRequest.headers).get('Authorization')).toBe('Bearer access-token');
+    expect(new Headers(logoutRequest.headers).get('Authorization')).toBeNull();
     expect(localStorage.getItem('rhumi_access_token')).toBeNull();
     expect(authService.isAuthenticated()).toBe(false);
   });

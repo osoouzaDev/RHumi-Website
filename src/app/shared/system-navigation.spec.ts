@@ -58,6 +58,7 @@ describe('SystemNavigation', () => {
 
     const navigation = fixture.nativeElement.querySelector('nav[aria-label="Navegação principal"]') as HTMLElement;
     expect(navigation.textContent).toContain('Treinamentos e avaliações');
+    expect(navigation.classList.contains('employee-navigation-menu')).toBe(false);
     expect(navigation.querySelectorAll('li')).toHaveLength(9);
     const labels = [...navigation.querySelectorAll('li button > span:last-child')]
       .map((label) => label.textContent?.trim());
@@ -90,6 +91,7 @@ describe('SystemNavigation', () => {
     const navigation = fixture.nativeElement.querySelector(
       'nav[aria-label="Navegação principal"]',
     ) as HTMLElement;
+    expect(navigation.classList.contains('employee-navigation-menu')).toBe(false);
     expect(navigation.querySelector('[aria-current="page"]')?.textContent).toContain('Calendário');
 
     const dashboard = [...navigation.querySelectorAll('button')]
@@ -117,7 +119,7 @@ describe('SystemNavigation', () => {
     expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 
-  it('only shows the employee area to EMPLOYEE profiles', () => {
+  it('shows the employee area, calendar, and settings to EMPLOYEE profiles', () => {
     authService.currentUser.mockReturnValue({ classificacao: 'EMPLOYEE' });
     const fixture = TestBed.createComponent(SystemNavigation);
     fixture.componentRef.setInput('page', 'employee-area');
@@ -131,8 +133,11 @@ describe('SystemNavigation', () => {
     const navigation = fixture.nativeElement.querySelector(
       'nav[aria-label="Navegação principal"]',
     ) as HTMLElement;
+    expect(navigation.classList.contains('employee-navigation-menu')).toBe(true);
     expect(navigation.textContent).toContain('Área do colaborador');
+    expect(navigation.textContent).toContain('Calendário');
+    expect(navigation.textContent).toContain('Configurações');
     expect(navigation.textContent).not.toContain('Dashboard');
-    expect(navigation.querySelectorAll('li')).toHaveLength(1);
+    expect(navigation.querySelectorAll('li')).toHaveLength(3);
   });
 });

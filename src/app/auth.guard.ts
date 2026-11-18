@@ -4,7 +4,7 @@ import { AuthService } from './services/auth.service';
 
 export function homeRouteForProfile(classificacao?: string | null): string {
   const profile = classificacao?.trim().toUpperCase();
-  if (profile === 'EMPLOYEE') return '/area-colaborador';
+  if (['EMPLOYEE', 'USUARIO', 'USER'].includes(profile ?? '')) return '/area-colaborador';
   if (profile === 'CANDIDATE') return '/vagas';
   return '/dashboard';
 }
@@ -22,7 +22,9 @@ export const authGuard: CanActivateFn = (_route, state) => {
   }
 
   const isEmployee = homeRouteForProfile(authService.currentUser()?.classificacao) === '/area-colaborador';
-  if (isEmployee && !state.url.startsWith('/area-colaborador')) {
+  const employeePath = state.url.split(/[?#]/, 1)[0];
+  const employeeAllowedPaths = new Set(['/area-colaborador', '/calendario', '/configuracoes']);
+  if (isEmployee && !employeeAllowedPaths.has(employeePath)) {
     return router.parseUrl('/area-colaborador');
   }
   const isCandidate =

@@ -131,9 +131,8 @@ describe('Login', () => {
 
   it('should successfully authenticate with email and password and navigate', async () => {
     mockAuthService.loginComEmail.mockResolvedValue({
-      access_token: 'fake-jwt-token',
       token_type: 'Bearer',
-      expires_in: 1800,
+      expires_in: 600,
     });
 
     const fixture = TestBed.createComponent(Login);
@@ -175,9 +174,8 @@ describe('Login', () => {
 
   it('should successfully authenticate with collaborator code and navigate', async () => {
     mockAuthService.loginComCodigo.mockResolvedValue({
-      access_token: 'fake-jwt-colab-token',
       token_type: 'Bearer',
-      expires_in: 1800,
+      expires_in: 600,
     });
 
     const fixture = TestBed.createComponent(Login);
