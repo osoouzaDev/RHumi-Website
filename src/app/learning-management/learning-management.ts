@@ -77,6 +77,9 @@ export class LearningManagement implements OnInit {
   protected readonly hasPdf = computed(
     () => this.items().find((item) => item.id === this.editingId())?.tem_pdf ?? false,
   );
+  protected readonly currentPdfName = computed(
+    () => this.items().find((item) => item.id === this.editingId())?.nome_arquivo_pdf ?? 'arquivo anexado',
+  );
 
   ngOnInit(): void {
     if (this.canManage()) void this.load();
@@ -179,6 +182,10 @@ export class LearningManagement implements OnInit {
 
   protected toggleSectorFromEvent(event: Event, id: string): void {
     this.toggleSector(id, (event.target as HTMLInputElement).checked);
+  }
+
+  protected toggleInactive(event: Event): void {
+    this.showInactive.set((event.target as HTMLInputElement).checked);
   }
 
   protected toggleSector(id: string, checked: boolean): void {

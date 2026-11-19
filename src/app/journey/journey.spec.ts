@@ -59,6 +59,7 @@ describe('Journey', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('09/03/2026');
+    expect(fixture.nativeElement.textContent).not.toContain('Nenhum documento anexado');
   });
 
   it('should save checklist changes and display them after reloading the journey', async () => {
