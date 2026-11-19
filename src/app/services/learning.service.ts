@@ -44,6 +44,7 @@ export interface LearningItem {
   tipo_material: LearningMaterialType | null;
   url_material: string | null;
   tem_pdf: boolean;
+  nome_arquivo_pdf?: string | null;
   tem_resultados?: boolean;
   ativo: boolean;
   setores: Array<{ id: string; nome_setor: string }>;

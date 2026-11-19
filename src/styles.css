@@ -55,6 +55,186 @@ app-navigation-orb .animate-circle-gradient {
   animation: none !important;
 }
 
+html[data-theme='light'] body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html[data-theme='light'] [class*='bg-[#0'] {
+  background-color: #ffffff !important;
+}
+
+html[data-theme='light'] [class*='bg-[#03030d]'],
+html[data-theme='light'] [class*='bg-[#070711]'],
+html[data-theme='light'] [class*='bg-[#070b18]'],
+html[data-theme='light'] [class*='bg-[#080d1d]'],
+html[data-theme='light'] [class*='bg-[#0a0f1b]'],
+html[data-theme='light'] [class*='bg-[#0a1220]'],
+html[data-theme='light'] [class*='bg-[#0a1225]'],
+html[data-theme='light'] [class*='bg-[#0b111e]'],
+html[data-theme='light'] [class*='bg-[#0b1220]'],
+html[data-theme='light'] [class*='bg-[#0b1322]'],
+html[data-theme='light'] [class*='bg-[#0c101c]'],
+html[data-theme='light'] [class*='bg-[#0c1222]'],
+html[data-theme='light'] [class*='bg-[#0e1525]'],
+html[data-theme='light'] [class*='bg-[#0f172a]'],
+html[data-theme='light'] [class*='bg-[#10101b]'],
+html[data-theme='light'] [class*='bg-[#101329]'],
+html[data-theme='light'] [class*='bg-[#101827]'],
+html[data-theme='light'] [class*='bg-[#101a29]'],
+html[data-theme='light'] [class*='bg-[#111927]'],
+html[data-theme='light'] [class*='bg-[#111c31]'],
+html[data-theme='light'] [class*='bg-[#13203a]'],
+html[data-theme='light'] [class*='bg-[#141421]'],
+html[data-theme='light'] [class*='bg-[#151f31]'],
+html[data-theme='light'] [class*='bg-[#17243a]'],
+html[data-theme='light'] [class*='bg-[#18243c]'],
+html[data-theme='light'] [class*='bg-[#1a2538]'],
+html[data-theme='light'] [class*='bg-[#1b2638]'],
+html[data-theme='light'] [class*='bg-[#1e293b]'],
+html[data-theme='light'] [class*='bg-[#21151b]'],
+html[data-theme='light'] [class*='bg-[#26334a]'],
+html[data-theme='light'] [class*='bg-[#263d78]'],
+html[data-theme='light'] [class*='hover:bg-[#1d2b42]']:hover {
+  background-color: #ffffff !important;
+}
+
+html[data-theme='light'] [class*='bg-[#1e3a8a]'] {
+  background-color: #dbeafe !important;
+}
+
+html[data-theme='light'] [class*='bg-[#0645ee]'] {
+  background-color: #0645ee !important;
+}
+
+html[data-theme='light'] main[class*='bg-[#0'] {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] [class*='bg-[linear-gradient(145deg,rgba(18,28,49'],
+html[data-theme='light'] [class*='bg-[linear-gradient(145deg,rgba(25,25,40'] {
+  background: #ffffff !important;
+}
+
+html[data-theme='light'] [class*='bg-[linear-gradient(125deg,#101a32'] {
+  background: linear-gradient(125deg, #eff6ff, #ffffff 55%, #f5f3ff) !important;
+}
+
+html[data-theme='light'] [class*='bg-[linear-gradient(135deg,rgba(53,62,137'],
+html[data-theme='light'] [class*='bg-[linear-gradient(135deg,rgba(34,112,91'],
+html[data-theme='light'] [class*='bg-[linear-gradient(135deg,rgba(112,66,158'] {
+  background: #ffffff !important;
+}
+
+html[data-theme='light'] [class*='bg-[linear-gradient(145deg,#6658dc'] {
+  background: linear-gradient(145deg, #ddd6fe, #c7d2fe) !important;
+}
+
+html[data-theme='light'] [class*='bg-[linear-gradient(145deg,#2875f0'] {
+  background: linear-gradient(145deg, #bfdbfe, #c7d2fe) !important;
+}
+
+html[data-theme='light'] [class*='bg-[linear-gradient(110deg,#17224a'] {
+  background: linear-gradient(110deg, #dbeafe, #bfdbfe 65%, #93c5fd) !important;
+}
+
+html[data-theme='light'] [class*='bg-[#21151b]'] {
+  background-color: #fff1f2 !important;
+}
+
+html[data-theme='light'] [class*='bg-white/'] {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] [class*='border-white/'] {
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] [class*='text-white/'] {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] [class~='text-white'] {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] [class*='text-[#b8d2ff]'] {
+  color: #1e40af !important;
+}
+
+html[data-theme='light'] [class*='text-[#b5aaff]'],
+html[data-theme='light'] [class*='text-[#b4abff]'],
+html[data-theme='light'] [class*='text-[#c0b8ff]'],
+html[data-theme='light'] [class*='text-[#c5bdff]'],
+html[data-theme='light'] [class*='text-[#aaa0ff]'],
+html[data-theme='light'] [class*='text-[#a99bff]'],
+html[data-theme='light'] [class*='text-[#9b8cff]'] {
+  color: #5b4bb7 !important;
+}
+
+html[data-theme='light'] [class*='text-[#70aaff]'],
+html[data-theme='light'] [class*='text-[#77aaff]'],
+html[data-theme='light'] [class*='text-[#8ab5ff]'],
+html[data-theme='light'] [class*='text-[#9bc1ff]'],
+html[data-theme='light'] [class*='text-[#a9c8ff]'],
+html[data-theme='light'] [class*='text-[#60a5fa]'],
+html[data-theme='light'] [class*='text-[#93c5fd]'] {
+  color: #1e40af !important;
+}
+
+html[data-theme='light'] [class*='text-[#83edbd]'],
+html[data-theme='light'] [class*='text-[#82e5ba]'],
+html[data-theme='light'] [class*='text-[#65d8a7]'],
+html[data-theme='light'] [class*='text-[#5ee0ac]'] {
+  color: #047857 !important;
+}
+
+html[data-theme='light'] [class*='text-[#ffaaaa]'] {
+  color: #b91c1c !important;
+}
+
+html[data-theme='light'] [class*='text-blue-100/'],
+html[data-theme='light'] [class*='text-blue-200/'] {
+  color: #1e3a8a !important;
+}
+
+html[data-theme='light'] [class*='text-rose-100/'],
+html[data-theme='light'] [class*='text-red-200'] {
+  color: #b91c1c !important;
+}
+
+html[data-theme='light'] [class*='text-emerald-200'] {
+  color: #047857 !important;
+}
+
+html[data-theme='light'] [class*='text-amber-200/'] {
+  color: #92400e !important;
+}
+
+html[data-theme='light'] [class*='bg-[#2868dc]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#6558df]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#4385f5]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#0645ee]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#2f78ec]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#3478f6]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#356df1]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#3b82f6]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#665bd0]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#6259d9]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#7568ef]'][class*='text-white'],
+html[data-theme='light'] [class*='bg-[#8277ff]'][class*='text-white'] {
+  color: #ffffff !important;
+}
+
+html[data-theme='light'] input::placeholder,
+html[data-theme='light'] textarea::placeholder {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] main > [aria-hidden='true'] {
+  opacity: 0.25;
+}
+
 .navigation-menu-opening {
   animation: navigation-menu-opening 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
   transform-origin: top center;
